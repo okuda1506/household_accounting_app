@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'deleted',
     ];
 
     /**
@@ -43,6 +44,14 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'deleted' => 'boolean',
         ];
+    }
+
+    // ユーザー削除
+    public function delete(): void
+    {
+        $this->deleted = true;
+        $this->save();
     }
 }
