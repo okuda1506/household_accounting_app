@@ -13,7 +13,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * 一括代入を許可する属性を指定する
      *
      * @var array<int, string>
      */
@@ -25,7 +25,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * JSONシリアライズ時に隠す属性を指定する
      *
      * @var array<int, string>
      */
@@ -35,18 +35,15 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * DBから取得した値やモデルで使用する値を指定した型に自動変換する
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'deleted' => 'boolean',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'deleted' => 'boolean',
+    ];
 
     // ユーザー削除
     public function delete(): void
