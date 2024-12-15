@@ -28,8 +28,14 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
+        Schema::table('transactions', function (Blueprint $table) {
+            // 外部キー制約を削除
+            $table->dropForeign(['transaction_type_id']);
+        });
+
+        // テーブルを削除
         Schema::dropIfExists('transactions');
     }
 };
