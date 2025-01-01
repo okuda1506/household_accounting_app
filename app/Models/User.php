@@ -13,20 +13,21 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * 一括代入を許可する属性を指定する
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'deleted',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * JSONシリアライズ時に隠す属性を指定する
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -34,15 +35,38 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * DBから取得した値やモデルで使用する値を指定した型に自動変換する
      *
      * @return array<string, string>
      */
-    protected function casts(): array
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'deleted' => 'boolean',
+    ];
+
+    /**
+     * ユーザーが持つカテゴリとのリレーション
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function categories()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasMany(Category::class);
+    }
+
+    /**
+     * ユーザーが所有する取引
+     */
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    // ユーザー削除
+    public function delete(): void
+    {
+        $this->deleted = true;
+        $this->save();
     }
 }
