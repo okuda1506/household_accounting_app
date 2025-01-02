@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->comment('ユーザーID');
-            $table->date('transaction_date')->comment('取引日');
+            $table->dateTime('transaction_date')->comment('取引日');
             $table->foreignId('transaction_type_id')->constrained('transaction_types')->cascadeOnDelete()->comment('取引タイプID');
             $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete()->comment('カテゴリID');
             $table->decimal('amount', 10, 2)->unsigned()->comment('金額');
