@@ -4,15 +4,20 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Database\Eloquent\Collection;
+use App\Models\Category;
 
 class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Collection
     {
-        //
+        $categories = Category::all();
+
+        return $categories;
     }
 
     /**
