@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Category;
+use Illuminate\Support\Facades\DB;
 
 class CategorySeeder extends Seeder
 {
@@ -13,6 +14,9 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
+        // AUTO_INCREMENTをリセット
+        DB::statement('ALTER TABLE categories AUTO_INCREMENT = 1');
+
         Category::create([
             'user_id' => 1,
             'name' => '給与',
