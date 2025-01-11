@@ -12,6 +12,9 @@ Route::prefix('categories')
     ->controller(CategoryController::class)
     ->name('api.category.')
     ->group(function () {
+        // カテゴリ取得
         Route::get('', 'index')->name('index');
+        // カテゴリ追加
+        Route::post('', 'store')->name('store');
     }
 );

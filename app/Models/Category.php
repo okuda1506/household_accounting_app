@@ -20,7 +20,6 @@ class Category extends Model
         'name',
         'transaction_type_id',
         'sort_no',
-        'deleted',
     ];
 
     /**
