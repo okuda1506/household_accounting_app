@@ -12,8 +12,6 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Models\Category;
 use Illuminate\Http\JsonResponse;
 
-use function Psy\debug;
-
 class CategoryController extends Controller
 {
     public function index(): JsonResponse
