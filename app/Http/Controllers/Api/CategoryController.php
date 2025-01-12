@@ -12,11 +12,17 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Models\Category;
 use Illuminate\Http\JsonResponse;
 
+// todo: ログインユーザーのみのデータについてCRUDができるようにする（モデルのfillable修正など）
+
 class CategoryController extends Controller
 {
+    /**
+     * 有効なカテゴリの取得
+     *
+     * @return JsonResponse
+     */
     public function index(): JsonResponse
     {
-        // 有効なカテゴリを取得
         $categories = CategoryResource::collection(
             Category::where('deleted', false)->get()
         );
@@ -27,43 +33,91 @@ class CategoryController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * カテゴリの新規登録
+     *
+     * @param CategoryRequest $request
+     *
+     * @return JsonResponse
      */
     public function store(CategoryRequest $request): JsonResponse
     {
-        // todo: リクエストのカテゴリ名が既に登録済みであれば弾くようにする
-        // リクエストデータの検証済みデータを取得
+        // リクエストデータの検証済みデータを取得する
         $validated = $request->validated();
-        // カテゴリデータを登録
-        $category = Category::create($validated);
 
+        // todo: 共通化
+        // リクエストのカテゴリ名が既に存在している場合はエラーレスポンスを返す
+        if (Category::where([
+            ['name', '=', $validated['name']],
+            ['transaction_type_id', '=', $validated['transaction_type_id']],
+            ['deleted', '=', false]
+        ])->exists()) {
+            $errorMessages = [];
+            $errorMessages[] = __('messages.category_name_exists', ['name' => $validated['name']]);
+
+            return ApiResponse::error(null, $errorMessages, Response::HTTP_CONFLICT);
+        }
+
+        // カテゴリを登録する
+        $category = Category::create($validated);
         $message = __('messages.category_created');
 
         return ApiResponse::success(new CategoryResource($category), $message);
-
     }
 
     /**
-     * Display the specified resource.
+     * カテゴリを更新
+     *
+     * @param CategoryRequest $request
+     *
+     * @param string $id
+     *
+     * @return JsonResponse
      */
-    public function show(string $id)
+    public function update(CategoryRequest $request, string $id): JsonResponse
     {
-        //
+        $validated = $request->validated();
+
+        $category = Category::where(['id' => $id, 'deleted' => false])->firstOrFail();
+
+        // todo: 共通化
+        // リクエストのカテゴリ名が既に存在している場合はエラーレスポンスを返す
+        if (Category::where([
+            ['name', '=', $validated['name']],
+            ['id', '!=', $id],
+            ['transaction_type_id', '=', $validated['transaction_type_id']],
+            ['deleted', '=', false]
+        ])->exists()) {
+            $errorMessages = [];
+            $errorMessages[] = __('messages.category_name_exists', ['name' => $validated['name']]);
+
+            return ApiResponse::error(null, $errorMessages, Response::HTTP_CONFLICT);
+        }
+
+        $category->update($validated);
+        $message = __('messages.category_updated');
+
+        return ApiResponse::success(new CategoryResource($category), $message);
     }
 
     /**
-     * Update the specified resource in storage.
+     * カテゴリを削除
+     *
+     * @param CategoryRequest $request
+     *
+     * @param string $id
+     *
+     * @return JsonResponse
      */
-    public function update(Request $request, string $id)
+    public function destroy(string $id): JsonResponse
     {
-        //
+        $category = Category::findOrFail($id);
+
+        $category->delete();
+
+        $message = __('messages.category_deleted');
+
+        // 成功レスポンスを返す
+        return ApiResponse::success(new CategoryResource($category), $message);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }
