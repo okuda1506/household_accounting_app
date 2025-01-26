@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\CategoryBelongsToTransactionType;
 
-class CategoryRequest extends FormRequest
+class TransactionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +23,21 @@ class CategoryRequest extends FormRequest
      */
     public function rules(): array
     {
+        $transactionTypeId = $this->input('transaction_type_id');
+        
         return [
             'user_id' => 'required|integer|exists:users,id',
-            'name' => 'required|string|max:30',
+            'transaction_date' => 'required|date_format:Y/m/d',
             'transaction_type_id' => 'required|integer|exists:transaction_types,id',
-            'sort_no' => 'required|integer',
+            'category_id' => [
+                'required',
+                'integer',
+                'exists:categories,id',
+                new CategoryBelongsToTransactionType($transactionTypeId)
+            ],
+            'amount' => 'required|numeric|min:0',
+            'payment_method_id' => 'required|integer|exists:payment_methods,id',
+            'memo' => 'nullable|string|max:255',
         ];
     }
 
@@ -36,14 +47,7 @@ class CategoryRequest extends FormRequest
             'user_id.required' => __('messages.user_id_required'),
             'user_id.integer' => __('messages.user_id_integer'),
             'user_id.exists' => __('messages.user_id_exists'),
-            'name.required' => __('messages.name_required'),
-            'name.string' => __('messages.name_string'),
-            'name.max' => __('messages.name_max_30'),
-            'transaction_type_id.required' => __('messages.transaction_type_id_required'),
-            'transaction_type_id.integer' => __('messages.transaction_type_id_integer'),
-            'transaction_type_id.exists' => __('messages.transaction_type_id_exists'),
-            'sort_no.required' => __('messages.sort_no_required'),
-            'sort_no.integer' => __('messages.sort_no_integer'),
+
         ];
     }
 }
