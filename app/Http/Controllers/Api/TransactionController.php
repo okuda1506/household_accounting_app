@@ -47,4 +47,45 @@ class TransactionController extends Controller
 
         return ApiResponse::success(new TransactionResource($transaction), $message);
     }
+
+    /**
+     * 取引の更新
+     *
+     * @param TransactionRequest $request
+     *
+     * @param string $id
+     *
+     * @return JsonResponse
+     */
+    public function update(TransactionRequest $request, string $id): JsonResponse
+    {
+        $validated = $request->validated();
+
+        $transaction = Transaction::where(['id' => $id, 'deleted' => false])->firstOrFail();
+
+        $transaction->update($validated);
+        $message = __('messages.category_updated');
+
+        return ApiResponse::success(new TransactionResource($transaction), $message);
+    }
+
+    /**
+     * 取引の削除
+     *
+     * @param TransactionRequest $request
+     *
+     * @param string $id
+     *
+     * @return JsonResponse
+     */
+    public function destroy(string $id): JsonResponse
+    {
+        $transaction = Transaction::findOrFail($id);
+
+        $transaction->delete();
+
+        $message = __('messages.category_deleted');
+
+        return ApiResponse::success(new TransactionResource($transaction), $message);
+    }
 }

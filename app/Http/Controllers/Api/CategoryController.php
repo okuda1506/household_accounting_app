@@ -57,7 +57,7 @@ class CategoryController extends Controller
             return ApiResponse::error(null, $errorMessages, Response::HTTP_CONFLICT);
         }
 
-        // カテゴリを登録する
+        // カテゴリ登録する
         $category = Category::create($validated);
         $message = __('messages.category_created');
 
@@ -65,7 +65,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * カテゴリを更新
+     * カテゴリの更新
      *
      * @param CategoryRequest $request
      *
@@ -100,7 +100,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * カテゴリを削除
+     * カテゴリの削除
      *
      * @param CategoryRequest $request
      *
@@ -116,7 +116,6 @@ class CategoryController extends Controller
 
         $message = __('messages.category_deleted');
 
-        // 成功レスポンスを返す
         return ApiResponse::success(new CategoryResource($category), $message);
     }
 
