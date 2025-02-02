@@ -27,6 +27,10 @@ return [
     'transaction_type_id_exists' => '無効な取引タイプIDです。',
     'sort_no_required' => 'ソート順は必須です。',
     'sort_no_integer' => 'ソート順は数値でなければなりません。',
+    'sorted_category_ids.required' => 'カテゴリIDのリストは必須です。',
+    'sorted_category_ids.array' => 'カテゴリIDのリストは配列で指定してください。',
+    'sorted_category_ids.*.integer' => 'カテゴリIDは整数で指定してください。',
+    'sorted_category_ids.*.exists' => '指定されたカテゴリIDが存在しません。',
 
     // --------------------------
     // カスタムバリデーションメッセージ

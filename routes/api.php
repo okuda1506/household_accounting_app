@@ -23,6 +23,8 @@ Route::prefix('categories')
         Route::put('{id}', 'update')->name('update');
         // カテゴリ削除
         Route::delete('{id}', 'destroy')->name('destroy');
+        // カテゴリソート
+        Route::post('', 'sort')->name('sort');
     });
 
 Route::prefix('transactions')

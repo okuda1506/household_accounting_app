@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
+use App\Services\CategoryService;
+use App\Http\Requests\CategorySortRequest;
 use App\Http\Resources\CategoryResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -16,6 +18,12 @@ use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller
 {
+    private CategoryService $categoryService;
+
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
     /**
      * 有効なカテゴリをソート番号の昇順で取得
      *
@@ -119,4 +127,22 @@ class CategoryController extends Controller
         return ApiResponse::success(new CategoryResource($category), $message);
     }
 
+    /**
+     * カテゴリのソート
+     *
+     * @param CategorySortRequest $request
+     *
+     * @return JsonResponse
+     */
+    public function sort(CategorySortRequest $request): JsonResponse
+    {
+        $sortedCategoryIds = $request->input('sorted_category_ids');
+
+        // todo: Exception起きた場合はエラーレスポンスを返すようにしたい（この制御はController側で行う...?_）
+        $this->categoryService->sortCategories($sortedCategoryIds);
+
+
+        // return ApiResponse::success(new CategoryResource($category), $message);
+        return ApiResponse::success(null, __('messages.category_sorted'));
+    }
 }
