@@ -17,14 +17,14 @@ use Illuminate\Http\JsonResponse;
 class CategoryController extends Controller
 {
     /**
-     * 有効なカテゴリの取得
+     * 有効なカテゴリをソート番号の昇順で取得
      *
      * @return JsonResponse
      */
     public function index(): JsonResponse
     {
         $categories = CategoryResource::collection(
-            Category::where('deleted', false)->get()
+            Category::where('deleted', false)->orderBy('sort_no')->get()
         );
 
         $message = __('messages.category_list_fetched');
