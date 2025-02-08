@@ -8,6 +8,7 @@ return [
     'category_created' => 'カテゴリを登録しました。',
     'category_updated' => 'カテゴリを更新しました。',
     'category_deleted' => 'カテゴリを削除しました。',
+    'category_sorted' => 'カテゴリの並び順を更新しました。',
     'transaction_list_fetched' => 'カテゴリ一覧を取得しました。',
     'transaction_created' => '取引を登録しました。',
     'transaction_updated' => '取引を更新しました。',

@@ -15,10 +15,19 @@ class CategoryService
      */
     public function sortCategories(array $sortedCategoryIds): void
     {
-        // todo: Exception起きた場合はエラーレスポンスを返すようにしたい（この制御はController側で行う...?_）
+        // todo: Exception起きた場合はエラーレスポンスを返すようにしたい（この制御はController側で行う?）
         DB::transaction(function () use ($sortedCategoryIds) {
-            foreach ($sortedCategoryIds as $index => $categoryId) {
-                Category::where('id', $categoryId)->update(['sort_no' => $index + 1]);
+            // 取引タイプごとにグループ化して取得
+            $categories = Category::whereIn('id', $sortedCategoryIds)
+                ->orderByRaw("FIELD(id, " . implode(',', $sortedCategoryIds) . ")") // フロントから送られたIDの並び順を保持
+                ->get()
+                ->groupBy('transaction_type_id'); // 取引タイプごとに別々のリストとする
+
+            // 各取引タイプごとに sort_no を更新
+            foreach ($categories as $transactionTypeId => $groupedCategories) {
+                foreach ($groupedCategories as $index => $category) {
+                    $category->update(['sort_no' => $index + 1]);
+                }
             }
         });
     }
