@@ -162,9 +162,8 @@ class CategoryController extends Controller
      */
     public function sort(CategorySortRequest $request): JsonResponse
     {
-        $sortedCategoryIds = $request->input('sorted_category_ids');
-
         try {
+            $sortedCategoryIds = $request->input('sorted_category_ids');
             $this->categoryService->sortCategories($sortedCategoryIds);
         } catch (\Exception $e) {
             $errorMessages = [];
