@@ -44,4 +44,13 @@ return [
     'validation_error' => '入力内容に誤りがあります。再度確認してください。',
     'category_not_found' => '指定されたカテゴリは存在しません。',
     'category_name_exists' => 'カテゴリ：:nameは既に登録されています。',
+    'category_get_failed' => 'カテゴリの取得に失敗しました。',
+    'category_store_failed' => 'カテゴリの登録に失敗しました。',
+    'category_update_failed' => 'カテゴリの更新に失敗しました。',
+    'category_destroy_failed' => 'カテゴリの削除に失敗しました。',
+    'category_sort_failed' => 'カテゴリの並び順の更新に失敗しました。',
+    'transaction_get_failed' => '取引データの取得に失敗しました。',
+    'transaction_store_failed' => '取引の登録に失敗しました。',
+    'transaction_update_failed' => '取引の更新に失敗しました。',
+    'transaction_destroy_failed' => '取引の削除に失敗しました。',
 ];

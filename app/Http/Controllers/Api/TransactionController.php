@@ -22,9 +22,16 @@ class TransactionController extends Controller
      */
     public function index(): JsonResponse
     {
-        $transactions = TransactionResource::collection(
-            Transaction::where('deleted', false)->get()
-        );
+        try {
+            $transactions = TransactionResource::collection(
+                Transaction::where('deleted', false)->get()
+            );
+        } catch (\Exception $e) {
+            $errorMessages = [];
+            $errorMessages[] = __('messages.transaction_get_failed');
+
+            return ApiResponse::error(null, $errorMessages, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
         $message = __('messages.transaction_list_fetched');
 
@@ -40,9 +47,16 @@ class TransactionController extends Controller
      */
     public function store(TransactionRequest $request): JsonResponse
     {
-        $validated = $request->validated();
+        try {
+            $validated = $request->validated();
+            $transaction = Transaction::create($validated);
+        } catch (\Exception $e) {
+            $errorMessages = [];
+            $errorMessages[] = __('messages.transaction_store_failed');
 
-        $transaction = Transaction::create($validated);
+            return ApiResponse::error(null, $errorMessages, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
         $message = __('messages.transaction_created');
 
         return ApiResponse::success(new TransactionResource($transaction), $message);
@@ -59,11 +73,17 @@ class TransactionController extends Controller
      */
     public function update(TransactionRequest $request, string $id): JsonResponse
     {
-        $validated = $request->validated();
+        try {
+            $validated = $request->validated();
+            $transaction = Transaction::where(['id' => $id, 'deleted' => false])->firstOrFail();
+            $transaction->update($validated);
+        } catch (\Exception $e) {
+            $errorMessages = [];
+            $errorMessages[] = __('messages.transaction_update_failed');
 
-        $transaction = Transaction::where(['id' => $id, 'deleted' => false])->firstOrFail();
+            return ApiResponse::error(null, $errorMessages, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
-        $transaction->update($validated);
         $message = __('messages.category_updated');
 
         return ApiResponse::success(new TransactionResource($transaction), $message);
@@ -80,9 +100,15 @@ class TransactionController extends Controller
      */
     public function destroy(string $id): JsonResponse
     {
-        $transaction = Transaction::findOrFail($id);
+        try {
+            $transaction = Transaction::findOrFail($id);
+            $transaction->delete();
+        } catch (\Exception $e) {
+            $errorMessages = [];
+            $errorMessages[] = __('messages.transaction_destroy_failed');
 
-        $transaction->delete();
+            return ApiResponse::error(null, $errorMessages, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
         $message = __('messages.category_deleted');
 
