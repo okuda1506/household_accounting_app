@@ -10,11 +10,11 @@
     @vite([
         'resources/css/app.css',
         'resources/scss/app.scss',
-        'resources/ts/index.tsx',
+        'resources/ts/src/index.tsx',
     ])
 </head>
 <body>
-    <div id="app">
+    <div id="app" class="dark">
     </div>
 </body>
-</html> 
+</html>
