@@ -10,8 +10,8 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-// Route::middleware('auth:sanctum')->group(function () {
 Route::prefix('categories')
+    ->middleware('auth:sanctum')
     ->controller(CategoryController::class)
     ->name('api.category.')
     ->group(function () {
@@ -28,6 +28,7 @@ Route::prefix('categories')
     });
 
 Route::prefix('transactions')
+    ->middleware('auth:sanctum')
     ->controller(TransactionController::class)
     ->name('api.transaction.')
     ->group(function () {
