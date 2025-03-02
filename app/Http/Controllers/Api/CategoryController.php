@@ -14,8 +14,6 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Models\Category;
 use Illuminate\Http\JsonResponse;
 
-// todo: ログインユーザーのみのデータについてCRUDができるようにする（モデルのfillable修正など）
-
 class CategoryController extends Controller
 {
     private CategoryService $categoryService;
@@ -24,8 +22,10 @@ class CategoryController extends Controller
     {
         $this->categoryService = $categoryService;
     }
+
+    // todo: 取引タイプ別で出すのでこの辺り修正が必要になりそう
     /**
-     * 有効なカテゴリをソート番号の昇順で取得
+     * 有効なカテゴリを取得
      *
      * @return JsonResponse
      */
@@ -33,18 +33,13 @@ class CategoryController extends Controller
     {
         try {
             $categories = CategoryResource::collection(
-                Category::where('deleted', false)->orderBy('sort_no')->get()
+                Category::where('deleted', false)->where('user_id', auth()->id())->orderBy('sort_no')->get()
             );
         } catch (\Exception $e) {
-            $errorMessages = [];
-            $errorMessages[] = __('messages.category_get_failed');
-
-            return ApiResponse::error(null, $errorMessages, Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error(null, [__('messages.category_get_failed')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $message = __('messages.category_list_fetched');
-
-        return ApiResponse::success($categories, $message);
+        return ApiResponse::success($categories, __('messages.category_list_fetched'));
     }
 
     /**
@@ -57,100 +52,56 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request): JsonResponse
     {
         try {
-            // リクエストデータの検証済みデータを取得する
             $validated = $request->validated();
+            $userId = auth()->id();
 
-            // todo: 共通化
-            // リクエストのカテゴリ名が既に存在している場合はエラーレスポンスを返す
-            if (Category::where([
-                ['name', '=', $validated['name']],
-                ['transaction_type_id', '=', $validated['transaction_type_id']],
-                ['deleted', '=', false]
-            ])->exists()) {
-                $errorMessages = [];
-                $errorMessages[] = __('messages.category_name_exists', ['name' => $validated['name']]);
-
-                return ApiResponse::error(null, $errorMessages, Response::HTTP_CONFLICT);
-            }
-            $category = Category::create($validated);
+            $category = $this->categoryService->storeCategory($validated, $userId);
         } catch (\Exception $e) {
-            $errorMessages = [];
-            $errorMessages[] = __('messages.category_store_failed');
-
-            return ApiResponse::error(null, $errorMessages, Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error(null, [$e->getMessage()], $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $message = __('messages.category_created');
-
-        return ApiResponse::success(new CategoryResource($category), $message);
+        return ApiResponse::success(new CategoryResource($category), __('messages.category_created'));
     }
 
     /**
      * カテゴリの更新
      *
      * @param CategoryRequest $request
-     *
-     * @param string $id
+     * @param string $categoryId
      *
      * @return JsonResponse
      */
-    public function update(CategoryRequest $request, string $id): JsonResponse
+    public function update(CategoryRequest $request, string $categoryId): JsonResponse
     {
         try {
             $validated = $request->validated();
-
-            $category = Category::where(['id' => $id, 'deleted' => false])->firstOrFail();
-
-            // todo: 共通化
-            // リクエストのカテゴリ名が既に存在している場合はエラーレスポンスを返す
-            if (Category::where([
-                ['name', '=', $validated['name']],
-                ['id', '!=', $id],
-                ['transaction_type_id', '=', $validated['transaction_type_id']],
-                ['deleted', '=', false]
-            ])->exists()) {
-                $errorMessages = [];
-                $errorMessages[] = __('messages.category_name_exists', ['name' => $validated['name']]);
-
-                return ApiResponse::error(null, $errorMessages, Response::HTTP_CONFLICT);
-            }
-            $category->update($validated);
+            $userId = auth()->id();
+            $category = $this->categoryService->updateCategory($categoryId, $validated, $userId);
         } catch (\Exception $e) {
-            $errorMessages = [];
-            $errorMessages[] = __('messages.category_update_failed');
-
-            return ApiResponse::error(null, $errorMessages, Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error(null, [$e->getMessage()], $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $message = __('messages.category_updated');
-
-        return ApiResponse::success(new CategoryResource($category), $message);
+        return ApiResponse::success(new CategoryResource($category), __('messages.category_updated'));
     }
 
     /**
      * カテゴリの削除
      *
      * @param CategoryRequest $request
-     *
      * @param string $id
      *
      * @return JsonResponse
      */
-    public function destroy(string $id): JsonResponse
+    public function destroy(string $categoryId): JsonResponse
     {
         try {
-            $category = Category::findOrFail($id);
-            $category->delete();
+            $userId = auth()->id();
+            $this->categoryService->deleteCategory($categoryId, $userId);
         } catch (\Exception $e) {
-            $errorMessages = [];
-            $errorMessages[] = __('messages.category_destroy_failed');
-
-            return ApiResponse::error(null, $errorMessages, Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error(null, [$e->getMessage()], $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $message = __('messages.category_deleted');
-
-        return ApiResponse::success(new CategoryResource($category), $message);
+        return ApiResponse::success(null, __('messages.category_deleted'));
     }
 
     /**
@@ -166,10 +117,7 @@ class CategoryController extends Controller
             $sortedCategoryIds = $request->input('sorted_category_ids');
             $this->categoryService->sortCategories($sortedCategoryIds);
         } catch (\Exception $e) {
-            $errorMessages = [];
-            $errorMessages[] = __('messages.category_sort_failed');
-
-            return ApiResponse::error(null, $errorMessages, Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error(null, __('messages.category_sort_failed'), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::success(null, __('messages.category_sorted'));

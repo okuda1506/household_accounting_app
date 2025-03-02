@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\Category;
 
 class CategoryRequest extends FormRequest
 {
@@ -11,7 +12,24 @@ class CategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // todo: 認証機能実装してからリクエストの実行権限ロジックを書く
+        // 追加・更新・削除の場合は自身のデータのみ許可
+        if (
+            $this->routeIs('api.category.store') ||
+            $this->routeIs('api.category.update') ||
+            $this->routeIs('api.category.destroy')
+        ) {
+            $categoryId = $this->route('id');
+            if (Category::where('user_id', auth()->id())->count() === 0) {
+                return true;
+            }
+
+            // 更新・削除時は自身のカテゴリかチェック
+            if ($this->routeIs('api.category.update') || $this->routeIs('api.category.destroy')) {
+                return Category::where('id', $categoryId)
+                    ->where('user_id', auth()->id())
+                    ->exists();
+            }
+        }
         return true;
     }
 
@@ -23,7 +41,6 @@ class CategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|integer|exists:users,id',
             'name' => 'required|string|max:30',
             'transaction_type_id' => 'required|integer|exists:transaction_types,id',
             'sort_no' => 'required|integer',
