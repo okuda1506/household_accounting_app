@@ -19,6 +19,7 @@ class CategoryRequest extends FormRequest
             $this->routeIs('api.category.destroy')
         ) {
             $categoryId = $this->route('id');
+            
             if (Category::where('user_id', auth()->id())->count() === 0) {
                 return true;
             }
