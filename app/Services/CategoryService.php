@@ -16,7 +16,7 @@ class CategoryService
      *
      * @return Category
      */
-    public function storeCategory(array $data, int $userId): Category
+    public function createCategory(array $data, int $userId): Category
     {
         $categoryName = $data['name'];
         $transactionTypeId = $data['transaction_type_id'];

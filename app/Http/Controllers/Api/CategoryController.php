@@ -55,7 +55,7 @@ class CategoryController extends Controller
             $validated = $request->validated();
             $userId = auth()->id();
 
-            $category = $this->categoryService->storeCategory($validated, $userId);
+            $category = $this->categoryService->createCategory($validated, $userId);
         } catch (\Exception $e) {
             return ApiResponse::error(null, [$e->getMessage()], $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
