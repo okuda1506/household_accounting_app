@@ -5,9 +5,13 @@ namespace App\Services;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CategoryService
 {
+    // 削除フラグOFF
+    const IS_NOT_DELETED = 0;
+
     /**
      * 新規登録
      *
@@ -26,7 +30,15 @@ class CategoryService
         }
 
         $data['user_id'] = $userId;
-        $category = Category::create($data);
+
+        try {
+            DB::beginTransaction();
+            $category = Category::create($data);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
 
         return $category;
     }
@@ -42,13 +54,20 @@ class CategoryService
      */
     public function updateCategory(string $categoryId, array $data, int $userId): Category
     {
-        $category = Category::findOrFail($categoryId);
+        $category = $this->findCategoryByIdAndUser($categoryId, $userId);
 
         if ($this->categoryExistsForUpdate($data['name'], $userId, $data['transaction_type_id'], $categoryId)) {
             throw new \Exception(__('messages.category_name_exists', ['name' => $data['name']]), Response::HTTP_CONFLICT);
         }
 
-        $category->update($data);
+        try {
+            DB::beginTransaction();
+            $category->update($data);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
 
         return $category;
     }
@@ -63,13 +82,16 @@ class CategoryService
      */
     public function deleteCategory(string $categoryId, int $userId): void
     {
-        $category = Category::findOrFail($categoryId);
+        $category = $this->findCategoryByIdAndUser($categoryId, $userId);
 
-        if ($category->user_id !== $userId) {
-            throw new \Exception(__('messages.unauthorized'), Response::HTTP_FORBIDDEN);
+        try {
+            DB::beginTransaction();
+            $category->delete();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
         }
-
-        $category->delete();
     }
 
 
@@ -111,6 +133,26 @@ class CategoryService
             ['deleted', '=', false],
             ['id', '!=', $categoryId],
         ])->exists();
+    }
+
+    /**
+     * 指定されたカテゴリIDとユーザーIDに一致するカテゴリを取得する
+     *
+     * @param string $categoryId カテゴリID
+     * @param int $userId ユーザーID
+     * @return Category
+     * @throws \Exception
+     */
+    private function findCategoryByIdAndUser(string $categoryId, int $userId): Category
+    {
+        try {
+            return Category::where('id', $categoryId)
+                ->where('user_id', $userId)
+                ->where('deleted', self::IS_NOT_DELETED)
+                ->firstOrFail();
+        } catch (ModelNotFoundException $e) {
+            throw new \Exception(__('messages.category_not_found'), Response::HTTP_NOT_FOUND);
+        }
     }
 
     /**

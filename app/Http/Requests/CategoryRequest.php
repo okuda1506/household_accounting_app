@@ -12,26 +12,23 @@ class CategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // 追加・更新・削除の場合は自身のデータのみ許可
-        if (
-            $this->routeIs('api.category.store') ||
-            $this->routeIs('api.category.update') ||
-            $this->routeIs('api.category.destroy')
-        ) {
-            $categoryId = $this->route('id');
-            
-            if (Category::where('user_id', auth()->id())->count() === 0) {
-                return true;
-            }
-
-            // 更新・削除時は自身のカテゴリかチェック
-            if ($this->routeIs('api.category.update') || $this->routeIs('api.category.destroy')) {
-                return Category::where('id', $categoryId)
-                    ->where('user_id', auth()->id())
-                    ->exists();
-            }
+        if (!auth()->check()) {
+            return false;
         }
-        return true;
+
+        if ($this->routeIs('api.category.store')) {
+            return true;
+        }
+
+        // 更新・削除は自身のデータのみ許可
+        if ($this->routeIs('api.category.update') || $this->routeIs('api.category.destroy')) {
+            $categoryId = $this->route('id');
+            return Category::where('id', $categoryId)
+                ->where('user_id', auth()->id())
+                ->exists();
+        }
+
+        return false;
     }
 
     /**

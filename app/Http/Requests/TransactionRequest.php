@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Transaction;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\CategoryBelongsToTransactionType;
 
@@ -12,8 +13,23 @@ class TransactionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // todo: 認証機能実装してからリクエストの実行権限ロジックを書く
-        return true;
+        if (!auth()->check()) {
+            return false;
+        }
+
+        if ($this->routeIs('api.transaction.store')) {
+            return true;
+        }
+
+        // 更新・削除は自身のデータのみ許可
+        if ($this->routeIs('api.transaction.update') || $this->routeIs('api.transaction.destroy')) {
+            $transactionId = $this->route('id');
+            return Transaction::where('id', $transactionId)
+                ->where('user_id', auth()->id())
+                ->exists();
+        }
+
+        return false;
     }
 
     /**
@@ -24,9 +40,8 @@ class TransactionRequest extends FormRequest
     public function rules(): array
     {
         $transactionTypeId = $this->input('transaction_type_id');
-        
+
         return [
-            'user_id' => 'required|integer|exists:users,id',
             'transaction_date' => 'required|date_format:Y/m/d',
             'transaction_type_id' => 'required|integer|exists:transaction_types,id',
             'category_id' => [

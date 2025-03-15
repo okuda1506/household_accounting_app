@@ -53,5 +53,6 @@ return [
     'transaction_get_failed' => '取引データの取得に失敗しました。',
     'transaction_store_failed' => '取引の登録に失敗しました。',
     'transaction_update_failed' => '取引の更新に失敗しました。',
+    'transaction_not_found' => '指定された取引データが見つかりません。',
     'transaction_destroy_failed' => '取引の削除に失敗しました。',
 ];

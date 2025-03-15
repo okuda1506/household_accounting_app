@@ -52,12 +52,9 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request): JsonResponse
     {
         try {
-            $validated = $request->validated();
-            $userId = auth()->id();
-
-            $category = $this->categoryService->createCategory($validated, $userId);
+            $category = $this->categoryService->createCategory($request->validated(), auth()->id());
         } catch (\Exception $e) {
-            return ApiResponse::error(null, [$e->getMessage()], $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error(null, [$e->getMessage()], (int)$e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::success(new CategoryResource($category), __('messages.category_created'));
@@ -74,11 +71,9 @@ class CategoryController extends Controller
     public function update(CategoryRequest $request, string $categoryId): JsonResponse
     {
         try {
-            $validated = $request->validated();
-            $userId = auth()->id();
-            $category = $this->categoryService->updateCategory($categoryId, $validated, $userId);
+            $category = $this->categoryService->updateCategory($categoryId, $request->validated(), auth()->id());
         } catch (\Exception $e) {
-            return ApiResponse::error(null, [$e->getMessage()], $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error(null, [$e->getMessage()], (int)$e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::success(new CategoryResource($category), __('messages.category_updated'));
@@ -95,10 +90,9 @@ class CategoryController extends Controller
     public function destroy(string $categoryId): JsonResponse
     {
         try {
-            $userId = auth()->id();
-            $this->categoryService->deleteCategory($categoryId, $userId);
+            $this->categoryService->deleteCategory($categoryId, auth()->id());
         } catch (\Exception $e) {
-            return ApiResponse::error(null, [$e->getMessage()], $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error(null, [$e->getMessage()], (int)$e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::success(null, __('messages.category_deleted'));
