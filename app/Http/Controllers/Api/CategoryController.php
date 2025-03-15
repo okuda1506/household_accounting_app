@@ -8,9 +8,7 @@ use App\Http\Requests\CategoryRequest;
 use App\Services\CategoryService;
 use App\Http\Requests\CategorySortRequest;
 use App\Http\Resources\CategoryResource;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Database\Eloquent\Collection;
 use App\Models\Category;
 use Illuminate\Http\JsonResponse;
 
