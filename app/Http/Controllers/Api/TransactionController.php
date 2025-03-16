@@ -10,7 +10,6 @@ use App\Http\Resources\TransactionResource;
 use Illuminate\Http\Response;
 use App\Models\Transaction;
 use Illuminate\Http\JsonResponse;
-use SebastianBergmann\Type\FalseType;
 
 class TransactionController extends Controller
 {
@@ -93,17 +92,11 @@ class TransactionController extends Controller
     public function destroy(string $transactionId): JsonResponse
     {
         try {
-            $transaction = Transaction::findOrFail($transactionId);
-            $transaction->delete();
+            $this->transactionService->deleteTransaction($transactionId, auth()->id());
         } catch (\Exception $e) {
-            $errorMessages = [];
-            $errorMessages[] = __('messages.transaction_destroy_failed');
-
-            return ApiResponse::error(null, $errorMessages, Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error(null, [$e->getMessage()], (int)$e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $message = __('messages.category_deleted');
-
-        return ApiResponse::success(new TransactionResource($transaction), $message);
+        return ApiResponse::success(null, __('messages.transaction_deleted'));
     }
 }

@@ -7,10 +7,21 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+/**
+ * 取引関連のビジネスロジックを管理するサービスクラス
+ *
+ * - createTransaction(): 新しい取引を作成
+ * - updateTransaction(): 既存の取引を更新
+ * - deleteTransaction(): 取引を論理削除
+ * - findTransactionByIdAndUser(): 指定ユーザーの取引を取得（共通メソッド）
+ */
 class TransactionService
 {
+    // 削除フラグOFF
+    const IS_NOT_DELETED = 0;
+
     /**
-     * 新規登録
+     * 取引データの新規登録
      *
      * @param array $data 取引データ
      * @param int $userId ユーザーID
@@ -34,7 +45,7 @@ class TransactionService
     }
 
     /**
-     * 更新
+     * 取引データの更新
      *
      * @param string $transactionId 取引ID
      * @param array $data 取引データ
@@ -44,13 +55,7 @@ class TransactionService
      */
     public function updateTransaction(string $transactionId, array $data, int $userId): Transaction
     {
-        try {
-            $transaction = Transaction::where('id', $transactionId)
-                ->where('user_id', $userId)
-                ->firstOrFail();
-        } catch (ModelNotFoundException $e) {
-            throw new \Exception(__('messages.transaction_not_found'), Response::HTTP_NOT_FOUND);
-        }
+        $transaction = $this->findTransactionByIdAndUser($transactionId, $userId);
 
         try {
             DB::beginTransaction();
@@ -65,16 +70,44 @@ class TransactionService
     }
 
     /**
-     * 削除
+     * 取引データの削除
      *
-     * @param string $transactionId カテゴリID
+     * @param string $transactionId 取引ID
      * @param int $userId ユーザーID
      *
      * @return void
      */
     public function deleteTransaction(string $transactionId, int $userId): void
     {
+        $transaction = $this->findTransactionByIdAndUser($transactionId, $userId);
 
+        try {
+            DB::beginTransaction();
+            $transaction->delete();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
+    /**
+     * 指定された取引IDとユーザーIDに一致する取引を取得する
+     *
+     * @param string $transactionId 取引ID
+     * @param int $userId ユーザーID
+     * @return Transaction
+     * @throws \Exception
+     */
+    private function findTransactionByIdAndUser(string $transactionId, int $userId): Transaction
+    {
+        try {
+            return Transaction::where('id', $transactionId)
+                ->where('user_id', $userId)
+                ->where('deleted', self::IS_NOT_DELETED)
+                ->firstOrFail();
+        } catch (ModelNotFoundException $e) {
+            throw new \Exception(__('messages.transaction_not_found'), Response::HTTP_NOT_FOUND);
+        }
+    }
 }

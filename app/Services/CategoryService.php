@@ -7,13 +7,23 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+/**
+ * カテゴリ関連のビジネスロジックを管理するサービスクラス
+ *
+ * - createCategory(): 新しいカテゴリを作成
+ * - updateCategory(): 既存のカテゴリを更新
+ * - deleteCategory(): カテゴリを論理削除
+ * - sortCategories(): カテゴリの並び順を更新
+ * - categoryExists(): 同じ名前のカテゴリが存在するかチェック
+ * - findCategoryByIdAndUser(): 指定ユーザーのカテゴリを取得（共通メソッド）
+ */
 class CategoryService
 {
     // 削除フラグOFF
     const IS_NOT_DELETED = 0;
 
     /**
-     * 新規登録
+     * カテゴリの新規登録
      *
      * @param array $data カテゴリデータ
      * @param int $userId ユーザーID
@@ -44,7 +54,7 @@ class CategoryService
     }
 
     /**
-     * 更新
+     * カテゴリの更新
      *
      * @param string $categoryId カテゴリID
      * @param array $data カテゴリデータ
@@ -73,7 +83,7 @@ class CategoryService
     }
 
     /**
-     * 削除
+     * カテゴリの削除
      *
      * @param string $categoryId カテゴリID
      * @param int $userId ユーザーID
