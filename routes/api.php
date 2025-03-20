@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\TransactionController;
+use App\Http\Controllers\Api\DashboardController;
 use Illuminate\Database\Events\TransactionCommitted;
 
 Route::get('/user', function (Request $request) {
@@ -41,3 +42,12 @@ Route::prefix('transactions')
         // 取引削除
         Route::delete('{id}', 'destroy')->name('destroy');
     });
+
+Route::prefix('dashboard')
+->middleware('auth:sanctum')
+->controller(DashboardController::class)
+->name('api.dashboard.')
+->group(function () {
+    // ダッシュボード情報
+    Route::get('', 'getDashboardData')->name('getDashboardData');
+});

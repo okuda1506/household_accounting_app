@@ -18,7 +18,7 @@ export default function FinanceApp() {
             <div className="px-4 py-6 sm:px-0 space-y-6">
             <Card className="bg-black border-gray-800">
                 <CardHeader>
-                <CardTitle className="text-lg font-medium">2023年6月</CardTitle>
+                <CardTitle className="text-lg font-medium"></CardTitle>
                 </CardHeader>
                 <CardContent>
                 <div className="flex justify-between items-center text-sm">
@@ -31,7 +31,7 @@ export default function FinanceApp() {
                     <p className="text-xl font-semibold text-red-400">¥280,000</p>
                     </div>
                     <div>
-                    <p className="text-gray-400">残高</p>
+                    <p className="text-gray-400">収支</p>
                     <p className="text-xl font-semibold">¥1,020,000</p>
                     </div>
                 </div>
