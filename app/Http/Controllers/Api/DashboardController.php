@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -27,20 +26,20 @@ class DashboardController extends Controller
             $userId = auth()->id();
 
             // フロントに表示する各項目のデータを取得
-            $summary = $this->dashboardService->getSummary($userId);
-            $trend = $this->dashboardService->getMonthlyExpenseTrend($userId);
+            $summary      = $this->dashboardService->getSummary($userId);
+            $trend        = $this->dashboardService->getMonthlyExpenseTrend($userId);
             $transactions = $this->dashboardService->getRecentTransactions($userId);
 
             return response()->json([
-                'monthly_summary' => $summary,
-                'expense_trend' => $trend,
-                'recent_transactions' => $transactions
+                'monthly_summary'     => $summary,
+                'expense_trend'       => $trend,
+                'recent_transactions' => $transactions,
             ], Response::HTTP_OK);
 
         } catch (\Exception $e) {
             return response()->json([
                 'message' => __('messages.dashboard_get_failed'),
-                'error' => $e->getMessage()
+                'error'   => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

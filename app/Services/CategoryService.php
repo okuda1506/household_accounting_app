@@ -1,11 +1,10 @@
 <?php
-
 namespace App\Services;
 
 use App\Models\Category;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 /**
  * カテゴリ関連のビジネスロジックを管理するサービスクラス
@@ -32,7 +31,7 @@ class CategoryService
      */
     public function createCategory(array $data, int $userId): Category
     {
-        $categoryName = $data['name'];
+        $categoryName      = $data['name'];
         $transactionTypeId = $data['transaction_type_id'];
 
         if ($this->categoryExists($categoryName, $userId, $transactionTypeId)) {
@@ -104,7 +103,6 @@ class CategoryService
         }
     }
 
-
     /**
      * ユーザーが所有しているカテゴリの存在チェック
      *
@@ -120,7 +118,7 @@ class CategoryService
             ['name', '=', $categoryName],
             ['user_id', '=', $userId],
             ['transaction_type_id', '=', $transactionTypeId],
-            ['deleted', '=', false]
+            ['deleted', '=', false],
         ])->exists();
     }
 

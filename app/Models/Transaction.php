@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -33,8 +32,8 @@ class Transaction extends Model
      */
     protected $casts = [
         'transaction_date' => 'datetime',
-        'amount' => 'decimal:2',
-        'deleted' => 'boolean',
+        'amount'           => 'decimal:2',
+        'deleted'          => 'boolean',
     ];
 
     /**

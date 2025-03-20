@@ -1,15 +1,14 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TransactionRequest;
-use App\Services\TransactionService;
 use App\Http\Resources\TransactionResource;
-use Illuminate\Http\Response;
 use App\Models\Transaction;
+use App\Services\TransactionService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class TransactionController extends Controller
 {
@@ -32,7 +31,7 @@ class TransactionController extends Controller
                 Transaction::where('deleted', false)->get()
             );
         } catch (\Exception $e) {
-            $errorMessages = [];
+            $errorMessages   = [];
             $errorMessages[] = __('messages.transaction_get_failed');
 
             return ApiResponse::error(null, $errorMessages, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -55,10 +54,10 @@ class TransactionController extends Controller
         try {
             $transaction = $this->transactionService->createTransaction($request->validated(), auth()->id());
         } catch (\Exception $e) {
-            return ApiResponse::error(null, [$e->getMessage()], (int)$e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error(null, [$e->getMessage()], (int) $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return ApiResponse::success(new TransactionResource($transaction),  __('messages.transaction_created'));
+        return ApiResponse::success(new TransactionResource($transaction), __('messages.transaction_created'));
     }
 
     /**
@@ -75,7 +74,7 @@ class TransactionController extends Controller
         try {
             $transaction = $this->transactionService->updateTransaction($transactionId, $request->validated(), auth()->id());
         } catch (\Exception $e) {
-            return ApiResponse::error(null, [$e->getMessage()], (int)$e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error(null, [$e->getMessage()], (int) $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::success(new TransactionResource($transaction), __('messages.transaction_updated'));
@@ -94,7 +93,7 @@ class TransactionController extends Controller
         try {
             $this->transactionService->deleteTransaction($transactionId, auth()->id());
         } catch (\Exception $e) {
-            return ApiResponse::error(null, [$e->getMessage()], (int)$e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error(null, [$e->getMessage()], (int) $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::success(null, __('messages.transaction_deleted'));

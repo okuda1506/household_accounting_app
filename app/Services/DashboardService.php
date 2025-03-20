@@ -1,9 +1,8 @@
 <?php
-
 namespace App\Services;
 
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DashboardService
 {
@@ -47,7 +46,7 @@ class DashboardService
             ->sum('amount');
 
         return [
-            'income' => $income,
+            'income'  => $income,
             'expense' => $expense,
             'balance' => $income - $expense,
         ];
@@ -61,7 +60,7 @@ class DashboardService
      */
     public function getMonthlyExpenseTrend(int $userId): array
     {
-        $now = Carbon::now();
+        $now           = Carbon::now();
         $startOfPeriod = $now->subMonths(self::PAST_MONTHS_COUNT)->startOfMonth();
 
         // 月ごとの支出集計

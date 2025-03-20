@@ -1,10 +1,9 @@
 <?php
-
 namespace App\Http\Requests;
 
 use App\Models\Transaction;
-use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\CategoryBelongsToTransactionType;
+use Illuminate\Foundation\Http\FormRequest;
 
 class TransactionRequest extends FormRequest
 {
@@ -13,7 +12,7 @@ class TransactionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return false;
         }
 
@@ -42,17 +41,17 @@ class TransactionRequest extends FormRequest
         $transactionTypeId = $this->input('transaction_type_id');
 
         return [
-            'transaction_date' => 'required|date_format:Y/m/d',
+            'transaction_date'    => 'required|date_format:Y/m/d',
             'transaction_type_id' => 'required|integer|exists:transaction_types,id',
-            'category_id' => [
+            'category_id'         => [
                 'required',
                 'integer',
                 'exists:categories,id',
-                new CategoryBelongsToTransactionType($transactionTypeId)
+                new CategoryBelongsToTransactionType($transactionTypeId),
             ],
-            'amount' => 'required|numeric|min:0',
-            'payment_method_id' => 'required|integer|exists:payment_methods,id',
-            'memo' => 'nullable|string|max:255',
+            'amount'              => 'required|numeric|min:0',
+            'payment_method_id'   => 'required|integer|exists:payment_methods,id',
+            'memo'                => 'nullable|string|max:255',
         ];
     }
 
@@ -60,8 +59,8 @@ class TransactionRequest extends FormRequest
     {
         return [
             'user_id.required' => __('messages.user_id_required'),
-            'user_id.integer' => __('messages.user_id_integer'),
-            'user_id.exists' => __('messages.user_id_exists'),
+            'user_id.integer'  => __('messages.user_id_integer'),
+            'user_id.exists'   => __('messages.user_id_exists'),
 
         ];
     }
