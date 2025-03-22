@@ -18,7 +18,8 @@ export default function FinanceApp() {
             <div className="px-4 py-6 sm:px-0 space-y-6">
             <Card className="bg-black border-gray-800">
                 <CardHeader>
-                <CardTitle className="text-lg font-medium"></CardTitle>
+                <CardTitle className="text-lg font-medium">今月の収支情報</CardTitle>
+                <p className="text-gray-400">2025年 3月</p>
                 </CardHeader>
                 <CardContent>
                 <div className="flex justify-between items-center text-sm">

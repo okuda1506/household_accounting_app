@@ -21,6 +21,16 @@ class DashboardService
     // 過去何ヶ月分まで取得するかの定数
     private const PAST_MONTHS_COUNT = 5;
 
+    private string $startOfMonth;
+    private string $endOfMonth;
+
+    public function __construct()
+    {
+        $now                = Carbon::now();
+        $this->startOfMonth = $now->startOfMonth()->toDateString();
+        $this->endOfMonth   = $now->endOfMonth()->toDateString();
+    }
+
     /**
      * 収支情報を取得
      *
@@ -29,20 +39,20 @@ class DashboardService
      */
     public function getSummary(int $userId): array
     {
-        $now = Carbon::now();
-
-        // 合計収入
+        // 今月の合計収入
         $income = DB::table('transactions')
             ->where('user_id', $userId)
             ->where('transaction_type_id', self::TRANSACTION_TYPE_INCOME)
             ->where('deleted', self::IS_NOT_DELETED)
+            ->whereBetween('transaction_date', [$this->startOfMonth, $this->endOfMonth])
             ->sum('amount');
 
-        // 合計支出
+        // 今月の合計支出
         $expense = DB::table('transactions')
             ->where('user_id', $userId)
             ->where('transaction_type_id', self::TRANSACTION_TYPE_EXPENSE)
             ->where('deleted', self::IS_NOT_DELETED)
+            ->whereBetween('transaction_date', [$this->startOfMonth, $this->endOfMonth])
             ->sum('amount');
 
         return [

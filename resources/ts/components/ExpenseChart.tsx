@@ -22,7 +22,7 @@ export function ExpenseChart() {
     return (
         <Card className="bg-black border-gray-800">
         <CardHeader>
-            <CardTitle className="text-white">月間支出推移</CardTitle>
+                <CardTitle className="text-lg font-medium">月間支出推移</CardTitle>
         </CardHeader>
         <CardContent>
             <ResponsiveContainer width="100%" height={300}>
