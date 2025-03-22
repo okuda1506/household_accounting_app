@@ -20,7 +20,8 @@ class CategoryController extends Controller
         $this->categoryService = $categoryService;
     }
 
-    // todo: 取引タイプ別で出すのでこの辺り修正が必要になりそう
+    // todo: 取引タイプ別でカテゴリを一覧表示
+    // todo: まずどういう感じで一覧画面を表示させるか検討
     /**
      * 有効なカテゴリを取得
      *
