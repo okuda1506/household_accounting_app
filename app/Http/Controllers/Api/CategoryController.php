@@ -20,10 +20,8 @@ class CategoryController extends Controller
         $this->categoryService = $categoryService;
     }
 
-    // todo: 取引タイプ別でカテゴリを一覧表示
-    // todo: まずどういう感じで一覧画面を表示させるか検討
     /**
-     * 有効なカテゴリを取得
+     * 有効なカテゴリ一覧を取得する
      *
      * @return JsonResponse
      */
@@ -31,7 +29,7 @@ class CategoryController extends Controller
     {
         try {
             $categories = CategoryResource::collection(
-                Category::where('deleted', false)->where('user_id', auth()->id())->orderBy('sort_no')->get()
+                $this->categoryService->getAllCategories(auth()->id())
             );
         } catch (\Exception $e) {
             return ApiResponse::error(null, [__('messages.category_get_failed')], Response::HTTP_INTERNAL_SERVER_ERROR);

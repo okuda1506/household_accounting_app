@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Models\Category;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 /**
  * カテゴリ関連のビジネスロジックを管理するサービスクラス
  *
+ * - getCategory(): 取引タイプ別のカテゴリ一覧を取得
  * - createCategory(): 新しいカテゴリを作成
  * - updateCategory(): 既存のカテゴリを更新
  * - deleteCategory(): カテゴリを論理削除
@@ -20,6 +22,26 @@ class CategoryService
 {
     // 削除フラグOFF
     const IS_NOT_DELETED = 0;
+
+    /**
+     * 取引タイプ別のカテゴリ一覧を取得する
+     *
+     * @param array $data カテゴリデータ
+     * @param int $userId ユーザーID
+     *
+     * @return Collection
+     */
+    public function getAllCategories(int $userId): Collection
+    {
+        try {
+            return Category::where('deleted', false)
+                ->where('user_id', $userId)
+                ->orderBy('sort_no')
+                ->get();
+        } catch (\Exception $e) {
+            throw new \Exception(__('messages.category_get_failed'), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 
     /**
      * カテゴリの新規登録
