@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Models\Transaction;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +19,26 @@ class TransactionService
 {
     // 削除フラグOFF
     const IS_NOT_DELETED = 0;
+
+    /**
+     * 取引一覧を取得する
+     *
+     * @param array $data カテゴリデータ
+     * @param int $userId ユーザーID
+     *
+     * @return Collection
+     */
+    public function getTransactions(int $userId): Collection
+    {
+        try {
+            return Transaction::where('deleted', false)
+                ->where('user_id', $userId)
+                ->orderBy('transaction_date')
+                ->get();
+        } catch (\Exception $e) {
+            throw new \Exception(__('messages.category_get_failed'), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 
     /**
      * 取引データの新規登録

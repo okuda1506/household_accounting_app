@@ -20,26 +20,22 @@ class TransactionController extends Controller
     }
 
     /**
-     * 有効な取引の取得
+     * 取引一覧
      *
      * @return JsonResponse
      */
     public function index(): JsonResponse
     {
+        // todo: serviceに移行
         try {
             $transactions = TransactionResource::collection(
-                Transaction::where('deleted', false)->get()
+                $this->transactionService->getTransactions(auth()->id())
             );
         } catch (\Exception $e) {
-            $errorMessages   = [];
-            $errorMessages[] = __('messages.transaction_get_failed');
-
-            return ApiResponse::error(null, $errorMessages, Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error(null, [__('messages.transaction_get_failed')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $message = __('messages.transaction_list_fetched');
-
-        return ApiResponse::success($transactions, $message);
+        return ApiResponse::success($transactions, __('messages.transaction_list_fetched'));
     }
 
     /**
