@@ -1,16 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { ExpenseChart } from "../components/ExpenseChart"
 import { NewTransactionModal } from "../components/NewTransactionModal"
-import { Navbar } from "../components/Navbar"
 
-export default function Dashboard() {
+export default function Categories() {
     return (
         <div className="min-h-screen bg-black text-white">
         <nav className="border-b border-gray-800">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16 items-center">
-                <span className="text-xl font-semibold">Summary</span>
-                <Navbar />
+                <span className="text-xl font-semibold">Categories</span>
                 <NewTransactionModal />
             </div>
             </div>

@@ -1,4 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
+import Categories from "./pages/Categories";
 
 function App() {
     return (
@@ -10,8 +12,8 @@ function App() {
             {/* <Navbar /> */}
             <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-800">
                 <Routes>
-                {/* <Route path="/" element={<Dashboard />} /> */}
-                {/* <Route path="/settings" element={<Settings />} /> */}
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/categories" element={<Categories />} />
                 </Routes>
             </main>
             </div>
