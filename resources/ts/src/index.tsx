@@ -1,4 +1,4 @@
 import { createRoot } from 'react-dom/client';
-import FinanceApp from '../app/page';
+import Dashboard from './pages/Dashboard';
 
-createRoot(document.getElementById('app')as HTMLElement).render(<FinanceApp />);
+createRoot(document.getElementById('app')as HTMLElement).render(<Dashboard />);

@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { ExpenseChart } from "../components/ExpenseChart"
 import { NewTransactionModal } from "../components/NewTransactionModal"
 
-export default function FinanceApp() {
+export default function Dashboard() {
     return (
         <div className="min-h-screen bg-black text-white">
         <nav className="border-b border-gray-800">
