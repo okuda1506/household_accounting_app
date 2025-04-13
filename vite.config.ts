@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite';
-import laravel from 'laravel-vite-plugin';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from "vite";
+import laravel from "laravel-vite-plugin";
+import react from "@vitejs/plugin-react";
 import path from "path";
 
 export default defineConfig({
@@ -8,9 +8,9 @@ export default defineConfig({
         react(),
         laravel({
             input: [
-                'resources/css/app.css',
-                'resources/scss/app.scss',
-                'resources/ts/index.tsx'
+                "resources/css/app.css",
+                "resources/scss/app.scss",
+                "resources/ts/index.tsx",
             ],
             refresh: true,
         }),
@@ -19,8 +19,6 @@ export default defineConfig({
         // alias: {
         //   "@": path.resolve(__dirname, "resources/ts"),
         // },
-        alias: [
-            { find: '@/', replacement: `${__dirname}/resources/ts/` },
-          ],
-      },
+        alias: [{ find: "@/", replacement: `${__dirname}/resources/ts/` }],
+    },
 });
