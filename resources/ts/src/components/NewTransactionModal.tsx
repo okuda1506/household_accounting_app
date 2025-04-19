@@ -35,6 +35,7 @@ export function NewTransactionModal() {
                 <Button
                     variant="outline"
                     className="text-white border-gray-700 hover:bg-gray-800"
+                    size="circle"
                 >
                     ＋
                 </Button>

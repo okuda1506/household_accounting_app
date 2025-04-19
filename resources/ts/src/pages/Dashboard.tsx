@@ -21,7 +21,7 @@ export default function Dashboard() {
             </nav>
             <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 sm:px-0 space-y-6">
-                    <div className="flex justify-end">
+                    <div className="fixed bottom-4 right-4">
                         <NewTransactionModal />
                     </div>
                     <Card className="bg-black border-gray-800">
