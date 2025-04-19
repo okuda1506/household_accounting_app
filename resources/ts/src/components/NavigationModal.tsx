@@ -48,6 +48,13 @@ export function NavigationModal() {
                     >
                         <span>カテゴリ一覧</span>
                     </Link>
+                    <Link
+                        to="/transactions"
+                        className="flex items-center px-4 py-3"
+                        onClick={closeModal}
+                    >
+                        <span>取引一覧</span>
+                    </Link>
                 </div>
             </DialogContent>
         </Dialog>

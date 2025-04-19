@@ -36,7 +36,7 @@ export function NewTransactionModal() {
                     variant="outline"
                     className="text-white border-gray-700 hover:bg-gray-800"
                 >
-                    新規
+                    ＋
                 </Button>
             </DialogTrigger>
             <DialogContent className="bg-gray-900 text-white">

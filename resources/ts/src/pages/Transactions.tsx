@@ -15,7 +15,7 @@ import { NewCategoryModal } from "../components/NewCategoryModal";
 import { useState } from "react";
 import { NavigationModal } from "../components/NavigationModal";
 
-export default function Categories() {
+export default function Transactions() {
     const [type, setType] = useState<"income" | "expense">("income");
 
     // 仮のカテゴリデータ（後でAPI連携も可能）
@@ -30,7 +30,7 @@ export default function Categories() {
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
                         <span className="text-xl font-semibold">
-                            Categories
+                            Transactions
                         </span>
                         <NavigationModal />
                     </div>
@@ -46,7 +46,7 @@ export default function Categories() {
                         <CardHeader>
                             <div className="flex items-center justify-between w-full">
                                 <CardTitle className="text-lg font-medium">
-                                    カテゴリ一覧
+                                    取引一覧
                                 </CardTitle>
                                 <Select
                                     defaultValue="income"

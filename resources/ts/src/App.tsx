@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Categories from "./pages/Categories";
+import Transactions from "./pages/Transactions";
 
 function App() {
     return (
@@ -10,6 +11,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/categories" element={<Categories />} />
+                        <Route path="/transactions" element={<Transactions />} />
                     </Routes>
                 </main>
             </div>
