@@ -11,7 +11,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../components/ui/select";
-import { NewCategoryModal } from "../components/NewCategoryModal";
+import { NewTransactionModal } from "../components/NewTransactionModal";
 import { useState } from "react";
 import { NavigationModal } from "../components/NavigationModal";
 
@@ -34,7 +34,7 @@ export default function Transactions() {
                 <div className="px-4 sm:px-0 space-y-6">
                     {/* <div className="flex justify-end"> */}
                     <div className="fixed bottom-6 right-6 z-50">
-                        <NewCategoryModal />
+                        <NewTransactionModal />
                     </div>
                     <Card className="bg-black border-gray-800">
                         <CardHeader>

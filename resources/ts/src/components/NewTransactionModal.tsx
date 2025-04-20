@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "../components/ui/button";
+import { DatePicker } from "../components/ui/date-picker";
 import {
     Dialog,
     DialogContent,
@@ -21,6 +22,8 @@ import {
 
 export function NewTransactionModal() {
     const [open, setOpen] = useState(false);
+
+    const [transactionDate, setTransactionDate] = useState<Date | undefined>(new Date());
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
@@ -45,6 +48,13 @@ export function NewTransactionModal() {
                     <DialogTitle>新規取引</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                        <Label htmlFor="transaction-date">取引日</Label>
+                        <DatePicker
+                            date={transactionDate}
+                            setDate={setTransactionDate}
+                        />
+                    </div>
                     <div>
                         <Label htmlFor="description">説明</Label>
                         <Input
