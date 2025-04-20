@@ -32,7 +32,8 @@ function Calendar({
                 nav_button_previous: "absolute left-1",
                 nav_button_next: "absolute right-1",
                 table: "w-full border-collapse space-y-1",
-                head_row: "flex",
+                // todo: カレンダー曜日の表示崩れの件おそらくこの辺り(聞かなかったらcssで直接修正...？)
+                head_row: "",
                 head_cell:
                     "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
                 row: "flex w-full mt-2",

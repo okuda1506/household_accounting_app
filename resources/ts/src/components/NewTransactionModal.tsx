@@ -55,21 +55,7 @@ export function NewTransactionModal() {
                             setDate={setTransactionDate}
                         />
                     </div>
-                    <div>
-                        <Label htmlFor="description">説明</Label>
-                        <Input
-                            id="description"
-                            className="bg-gray-800 border-gray-700"
-                        />
-                    </div>
-                    <div>
-                        <Label htmlFor="amount">金額</Label>
-                        <Input
-                            id="amount"
-                            type="number"
-                            className="bg-gray-800 border-gray-700"
-                        />
-                    </div>
+                    {/* 取引タイプ */}
                     <div>
                         <Label htmlFor="type">取引タイプ</Label>
                         <Select defaultValue="income">
@@ -82,6 +68,7 @@ export function NewTransactionModal() {
                             </SelectContent>
                         </Select>
                     </div>
+                    {/* カテゴリ */}
                     <div>
                         <Label htmlFor="type">カテゴリ</Label>
                         <Select defaultValue="給与">
@@ -94,6 +81,39 @@ export function NewTransactionModal() {
                                 <SelectItem value="その他">その他</SelectItem>
                             </SelectContent>
                         </Select>
+                    </div>
+                    {/* 金額 */}
+                    <div>
+                        <Label htmlFor="amount">金額</Label>
+                        <Input
+                            id="amount"
+                            type="number"
+                            className="bg-gray-800 border-gray-700"
+                        />
+                    </div>
+                    {/* 支払方法 */}
+                    {/* todo: 取引タイプが支出の場合この項目は要るのか検討が必要 */}
+                    <div>
+                        <Label htmlFor="type">支払方法</Label>
+                        <Select defaultValue="現金">
+                            <SelectTrigger className="bg-gray-800 border-gray-700">
+                                <SelectValue placeholder="選択してください" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-gray-800">
+                                <SelectItem value="現金">現金</SelectItem>
+                                <SelectItem value="クレジットカード">クレジットカード</SelectItem>
+                                <SelectItem value="銀行振込">銀行振込</SelectItem>
+                                <SelectItem value="電子マネー">電子マネー</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    {/* メモ */}
+                    <div>
+                        <Label htmlFor="description">メモ</Label>
+                        <Input
+                            id="description"
+                            className="bg-gray-800 border-gray-700"
+                        />
                     </div>
                     <Button type="submit" className="w-full">
                         追加
