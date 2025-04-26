@@ -19,6 +19,7 @@ export default function Categories() {
     const [type, setType] = useState<"income" | "expense">("income");
 
     // 仮のカテゴリデータ（後でAPI連携も可能）
+    // todo: 型定義するよう修正
     const categories = {
         income: ["給与", "副業", "配当金"],
         expense: ["食費", "家賃", "光熱費"],

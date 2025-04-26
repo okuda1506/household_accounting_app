@@ -66,6 +66,7 @@ export default function Dashboard() {
                         <CardContent>
                             <ul className="space-y-4">
                                 {[
+                                // todo: 型定義するよう修正
                                     {
                                         date: "6/15",
                                         description: "スーパー",
