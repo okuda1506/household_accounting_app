@@ -1,16 +1,3 @@
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "../components/ui/card";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "../components/ui/select";
 import { NewTransactionModal } from "../components/NewTransactionModal";
 import { useState } from "react";
 import { NavigationModal } from "../components/NavigationModal";

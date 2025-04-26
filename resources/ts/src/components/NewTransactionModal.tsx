@@ -37,7 +37,7 @@ export function NewTransactionModal() {
             <DialogTrigger asChild>
                 <Button
                     variant="outline"
-                    className="text-white border-gray-700 hover:bg-gray-800"
+                    className="bg-transparent text-white border-gray-700 hover:bg-gray-800"
                     size="circle"
                 >
                     ＋
@@ -59,10 +59,10 @@ export function NewTransactionModal() {
                     <div>
                         <Label htmlFor="type">取引タイプ</Label>
                         <Select defaultValue="income">
-                            <SelectTrigger className="bg-gray-800 border-gray-700">
+                            <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
                                 <SelectValue placeholder="選択してください" />
                             </SelectTrigger>
-                            <SelectContent className="bg-gray-800">
+                            <SelectContent className="bg-gray-800 text-white">
                                 <SelectItem value="income">収入</SelectItem>
                                 <SelectItem value="expense">支出</SelectItem>
                             </SelectContent>
@@ -72,10 +72,10 @@ export function NewTransactionModal() {
                     <div>
                         <Label htmlFor="type">カテゴリ</Label>
                         <Select defaultValue="給与">
-                            <SelectTrigger className="bg-gray-800 border-gray-700">
+                            <SelectTrigger className="bg-gray-800 border-gray-700text-white">
                                 <SelectValue placeholder="選択してください" />
                             </SelectTrigger>
-                            <SelectContent className="bg-gray-800">
+                            <SelectContent className="bg-gray-800 text-white">
                                 <SelectItem value="給与">給与</SelectItem>
                                 <SelectItem value="副収入">副収入</SelectItem>
                                 <SelectItem value="その他">その他</SelectItem>
@@ -96,10 +96,10 @@ export function NewTransactionModal() {
                     <div>
                         <Label htmlFor="type">支払方法</Label>
                         <Select defaultValue="現金">
-                            <SelectTrigger className="bg-gray-800 border-gray-700">
+                            <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
                                 <SelectValue placeholder="選択してください" />
                             </SelectTrigger>
-                            <SelectContent className="bg-gray-800">
+                            <SelectContent className="bg-gray-800 text-white">
                                 <SelectItem value="現金">現金</SelectItem>
                                 <SelectItem value="クレジットカード">クレジットカード</SelectItem>
                                 <SelectItem value="銀行振込">銀行振込</SelectItem>

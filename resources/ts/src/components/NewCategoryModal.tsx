@@ -48,10 +48,10 @@ export function NewCategoryModal() {
                     <div>
                         <Label htmlFor="type">取引タイプ</Label>
                         <Select defaultValue="income">
-                            <SelectTrigger className="bg-gray-800 border-gray-700">
+                            <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
                                 <SelectValue placeholder="選択してください" />
                             </SelectTrigger>
-                            <SelectContent className="bg-gray-800">
+                            <SelectContent className="bg-gray-800 text-white">
                                 <SelectItem value="income">収入</SelectItem>
                                 <SelectItem value="expense">支出</SelectItem>
                             </SelectContent>
