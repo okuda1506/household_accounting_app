@@ -9,13 +9,14 @@ import {
 } from "./ui/select";
 
 type Transaction = {
-    date: string; // "6/15" とか
-    description: string; // "スーパー" とか
-    amount: number; // 金額
-    year: number; // 年（例：2024）
-    month: number; // 月（例：6）
+    date: string;
+    description: string;
+    amount: number;
+    year: number;
+    month: number;
 };
 
+// todo: APIで取ってくる
 const transactions: Transaction[] = [
     {
         year: 2025,
