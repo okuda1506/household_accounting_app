@@ -18,7 +18,6 @@ type Transaction = {
 
 const transactions: Transaction[] = [
     {
-
         year: 2025,
         month: 4,
         date: "4月26日",
@@ -26,7 +25,6 @@ const transactions: Transaction[] = [
         amount: -1300,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月26日",
@@ -34,7 +32,6 @@ const transactions: Transaction[] = [
         amount: -178,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月26日",
@@ -42,7 +39,6 @@ const transactions: Transaction[] = [
         amount: -178,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月25日",
@@ -50,7 +46,6 @@ const transactions: Transaction[] = [
         amount: -1300,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月25日",
@@ -58,7 +53,6 @@ const transactions: Transaction[] = [
         amount: +500000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月24日",
@@ -66,7 +60,6 @@ const transactions: Transaction[] = [
         amount: -2000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月23日",
@@ -74,7 +67,6 @@ const transactions: Transaction[] = [
         amount: -5000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月23日",
@@ -82,7 +74,6 @@ const transactions: Transaction[] = [
         amount: -5000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月23日",
@@ -90,7 +81,6 @@ const transactions: Transaction[] = [
         amount: -5000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月23日",
@@ -98,7 +88,6 @@ const transactions: Transaction[] = [
         amount: -5000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月23日",
@@ -106,7 +95,6 @@ const transactions: Transaction[] = [
         amount: -5000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月23日",
@@ -114,7 +102,6 @@ const transactions: Transaction[] = [
         amount: -5000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月23日",
@@ -122,7 +109,6 @@ const transactions: Transaction[] = [
         amount: -5000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月23日",
@@ -130,7 +116,6 @@ const transactions: Transaction[] = [
         amount: -5000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月23日",
@@ -138,7 +123,6 @@ const transactions: Transaction[] = [
         amount: -5000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月23日",
@@ -146,7 +130,6 @@ const transactions: Transaction[] = [
         amount: -5000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月23日",
@@ -154,7 +137,6 @@ const transactions: Transaction[] = [
         amount: -5000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月23日",
@@ -162,7 +144,6 @@ const transactions: Transaction[] = [
         amount: -5000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月23日",
@@ -170,7 +151,6 @@ const transactions: Transaction[] = [
         amount: -5000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月23日",
@@ -178,7 +158,6 @@ const transactions: Transaction[] = [
         amount: -5000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月23日",
@@ -186,7 +165,6 @@ const transactions: Transaction[] = [
         amount: -5000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月23日",
@@ -194,7 +172,6 @@ const transactions: Transaction[] = [
         amount: -5000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4/23",
@@ -202,7 +179,6 @@ const transactions: Transaction[] = [
         amount: -5000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月23日",
@@ -210,7 +186,6 @@ const transactions: Transaction[] = [
         amount: -5000,
     },
     {
-
         year: 2025,
         month: 4,
         date: "4月1日",
@@ -279,7 +254,6 @@ export function TransactionList() {
                                 ))}
                             </SelectContent>
                         </Select>
-
                         <Select
                             onValueChange={(value) =>
                                 setSelectedMonth(Number(value))
@@ -291,7 +265,10 @@ export function TransactionList() {
                             </SelectTrigger>
                             <SelectContent className="bg-black text-white">
                                 {[...Array(12)].map((_, i) => (
-                                    <SelectItem key={i + 1} value={String(i + 1)}>
+                                    <SelectItem
+                                        key={i + 1}
+                                        value={String(i + 1)}
+                                    >
                                         {i + 1}月
                                     </SelectItem>
                                 ))}
@@ -302,6 +279,30 @@ export function TransactionList() {
             </CardHeader>
 
             <CardContent>
+                <div className="flex justify-between items-center pb-10 p-0 rounded-lg">
+                    <p className="text-white text-lg">
+                        収入：
+                        <span className="text-green-400 font-medium ml-2">
+                            ¥
+                            {filteredTransactions
+                                .filter((t) => t.amount > 0)
+                                .reduce((sum, t) => sum + t.amount, 0)
+                                .toLocaleString()}
+                        </span>
+                    </p>
+                    <p className="text-white text-lg">
+                        支出：
+                        <span className="text-red-400 font-medium ml-2">
+                            ¥
+                            {Math.abs(
+                                filteredTransactions
+                                    .filter((t) => t.amount < 0)
+                                    .reduce((sum, t) => sum + t.amount, 0)
+                            ).toLocaleString()}
+                        </span>
+                    </p>
+                </div>
+
                 {filteredTransactions.length > 0 ? (
                     <ul className="space-y-4">
                         {filteredTransactions.map((transaction, index) => (
