@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-    <title>環境構築</title>
+    <title>開発環境</title>
     @viteReactRefresh
     @vite([
         'resources/css/app.css',

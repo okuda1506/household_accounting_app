@@ -1,7 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
-
-axios.defaults.withCredentials = true;
+import api from "../../lib/axios";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -13,21 +11,20 @@ const Login = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setErrors([]);
-        try {
-            console.log("デバッグstart");
-            await axios.get("http://localhost:8000/sanctum/csrf-cookie");  // todo: ここでエラー
-            console.log("デバッグend");
 
-            const response = await axios.post("http://localhost:8000/login", {
+        try {
+            const response = await api.post("/login", {  // todo: 接続できないエラー
                 email,
                 password,
                 remember,
             });
 
-            setStatus("ログインに成功しました");
-            console.log("ログイン成功", response.data);
+            const accessToken = response.data.access_token;
+            localStorage.setItem("access_token", accessToken);
 
-            // 遷移や認証状態の変更などをここで
+            setStatus("ログインに成功しました");
+
+            // ログイン後の処理（必要ならリダイレクト等）
         } catch (error: any) {
             if (error.response?.data?.errors) {
                 const allErrors = Object.values(
