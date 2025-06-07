@@ -7,8 +7,25 @@ import {
 import { ExpenseChart } from "../components/ExpenseChart";
 import { NewTransactionModal } from "../components/NewTransactionModal";
 import { NavigationModal } from "../components/NavigationModal";
+import { useRef, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function Dashboard() {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const hasShown = useRef(false);
+    const message = location.state?.message;
+
+    useEffect(() => {
+        if (message && !hasShown.current) {
+            toast.success(message);
+            hasShown.current = true;
+
+            navigate(location.pathname, { replace: true }); // state を消す
+        }
+    }, [message, navigate, location.pathname]);
+
     return (
         <div className="min-h-screen bg-black text-white">
             <nav className="border-b border-gray-800">

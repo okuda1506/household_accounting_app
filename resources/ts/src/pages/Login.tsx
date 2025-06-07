@@ -7,7 +7,6 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [remember, setRemember] = useState(false);
     const [errors, setErrors] = useState<string[]>([]);
-    const [status, setStatus] = useState<string | null>(null);
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -24,9 +23,9 @@ const Login = () => {
             const accessToken = response.data.access_token;
             localStorage.setItem("access_token", accessToken);
 
-            setStatus("ログインに成功しました");
-
-            navigate("/");
+            navigate("/", {
+                state: { message: "ログインしました" },
+            });
         } catch (error: any) {
             if (error.response?.data?.errors) {
                 const allErrors = Object.values(
@@ -34,7 +33,7 @@ const Login = () => {
                 ).flat();
                 setErrors(allErrors as string[]);
             } else {
-                setErrors(["ログインに失敗しました。"]);
+                setErrors(["ログインに失敗しました"]);
             }
         }
     };
