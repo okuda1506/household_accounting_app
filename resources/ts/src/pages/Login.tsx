@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../lib/axios";
 
 const Login = () => {
@@ -7,16 +8,17 @@ const Login = () => {
     const [remember, setRemember] = useState(false);
     const [errors, setErrors] = useState<string[]>([]);
     const [status, setStatus] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setErrors([]);
 
         try {
-            const response = await api.post("/login", {  // todo: 接続できないエラー
+            const response = await api.post("/login", {
                 email,
                 password,
-                remember,
+                remember, // todo: 多分ここ機能してない
             });
 
             const accessToken = response.data.access_token;
@@ -24,7 +26,7 @@ const Login = () => {
 
             setStatus("ログインに成功しました");
 
-            // ログイン後の処理（必要ならリダイレクト等）
+            navigate("/");
         } catch (error: any) {
             if (error.response?.data?.errors) {
                 const allErrors = Object.values(
