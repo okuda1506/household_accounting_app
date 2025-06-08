@@ -22,7 +22,7 @@ export default function Dashboard() {
             toast.success(message);
             hasShown.current = true;
 
-            navigate(location.pathname, { replace: true }); // state を消す
+            navigate(location.pathname, { replace: true });
         }
     }, [message, navigate, location.pathname]);
 

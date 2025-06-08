@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import api from "../../lib/axios";
 
 const Login = () => {
@@ -32,23 +33,17 @@ const Login = () => {
                     error.response.data.errors
                 ).flat();
                 setErrors(allErrors as string[]);
+                console.log(errors);
             } else {
-                setErrors(["ログインに失敗しました"]);
+                const fallbackMessage = "ログインに失敗しました";
+                setErrors([fallbackMessage]);
+                toast.error(fallbackMessage);
             }
         }
     };
 
     return (
         <div className="max-w-md mx-auto mt-10 p-4">
-            {status && <p className="mb-4 text-green-600">{status}</p>}
-            {errors.length > 0 && (
-                <ul className="mb-4 text-red-600 list-disc list-inside">
-                    {errors.map((err, idx) => (
-                        <li key={idx}>{err}</li>
-                    ))}
-                </ul>
-            )}
-
             <form onSubmit={handleSubmit}>
                 {/* Email */}
                 <div className="mb-4">
