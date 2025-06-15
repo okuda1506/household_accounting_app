@@ -3,8 +3,9 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Categories from "./pages/Categories";
 import Transactions from "./pages/Transactions";
+import { PrivateRoute } from "./components/PrivateRoute";
 import { ToastContainer } from "react-toastify";
-import { Slide } from 'react-toastify';
+import { Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
@@ -22,11 +23,29 @@ function App() {
                     />
                     <Routes>
                         <Route path="/login" element={<Login />} />
-                        <Route path="/" element={<Dashboard />} />
-                        <Route path="/categories" element={<Categories />} />
+                        <Route
+                            path="/"
+                            element={
+                                <PrivateRoute>
+                                    <Dashboard />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/categories"
+                            element={
+                                <PrivateRoute>
+                                    <Categories />
+                                </PrivateRoute>
+                            }
+                        />
                         <Route
                             path="/transactions"
-                            element={<Transactions />}
+                            element={
+                                <PrivateRoute>
+                                    <Transactions />
+                                </PrivateRoute>
+                            }
                         />
                     </Routes>
                 </main>

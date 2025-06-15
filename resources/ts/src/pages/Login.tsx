@@ -2,6 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from "../components/ui/card";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -21,12 +27,10 @@ const Login = () => {
                 remember, // todo: 多分ここ機能してない
             });
 
-            const accessToken = response.data.access_token;
+            const accessToken = response.data.token;
             localStorage.setItem("access_token", accessToken);
-
-            navigate("/", {
-                state: { message: "ログインしました" },
-            });
+            toast.success("ログインしました");
+            navigate("/");
         } catch (error: any) {
             if (error.response?.data?.errors) {
                 const allErrors = Object.values(
@@ -43,79 +47,88 @@ const Login = () => {
     };
 
     return (
-        <div className="max-w-md mx-auto mt-10 p-4">
-            <form onSubmit={handleSubmit}>
-                {/* Email */}
-                <div className="mb-4">
-                    <label
-                        htmlFor="email"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Email
-                    </label>
-                    <input
-                        id="email"
-                        type="email"
-                        autoComplete="username"
-                        required
-                        className="mt-1 block w-full border-gray-300 rounded shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                </div>
+        <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
+            <Card className="relative bg-black border border-gray-800 w-full max-w-md">
+                <CardHeader>
+                    <CardTitle className="text-center text-lg font-semibold">
+                        ログイン
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        {/* Email */}
+                        <div>
+                            <label
+                                htmlFor="email"
+                                className="block text-sm text-white mb-1"
+                            >
+                                メールアドレス
+                            </label>
+                            <input
+                                id="email"
+                                type="email"
+                                autoComplete="username"
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="w-full px-3 py-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                        </div>
 
-                {/* Password */}
-                <div className="mb-4">
-                    <label
-                        htmlFor="password"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Password
-                    </label>
-                    <input
-                        id="password"
-                        type="password"
-                        autoComplete="current-password"
-                        required
-                        className="mt-1 block w-full border-gray-300 rounded shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </div>
+                        {/* Password */}
+                        <div>
+                            <label
+                                htmlFor="password"
+                                className="block text-sm text-white mb-1"
+                            >
+                                パスワード
+                            </label>
+                            <input
+                                id="password"
+                                type="password"
+                                autoComplete="current-password"
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full px-3 py-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                        </div>
 
-                {/* Remember Me */}
-                <div className="flex items-center mb-4">
-                    <input
-                        id="remember_me"
-                        type="checkbox"
-                        checked={remember}
-                        onChange={(e) => setRemember(e.target.checked)}
-                        className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
-                    />
-                    <label
-                        htmlFor="remember_me"
-                        className="ml-2 block text-sm text-gray-900"
-                    >
-                        Remember me
-                    </label>
-                </div>
+                        {/* Remember Me */}
+                        <div className="flex items-center">
+                            <input
+                                id="remember_me"
+                                type="checkbox"
+                                checked={remember}
+                                onChange={(e) => setRemember(e.target.checked)}
+                                className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                            />
+                            <label
+                                htmlFor="remember_me"
+                                className="ml-2 text-sm text-white"
+                            >
+                                ログイン状態を保持する
+                            </label>
+                        </div>
 
-                {/* Submit and Forgot Password */}
-                <div className="flex items-center justify-between">
-                    <a
-                        href="/forgot-password"
-                        className="text-sm text-gray-600 hover:text-gray-900 underline"
-                    >
-                        Forgot your password?
-                    </a>
-                    <button
-                        type="submit"
-                        className="ml-3 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        Log in
-                    </button>
-                </div>
-            </form>
+                        {/* Submit */}
+                        <div className="flex items-center justify-between">
+                            <a
+                                href="/forgot-password"
+                                className="text-sm text-gray-400 hover:text-gray-200 underline"
+                            >
+                                パスワードをお忘れの場合
+                            </a>
+                            <button
+                                type="submit"
+                                className="ml-3 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            >
+                                ログイン
+                            </button>
+                        </div>
+                    </form>
+                </CardContent>
+            </Card>
         </div>
     );
 };

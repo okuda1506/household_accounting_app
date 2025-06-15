@@ -17,14 +17,8 @@ export default function Dashboard() {
     const hasShown = useRef(false);
     const message = location.state?.message;
 
-    useEffect(() => {
-        if (message && !hasShown.current) {
-            toast.success(message);
-            hasShown.current = true;
-
-            navigate(location.pathname, { replace: true });
-        }
-    }, [message, navigate, location.pathname]);
+    // todo: 認証処理
+    
 
     return (
         <div className="min-h-screen bg-black text-white">
@@ -83,7 +77,7 @@ export default function Dashboard() {
                         <CardContent>
                             <ul className="space-y-4">
                                 {[
-                                // todo: 型定義するよう修正
+                                    // todo: 型定義するよう修正
                                     {
                                         date: "6/15",
                                         description: "スーパー",
