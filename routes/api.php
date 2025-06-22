@@ -23,6 +23,11 @@ Route::post('/login', function (Request $request) {
     ]);
 });
 
+// access_token用
+Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
+    return response()->json($request->user());
+});
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');

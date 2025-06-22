@@ -7,19 +7,8 @@ import {
 import { ExpenseChart } from "../components/ExpenseChart";
 import { NewTransactionModal } from "../components/NewTransactionModal";
 import { NavigationModal } from "../components/NavigationModal";
-import { useRef, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 
 export default function Dashboard() {
-    const location = useLocation();
-    const navigate = useNavigate();
-    const hasShown = useRef(false);
-    const message = location.state?.message;
-
-    // todo: 認証処理
-    
-
     return (
         <div className="min-h-screen bg-black text-white">
             <nav className="border-b border-gray-800">
