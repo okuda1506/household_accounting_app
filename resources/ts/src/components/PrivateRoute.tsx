@@ -31,11 +31,11 @@ export const PrivateRoute = ({ children }: { children: JSX.Element }) => {
     }, []);
 
     if (!authChecked) {
-        return null;
+        return null; // ローディングの挙動
     }
 
     if (!isAuthenticated) {
-        return null;
+        return navigate("/login", { replace: true });
     }
 
     return children;
