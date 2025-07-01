@@ -19,7 +19,7 @@ class DashboardService
     private const RECENT_TRANSACTIONS_LIMIT = 5;
 
     // 過去何ヶ月分まで取得するかの定数
-    private const PAST_MONTHS_COUNT = 5;
+    private const PAST_MONTHS_COUNT = 6;
 
     private string $startOfMonth;
     private string $endOfMonth;
@@ -44,7 +44,8 @@ class DashboardService
             ->where('user_id', $userId)
             ->where('transaction_type_id', self::TRANSACTION_TYPE_INCOME)
             ->where('deleted', self::IS_NOT_DELETED)
-            ->whereBetween('transaction_date', [$this->startOfMonth, $this->endOfMonth])
+                                                                         // ->whereBetween('transaction_date', [$this->startOfMonth, $this->endOfMonth])
+            ->whereBetween('transaction_date', ['2025-03-01', '2025-03-30']) // todo: テスト実装（後で上記に戻す）
             ->sum('amount');
 
         // 今月の合計支出
@@ -52,7 +53,8 @@ class DashboardService
             ->where('user_id', $userId)
             ->where('transaction_type_id', self::TRANSACTION_TYPE_EXPENSE)
             ->where('deleted', self::IS_NOT_DELETED)
-            ->whereBetween('transaction_date', [$this->startOfMonth, $this->endOfMonth])
+                                                                         // ->whereBetween('transaction_date', [$this->startOfMonth, $this->endOfMonth])
+            ->whereBetween('transaction_date', ['2025-03-01', '2025-03-30']) // todo: テスト実装（後で上記に戻す）
             ->sum('amount');
 
         return [
@@ -70,20 +72,41 @@ class DashboardService
      */
     public function getMonthlyExpenseTrend(int $userId): array
     {
-        $now           = Carbon::now();
-        $startOfPeriod = $now->subMonths(self::PAST_MONTHS_COUNT)->startOfMonth();
+        $now    = Carbon::now()->startOfMonth();
+        $start  = $now->copy()->subMonths(self::PAST_MONTHS_COUNT - 1);
+        $months = collect();
 
-        // 月ごとの支出集計
+        // 月一覧（Carbon）で生成
+        for ($date = $start->copy(); $date->lte($now); $date->addMonth()) {
+            $months->push([
+                'year'  => $date->year,
+                'month' => $date->month,
+            ]);
+        }
+
+        // DBから該当月の支出合計を取得
         $expenses = DB::table('transactions')
             ->selectRaw('YEAR(transaction_date) as year, MONTH(transaction_date) as month, SUM(amount) as total_expense')
             ->where('user_id', $userId)
             ->where('transaction_type_id', self::TRANSACTION_TYPE_EXPENSE)
-            ->where('transaction_date', '>=', $startOfPeriod->toDateString())
+            ->whereBetween('transaction_date', [$start->toDateString(), $now->copy()->endOfMonth()->toDateString()])
             ->groupByRaw('YEAR(transaction_date), MONTH(transaction_date)')
-            ->orderByRaw('YEAR(transaction_date) DESC, MONTH(transaction_date) DESC')
-            ->get();
+            ->get()
+            ->keyBy(function ($item) {
+                return $item->year . '-' . str_pad($item->month, 2, '0', STR_PAD_LEFT);
+            });
 
-        return $expenses->toArray();
+        // 月一覧に DB 結果をマージ（なければ total_expense = 0）
+        $result = $months->map(function ($month) use ($expenses) {
+            $key = $month['year'] . '-' . str_pad($month['month'], 2, '0', STR_PAD_LEFT);
+            return [
+                'year'          => $month['year'],
+                'month'         => $month['month'],
+                'total_expense' => isset($expenses[$key]) ? (float) $expenses[$key]->total_expense : 0,
+            ];
+        });
+
+        return $result->toArray();
     }
 
     /**
