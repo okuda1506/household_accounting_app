@@ -55,14 +55,20 @@ export function ExpenseChart({ trend }: ExpenseChartProps) {
                             fontSize={12}
                             tickLine={false}
                             axisLine={false}
-                            tickFormatter={(value) => `¥${value}`}
+                            tickFormatter={(value) =>
+                                `¥${Number(value).toLocaleString()}`
+                            }
                         />
                         <Tooltip
                             content={({ active, payload }) => {
                                 if (active && payload && payload.length) {
                                     return (
                                         <div className="bg-black border border-gray-800 p-2 rounded-md">
-                                            <p className="text-white">{`¥${payload[0].value}`}</p>
+                                            <p className="text-white">
+                                                {`¥${Number(
+                                                    payload[0].value
+                                                ).toLocaleString()}`}
+                                            </p>
                                         </div>
                                     );
                                 }
