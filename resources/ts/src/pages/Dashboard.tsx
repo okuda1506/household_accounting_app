@@ -10,16 +10,23 @@ import { NewTransactionModal } from "../components/NewTransactionModal";
 import { NavigationModal } from "../components/NavigationModal";
 import api from "../../lib/axios";
 
+import type {
+    MonthlySummary,
+    ExpenseTrend,
+    RecentTransaction,
+    DashboardResponse,
+} from "../types/dashboard";
+
 export default function Dashboard() {
-    const [summary, setSummary] = useState<any>(null);
-    const [trend, setTrend] = useState<any>(null);
-    const [transactions, setTransactions] = useState<any[]>([]);
+    const [summary, setSummary] = useState<MonthlySummary | null>(null);
+    const [trend, setTrend] = useState<ExpenseTrend[]>([]);
+    const [transactions, setTransactions] = useState<RecentTransaction[]>([]);
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
 
     useEffect(() => {
-        api.get("/dashboard")
+        api.get<DashboardResponse>("/dashboard")
             .then((res) => {
                 setSummary(res.data.monthly_summary);
                 setTrend(res.data.expense_trend);
@@ -96,7 +103,7 @@ export default function Dashboard() {
                         </CardContent>
                     </Card>
 
-                    <ExpenseChart />
+                    {trend && <ExpenseChart trend={trend} />}
 
                     <Card className="bg-black border-gray-800">
                         <CardHeader>

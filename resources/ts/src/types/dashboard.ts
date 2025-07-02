@@ -7,7 +7,7 @@ export interface MonthlySummary {
 export interface ExpenseTrend {
     year: number;
     month: number;
-    total_expense: string;
+    total_expense: number;
 }
 
 export interface RecentTransaction {
