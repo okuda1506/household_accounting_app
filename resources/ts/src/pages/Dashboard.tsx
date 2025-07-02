@@ -65,26 +65,34 @@ export default function Dashboard() {
                             </p>
                         </CardHeader>
                         <CardContent>
-                            <div className="flex justify-between items-center text-sm">
-                                <div>
-                                    <p className="text-gray-400">収入</p>
-                                    <p className="text-xl font-semibold text-green-400">
-                                        ¥500,000
-                                    </p>
+                            {summary && (
+                                <div className="flex justify-between items-center text-sm">
+                                    <div>
+                                        <p className="text-gray-400">収入</p>
+                                        <p className="text-xl font-semibold text-green-400">
+                                            ¥
+                                            {parseInt(
+                                                summary.income
+                                            ).toLocaleString()}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className="text-gray-400">支出</p>
+                                        <p className="text-xl font-semibold text-red-400">
+                                            ¥
+                                            {parseInt(
+                                                summary.expense
+                                            ).toLocaleString()}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className="text-gray-400">収支</p>
+                                        <p className="text-xl font-semibold">
+                                            ¥{summary.balance.toLocaleString()}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="text-gray-400">支出</p>
-                                    <p className="text-xl font-semibold text-red-400">
-                                        ¥280,000
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-gray-400">収支</p>
-                                    <p className="text-xl font-semibold">
-                                        ¥1,020,000
-                                    </p>
-                                </div>
-                            </div>
+                            )}
                         </CardContent>
                     </Card>
 
