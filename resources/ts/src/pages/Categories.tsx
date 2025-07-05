@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
     Card,
     CardContent,
@@ -12,18 +13,30 @@ import {
     SelectValue,
 } from "../components/ui/select";
 import { NewCategoryModal } from "../components/NewCategoryModal";
-import { useState } from "react";
 import { NavigationModal } from "../components/NavigationModal";
+import api from "../../lib/axios";
+import { Category } from "../types/categories";
 
 export default function Categories() {
     const [type, setType] = useState<"income" | "expense">("income");
+    const [categories, setCategories] = useState<Category[]>([]);
 
-    // 仮のカテゴリデータ（後でAPI連携も可能）
-    // todo: 型定義するよう修正
-    const categories = {
-        income: ["給与", "副業", "配当金"],
-        expense: ["食費", "家賃", "光熱費"],
-    };
+    useEffect(() => {
+        api.get("/categories")
+            .then((res) => {
+                setCategories(res.data.data);
+            })
+            .catch((err) => {
+                console.error("カテゴリの取得に失敗しました", err);
+            });
+    }, []);
+
+    const filteredCategories = categories
+        .filter((cat) => {
+            if (type === "income") return cat.transaction_type_id === 1;
+            return cat.transaction_type_id === 2;
+        })
+        .sort((a, b) => a.sort_no - b.sort_no); // 昇順
 
     return (
         <div className="min-h-screen bg-black text-white">
@@ -43,6 +56,7 @@ export default function Categories() {
                     <div className="flex justify-end">
                         <NewCategoryModal />
                     </div>
+
                     <Card className="bg-black border-gray-800">
                         <CardHeader>
                             <div className="flex items-center justify-between w-full">
@@ -72,14 +86,13 @@ export default function Categories() {
 
                         <CardContent>
                             <ul className="space-y-3">
-                                {categories[type].map((category, index) => (
+                                {filteredCategories.map((category) => (
                                     <li
-                                        key={index}
+                                        key={category.name}
                                         className="hover:bg-gray-700 rounded-md px-4 py-3 cursor-pointer transition"
-                                        // onClick={() => handleCategoryClick(category)} // 関数は後述
                                     >
                                         <p className="text-sm font-medium">
-                                            {category}
+                                            {category.name}
                                         </p>
                                     </li>
                                 ))}
