@@ -57,9 +57,18 @@ class CategoryService
         $transactionTypeId = $data['transaction_type_id'];
 
         if ($this->categoryExists($categoryName, $userId, $transactionTypeId)) {
-            throw new \Exception(__('messages.category_name_exists', ['name' => $categoryName]), Response::HTTP_CONFLICT);
+            throw new \Exception(
+                __('messages.category_name_exists', ['name' => $categoryName]),
+                Response::HTTP_CONFLICT
+            );
         }
 
+        $maxSortNo = Category::where('user_id', $userId)
+            ->where('transaction_type_id', $transactionTypeId)
+            ->where('deleted', self::IS_NOT_DELETED)
+            ->max('sort_no');
+
+        $data['sort_no'] = is_null($maxSortNo) ? 1 : $maxSortNo + 1;
         $data['user_id'] = $userId;
 
         try {

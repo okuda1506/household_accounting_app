@@ -40,7 +40,7 @@ class CategoryRequest extends FormRequest
         return [
             'name'                => 'required|string|max:30',
             'transaction_type_id' => 'required|integer|exists:transaction_types,id',
-            'sort_no'             => 'required|integer',
+            'sort_no'             => 'nullable|integer',
         ];
     }
 
