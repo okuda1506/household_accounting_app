@@ -19,6 +19,7 @@ import {
     SelectValue,
 } from "./ui/select";
 import api from "../../lib/axios";
+import { toast } from "react-toastify";
 
 type Props = {
     onSuccess: () => void;
@@ -46,7 +47,7 @@ export function NewCategoryModal({ onSuccess }: Props) {
                 setName("");
                 setType("income");
                 setErrorMessage("");
-
+                toast.success("カテゴリを登録しました");
                 onSuccess();
             }
         } catch (err: any) {
