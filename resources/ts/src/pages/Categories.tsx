@@ -21,7 +21,7 @@ export default function Categories() {
     const [type, setType] = useState<"income" | "expense">("income");
     const [categories, setCategories] = useState<Category[]>([]);
 
-    useEffect(() => {
+    const fetchCategories = () => {
         api.get("/categories")
             .then((res) => {
                 setCategories(res.data.data);
@@ -29,6 +29,10 @@ export default function Categories() {
             .catch((err) => {
                 console.error("カテゴリの取得に失敗しました", err);
             });
+    };
+
+    useEffect(() => {
+        fetchCategories();
     }, []);
 
     const filteredCategories = categories
@@ -36,16 +40,14 @@ export default function Categories() {
             if (type === "income") return cat.transaction_type_id === 1;
             return cat.transaction_type_id === 2;
         })
-        .sort((a, b) => a.sort_no - b.sort_no); // 昇順
+        .sort((a, b) => a.sort_no - b.sort_no);
 
     return (
         <div className="min-h-screen bg-black text-white">
             <nav className="border-b border-gray-800">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
-                        <span className="text-xl font-semibold">
-                            Categories
-                        </span>
+                        <span className="text-xl font-semibold">カテゴリ</span>
                         <NavigationModal />
                     </div>
                 </div>
@@ -54,15 +56,13 @@ export default function Categories() {
             <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 sm:px-0 space-y-6">
                     <div className="flex justify-end">
-                        <NewCategoryModal />
+                        <NewCategoryModal onSuccess={fetchCategories} />
                     </div>
 
                     <Card className="bg-black border-gray-800">
                         <CardHeader>
                             <div className="flex items-center justify-between w-full">
-                                <CardTitle className="text-lg font-medium">
-                                    カテゴリ一覧
-                                </CardTitle>
+                                <CardTitle className="text-lg font-medium">カテゴリ一覧</CardTitle>
                                 <Select
                                     defaultValue="income"
                                     onValueChange={(val) =>
@@ -73,12 +73,8 @@ export default function Categories() {
                                         <SelectValue placeholder="選択してください" />
                                     </SelectTrigger>
                                     <SelectContent className="bg-gray-800">
-                                        <SelectItem value="income">
-                                            収入
-                                        </SelectItem>
-                                        <SelectItem value="expense">
-                                            支出
-                                        </SelectItem>
+                                        <SelectItem value="income">収入</SelectItem>
+                                        <SelectItem value="expense">支出</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>

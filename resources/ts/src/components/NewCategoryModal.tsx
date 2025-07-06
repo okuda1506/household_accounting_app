@@ -18,15 +18,45 @@ import {
     SelectTrigger,
     SelectValue,
 } from "./ui/select";
+import api from "../../lib/axios";
 
-export function NewCategoryModal() {
+type Props = {
+    onSuccess: () => void;
+};
+
+export function NewCategoryModal({ onSuccess }: Props) {
     const [open, setOpen] = useState(false);
+    const [name, setName] = useState("");
+    const [type, setType] = useState<"income" | "expense">("income");
+    const [errorMessage, setErrorMessage] = useState("");
 
-    const handleSubmit = (event: React.FormEvent) => {
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        // ここで新しい取引を追加するロジックを実装します
-        console.log("新しい取引が追加されました");
-        setOpen(false);
+
+        const transaction_type_id = type === "income" ? 1 : 2;
+
+        try {
+            const res = await api.post("/categories", {
+                name,
+                transaction_type_id,
+            });
+
+            if (res.data.success) {
+                setOpen(false);
+                setName("");
+                setType("income");
+                setErrorMessage("");
+
+                onSuccess();
+            }
+        } catch (err: any) {
+            const messageArray = err.response?.data?.messages;
+            if (Array.isArray(messageArray)) {
+                setErrorMessage(messageArray.join(" "));
+            } else {
+                setErrorMessage("登録に失敗しました。");
+            }
+        }
     };
 
     return (
@@ -47,7 +77,12 @@ export function NewCategoryModal() {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <Label htmlFor="type">取引タイプ</Label>
-                        <Select defaultValue="income">
+                        <Select
+                            value={type}
+                            onValueChange={(val) =>
+                                setType(val as "income" | "expense")
+                            }
+                        >
                             <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
                                 <SelectValue placeholder="選択してください" />
                             </SelectTrigger>
@@ -58,12 +93,19 @@ export function NewCategoryModal() {
                         </Select>
                     </div>
                     <div>
-                        <Label htmlFor="description">カテゴリ名</Label>
+                        <Label htmlFor="name">カテゴリ名</Label>
                         <Input
-                            id="description"
+                            id="name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                             className="bg-gray-800 border-gray-700"
                         />
                     </div>
+
+                    {errorMessage && (
+                        <p className="text-sm text-red-400">{errorMessage}</p>
+                    )}
+
                     <Button type="submit" className="w-full">
                         追加
                     </Button>
