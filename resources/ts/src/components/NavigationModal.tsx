@@ -39,7 +39,7 @@ export function NavigationModal() {
                         className="flex items-center px-4 py-3"
                         onClick={closeModal}
                     >
-                        <span>ダッシュボード</span>
+                        <span>ホーム</span>
                     </Link>
                     <Link
                         to="/categories"
