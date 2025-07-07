@@ -79,7 +79,7 @@ class CategoryController extends Controller
      * カテゴリの削除
      *
      * @param CategoryRequest $request
-     * @param string $id
+     * @param string $categoryId
      *
      * @return JsonResponse
      */

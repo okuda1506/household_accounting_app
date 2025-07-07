@@ -18,6 +18,7 @@ import { NewCategoryModal } from "../components/NewCategoryModal";
 import { NavigationModal } from "../components/NavigationModal";
 import api from "../../lib/axios";
 import { Category } from "../types/categories";
+import { toast } from "react-toastify";
 
 export default function Categories() {
     const [type, setType] = useState<"income" | "expense">("income");
@@ -43,6 +44,16 @@ export default function Categories() {
             return cat.transaction_type_id === 2;
         })
         .sort((a, b) => a.sort_no - b.sort_no);
+
+    const handleDelete = async (id: string, name: string) => {
+        try {
+            await api.delete(`/categories/${id}`);
+            toast.success( `${name} を削除しました。`);
+            fetchCategories();
+        } catch (err) {
+            toast.error( `${name} の削除に失敗しました。`);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-black text-white">
@@ -92,7 +103,7 @@ export default function Categories() {
                             <ul className="space-y-3">
                                 {filteredCategories.map((category) => (
                                     <li
-                                        key={category.name}
+                                        key={category.category_id}
                                         className="hover:bg-gray-700 rounded-md px-4 py-3 flex justify-between items-center"
                                     >
                                         <p className="text-sm font-medium">
@@ -101,9 +112,12 @@ export default function Categories() {
                                         <Button
                                             variant="destructive"
                                             size="icon"
-                                            // onClick={() =>
-                                            //     handleDelete(category)
-                                            // }
+                                            onClick={() =>
+                                                handleDelete(
+                                                    category.category_id,
+                                                    category.name
+                                                )
+                                            }
                                             className="bg-transparent ml-2"
                                         >
                                             <Trash2 className="w-4 h-4 text-gray-500 hover:text-red-500" />
