@@ -5,6 +5,8 @@ import {
     CardHeader,
     CardTitle,
 } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Trash2 } from "lucide-react";
 import {
     Select,
     SelectContent,
@@ -62,7 +64,9 @@ export default function Categories() {
                     <Card className="bg-black border-gray-800">
                         <CardHeader>
                             <div className="flex items-center justify-between w-full">
-                                <CardTitle className="text-lg font-medium">カテゴリ一覧</CardTitle>
+                                <CardTitle className="text-lg font-medium">
+                                    カテゴリ一覧
+                                </CardTitle>
                                 <Select
                                     defaultValue="income"
                                     onValueChange={(val) =>
@@ -73,8 +77,12 @@ export default function Categories() {
                                         <SelectValue placeholder="選択してください" />
                                     </SelectTrigger>
                                     <SelectContent className="bg-gray-800">
-                                        <SelectItem value="income">収入</SelectItem>
-                                        <SelectItem value="expense">支出</SelectItem>
+                                        <SelectItem value="income">
+                                            収入
+                                        </SelectItem>
+                                        <SelectItem value="expense">
+                                            支出
+                                        </SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -85,11 +93,21 @@ export default function Categories() {
                                 {filteredCategories.map((category) => (
                                     <li
                                         key={category.name}
-                                        className="hover:bg-gray-700 rounded-md px-4 py-3 cursor-pointer transition"
+                                        className="hover:bg-gray-700 rounded-md px-4 py-3 flex justify-between items-center"
                                     >
                                         <p className="text-sm font-medium">
                                             {category.name}
                                         </p>
+                                        <Button
+                                            variant="destructive"
+                                            size="icon"
+                                            // onClick={() =>
+                                            //     handleDelete(category)
+                                            // }
+                                            className="bg-transparent ml-2"
+                                        >
+                                            <Trash2 className="w-4 h-4 text-gray-500 hover:text-red-500" />
+                                        </Button>
                                     </li>
                                 ))}
                             </ul>
