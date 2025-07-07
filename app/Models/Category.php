@@ -50,7 +50,7 @@ class Category extends Model
         return $this->belongsTo(TransactionType::class);
     }
 
-    // カテゴリの削除
+    // カテゴリの論理削除
     public function delete(): void
     {
         $this->deleted = true;
