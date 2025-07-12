@@ -14,7 +14,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../components/ui/select";
-import { NewCategoryModal } from "../components/NewCategoryModal";
+import { NewCategoryModal } from "../components/category/NewCategoryModal";
+import { EditCategoryModal } from "../components/category/EditCategoryModal";
 import { NavigationModal } from "../components/NavigationModal";
 import api from "../../lib/axios";
 import { Category } from "../types/categories";
@@ -23,6 +24,11 @@ import { toast } from "react-toastify";
 export default function Categories() {
     const [type, setType] = useState<"income" | "expense">("income");
     const [categories, setCategories] = useState<Category[]>([]);
+
+    const [editingCategory, setEditingCategory] = useState<Category | null>(
+        null
+    );
+    const [editModalOpen, setEditModalOpen] = useState(false);
 
     const fetchCategories = () => {
         api.get("/categories")
@@ -48,10 +54,10 @@ export default function Categories() {
     const handleDelete = async (id: string, name: string) => {
         try {
             await api.delete(`/categories/${id}`);
-            toast.success( `${name} を削除しました。`);
+            toast.success(`${name} を削除しました。`);
             fetchCategories();
         } catch (err) {
-            toast.error( `${name} の削除に失敗しました。`);
+            toast.error(`${name} の削除に失敗しました。`);
         }
     };
 
@@ -60,7 +66,9 @@ export default function Categories() {
             <nav className="border-b border-gray-800">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
-                        <span className="text-xl font-semibold">カテゴリ</span>
+                        <span className="text-xl font-semibold">
+                            카테고리 목록
+                        </span>
                         <NavigationModal />
                     </div>
                 </div>
@@ -76,7 +84,7 @@ export default function Categories() {
                         <CardHeader>
                             <div className="flex items-center justify-between w-full">
                                 <CardTitle className="text-lg font-medium">
-                                    カテゴリ一覧
+                                    카테고리 목록
                                 </CardTitle>
                                 <Select
                                     defaultValue="income"
@@ -105,6 +113,10 @@ export default function Categories() {
                                     <li
                                         key={category.category_id}
                                         className="hover:bg-gray-700 rounded-md px-4 py-3 flex justify-between items-center"
+                                        onClick={() => {
+                                            setEditingCategory(category);
+                                            setEditModalOpen(true);
+                                        }}
                                     >
                                         <p className="text-sm font-medium">
                                             {category.name}
@@ -112,12 +124,13 @@ export default function Categories() {
                                         <Button
                                             variant="destructive"
                                             size="icon"
-                                            onClick={() =>
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // 編集モーダルが開かないよう制御
                                                 handleDelete(
                                                     category.category_id,
                                                     category.name
-                                                )
-                                            }
+                                                );
+                                            }}
                                             className="bg-transparent ml-2"
                                         >
                                             <Trash2 className="w-4 h-4 text-gray-500 hover:text-red-500" />
@@ -128,6 +141,18 @@ export default function Categories() {
                         </CardContent>
                     </Card>
                 </div>
+
+                {editingCategory && (
+                    <EditCategoryModal
+                        open={editModalOpen}
+                        setOpen={setEditModalOpen}
+                        category={editingCategory}
+                        onSuccess={() => {
+                            fetchCategories();
+                            setEditModalOpen(false);
+                        }}
+                    />
+                )}
             </main>
         </div>
     );
