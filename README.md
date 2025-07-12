@@ -1,66 +1,94 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# household_accounting_app
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="storage/app/public/readme_visual.jpg" alt="プロジェクトイメージ" width="400"/>
 </p>
 
-## About Laravel
+## 概要
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+モダンでシンプルな家計簿管理アプリ<br>
+収入・支出カテゴリの追加や編集、月ごとの収支管理が可能<br>
+React + TypeScript + Laravel を使用
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- 無駄な機能が一切なくシンプルでモダンなUI設計
+- SPA仕様のため高速で家計簿のデータ登録や更新等が可能
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 主な機能
 
-## Learning Laravel
+- 月ごとの収支サマリ表示
+- カテゴリ管理（収入/支出）
+- 取引登録・編集・削除
+- ダークモード対応
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## セットアップ
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+1. リポジトリをクローン
+2. `.env` をコピーして設定
+3. 必要なパッケージをインストール
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```sh
+composer install
+npm install
+```
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## English
 
-### Premium Partners
+### Overview
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+A modern and simple household accounting app.<br>
+You can add/edit income and expense categories, and manage monthly balances.<br>
+Built with React, TypeScript, and Laravel.
 
-## Contributing
+- Simple and modern UI design with no unnecessary features
+- SPA architecture enables fast registration and updating of household data
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Main Features
 
-## Code of Conduct
+- Monthly balance summary
+- Category management (income/expense)
+- Register, edit, and delete transactions
+- Dark mode support
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Setup
 
-## Security Vulnerabilities
+1. Clone the repository
+2. Copy and configure `.env`
+3. Install required packages
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```sh
+composer install
+npm install
+```
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 한국어
+
+### 개요
+
+모던하고 심플한 가계부 관리 앱입니다.<br>
+수입/지출 카테고리 추가 및 편집, 월별 수입/지출 관리가 가능합니다.<br>
+React, TypeScript, Laravel로 제작되었습니다.
+
+- 불필요한 기능 없이 심플하고 모던한 UI 설계
+- SPA 구조로 빠르게 가계부 데이터 등록 및 갱신 가능
+
+### 주요 기능
+
+- 월별 수입/지출 요약 표시
+- 카테고리 관리(수입/지출)
+- 거래 등록, 편집, 삭제
+- 다크 모드 지원
+
+### 셋업
+
+1. 저장소 클론
+2. `.env` 복사 및 설정
+3. 필요한 패키지 설치
+
+```sh
+composer install
+npm install
+```
