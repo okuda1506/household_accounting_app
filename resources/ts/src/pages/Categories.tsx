@@ -108,36 +108,42 @@ export default function Categories() {
                         </CardHeader>
 
                         <CardContent>
-                            <ul className="space-y-3">
-                                {filteredCategories.map((category) => (
-                                    <li
-                                        key={category.category_id}
-                                        className="hover:bg-gray-700 rounded-md px-4 py-3 flex justify-between items-center"
-                                        onClick={() => {
-                                            setEditingCategory(category);
-                                            setEditModalOpen(true);
-                                        }}
-                                    >
-                                        <p className="text-sm font-medium">
-                                            {category.name}
-                                        </p>
-                                        <Button
-                                            variant="destructive"
-                                            size="icon"
-                                            onClick={(e) => {
-                                                e.stopPropagation(); // 編集モーダルが開かないよう制御
-                                                handleDelete(
-                                                    category.category_id,
-                                                    category.name
-                                                );
+                            {filteredCategories.length === 0 ? (
+                                <p className="text-sm text-gray-400">
+                                    カテゴリを登録してください。
+                                </p>
+                            ) : (
+                                <ul className="space-y-3">
+                                    {filteredCategories.map((category) => (
+                                        <li
+                                            key={category.category_id}
+                                            className="hover:bg-gray-700 rounded-md px-4 py-3 flex justify-between items-center"
+                                            onClick={() => {
+                                                setEditingCategory(category);
+                                                setEditModalOpen(true);
                                             }}
-                                            className="bg-transparent ml-2"
                                         >
-                                            <Trash2 className="w-4 h-4 text-gray-500 hover:text-red-500" />
-                                        </Button>
-                                    </li>
-                                ))}
-                            </ul>
+                                            <p className="text-sm font-medium">
+                                                {category.name}
+                                            </p>
+                                            <Button
+                                                variant="destructive"
+                                                size="icon"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleDelete(
+                                                        category.category_id,
+                                                        category.name
+                                                    );
+                                                }}
+                                                className="bg-transparent ml-2"
+                                            >
+                                                <Trash2 className="w-4 h-4 text-gray-500 hover:text-red-500" />
+                                            </Button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </CardContent>
                     </Card>
                 </div>

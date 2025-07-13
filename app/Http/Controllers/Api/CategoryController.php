@@ -34,7 +34,7 @@ class CategoryController extends Controller
         } catch (\Exception $e) {
             return ApiResponse::error(null, [__('messages.category_get_failed')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        // todo: カテゴリ分けはフロントで行う
+
         return ApiResponse::success($categories, __('messages.category_list_fetched'));
     }
 
