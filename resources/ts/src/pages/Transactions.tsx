@@ -20,7 +20,6 @@ export default function Transactions() {
 
             <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 sm:px-0 space-y-6">
-                    {/* <div className="flex justify-end"> */}
                     <div className="fixed bottom-6 right-6 z-50">
                         <NewTransactionModal />
                     </div>

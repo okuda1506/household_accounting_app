@@ -25,7 +25,6 @@ class TransactionController extends Controller
      */
     public function index(): JsonResponse
     {
-        // todo: serviceに移行
         try {
             $transactions = TransactionResource::collection(
                 $this->transactionService->getTransactions(auth()->id())

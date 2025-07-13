@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import {
     Select,
@@ -7,222 +7,54 @@ import {
     SelectTrigger,
     SelectValue,
 } from "./ui/select";
-
-type Transaction = {
-    date: string;
-    description: string;
-    amount: number;
-    year: number;
-    month: number;
-};
-
-// todo: APIで取ってくる
-const transactions: Transaction[] = [
-    {
-        year: 2025,
-        month: 4,
-        date: "4月26日",
-        description: "streamer coffee",
-        amount: -1300,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月26日",
-        description: "東京メトロ 飯田橋 → 溜池山王",
-        amount: -178,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月26日",
-        description: "東京メトロ 溜池山王 → 飯田橋",
-        amount: -178,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月25日",
-        description: "セブンイレブン",
-        amount: -1300,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月25日",
-        description: "給与",
-        amount: +500000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月24日",
-        description: "セブンイレブン",
-        amount: -2000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月23日",
-        description: "@cosme",
-        amount: -5000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月23日",
-        description: "@cosme",
-        amount: -5000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月23日",
-        description: "@cosme",
-        amount: -5000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月23日",
-        description: "@cosme",
-        amount: -5000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月23日",
-        description: "@cosme",
-        amount: -5000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月23日",
-        description: "@cosme",
-        amount: -5000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月23日",
-        description: "@cosme",
-        amount: -5000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月23日",
-        description: "@cosme",
-        amount: -5000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月23日",
-        description: "@cosme",
-        amount: -5000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月23日",
-        description: "@cosme",
-        amount: -5000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月23日",
-        description: "@cosme",
-        amount: -5000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月23日",
-        description: "@cosme",
-        amount: -5000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月23日",
-        description: "@cosme",
-        amount: -5000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月23日",
-        description: "@cosme",
-        amount: -5000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月23日",
-        description: "@cosme",
-        amount: -5000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月23日",
-        description: "@cosme",
-        amount: -5000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4/23",
-        description: "@cosme",
-        amount: -5000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月23日",
-        description: "@cosme",
-        amount: -5000,
-    },
-    {
-        year: 2025,
-        month: 4,
-        date: "4月1日",
-        description: "4月定期券 神楽坂 ↔︎ 表参道",
-        amount: -7891,
-    },
-    {
-        year: 2024,
-        month: 6,
-        date: "6月15日",
-        description: "スーパー",
-        amount: -5000,
-    },
-    { year: 2024, month: 6, date: "6/14", description: "給与", amount: 350000 },
-    {
-        year: 2024,
-        month: 5,
-        date: "5月20日",
-        description: "レストラン",
-        amount: -8000,
-    },
-    {
-        year: 2024,
-        month: 5,
-        date: "5月10日",
-        description: "電気代",
-        amount: -12000,
-    },
-];
+import api from "../../lib/axios";
+import { Transaction } from "../types/transactions";
+import { toast } from "react-toastify";
 
 export function TransactionList() {
     const now = new Date();
     const [selectedYear, setSelectedYear] = useState<number>(now.getFullYear());
     const [selectedMonth, setSelectedMonth] = useState<number>(
         now.getMonth() + 1
-    ); // getMonth()は0始まりなので+1する
+    );
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+    const fetchTransactions = async () => {
+        try {
+            const res = await api.get("/transactions");
+            const rawTransactions = res.data.data;
+
+            const parsedTransactions: Transaction[] = rawTransactions.map(
+                (t: any) => {
+                    const date = new Date(t.transaction_date);
+                    return {
+                        transaction_id:
+                            t.transaction_id ??
+                            `${t.user_id}-${t.transaction_date}`, // 適当なユニークキーを生成
+                        date: t.transaction_date,
+                        memo: t.memo ?? "",
+                        amount: Number(t.amount),
+                        year: date.getFullYear(),
+                        month: date.getMonth() + 1,
+                        day: date.getDate(),
+                    };
+                }
+            );
+
+            setTransactions(parsedTransactions);
+        } catch (err) {
+            toast.error("取引データの取得に失敗しました");
+        }
+    };
+
+    useEffect(() => {
+        fetchTransactions();
+    }, []);
+
+    // 取引年の選択肢を動的に生成する
+    const years = Array.from(new Set(transactions.map((t) => t.year))).sort(
+        (a, b) => b - a
+    );
 
     const filteredTransactions = transactions.filter(
         (transaction) =>
@@ -248,7 +80,7 @@ export function TransactionList() {
                                 <SelectValue placeholder="年" />
                             </SelectTrigger>
                             <SelectContent className="bg-black text-white">
-                                {[2025, 2024, 2023, 2022].map((year) => (
+                                {years.map((year) => (
                                     <SelectItem key={year} value={String(year)}>
                                         {year}年
                                     </SelectItem>
@@ -280,7 +112,7 @@ export function TransactionList() {
             </CardHeader>
 
             <CardContent>
-                <div className="flex justify-between items-center pb-10 p-0 rounded-lg">
+                <div className="flex justify-between items-center pb-10">
                     <p className="text-white text-lg">
                         収入：
                         <span className="text-green-400 font-medium ml-2">
@@ -306,17 +138,18 @@ export function TransactionList() {
 
                 {filteredTransactions.length > 0 ? (
                     <ul className="space-y-4">
-                        {filteredTransactions.map((transaction, index) => (
+                        {filteredTransactions.map((transaction) => (
                             <li
-                                key={index}
+                                key={transaction.transaction_id}
                                 className="flex justify-between items-center text-sm"
                             >
                                 <div>
                                     <p className="font-medium">
-                                        {transaction.description}
+                                        {transaction.memo}
                                     </p>
                                     <p className="text-gray-400">
-                                        {transaction.date}
+                                        {transaction.year}年{transaction.month}
+                                        月{transaction.day}日
                                     </p>
                                 </div>
                                 <p
