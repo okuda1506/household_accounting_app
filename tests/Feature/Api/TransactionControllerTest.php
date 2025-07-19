@@ -23,7 +23,7 @@ class TransactionControllerTest extends TestCase
     {
         parent::setUp();
 
-        // テスト用のユーザーを作成
+        // テスト用のユーザーを作成（コミットテスト）
         $this->user = User::factory()->create();
 
         // TransactionServiceをモック化し、サービスコンテナに束縛
