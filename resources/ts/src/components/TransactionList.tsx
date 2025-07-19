@@ -31,6 +31,7 @@ export function TransactionList() {
                         transaction_id:
                             t.transaction_id ??
                             `${t.user_id}-${t.transaction_date}`, // 適当なユニークキーを生成
+                        transaction_type_id: t.transaction_type_id,
                         date: t.transaction_date,
                         memo: t.memo ?? "",
                         amount: Number(t.amount),
@@ -50,6 +51,16 @@ export function TransactionList() {
     useEffect(() => {
         fetchTransactions();
     }, []);
+
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const hours = date.getHours().toString().padStart(2, "0");
+        const minutes = date.getMinutes().toString().padStart(2, "0");
+
+        return `${month}月${day}日 ${hours}:${minutes}`;
+    };
 
     // 取引年の選択肢を動的に生成する
     const years = Array.from(new Set(transactions.map((t) => t.year))).sort(
@@ -118,7 +129,7 @@ export function TransactionList() {
                         <span className="text-green-400 font-medium ml-2">
                             ¥
                             {filteredTransactions
-                                .filter((t) => t.amount > 0)
+                                .filter((t) => t.transaction_type_id === 1)
                                 .reduce((sum, t) => sum + t.amount, 0)
                                 .toLocaleString()}
                         </span>
@@ -129,7 +140,7 @@ export function TransactionList() {
                             ¥
                             {Math.abs(
                                 filteredTransactions
-                                    .filter((t) => t.amount < 0)
+                                    .filter((t) => t.transaction_type_id === 2)
                                     .reduce((sum, t) => sum + t.amount, 0)
                             ).toLocaleString()}
                         </span>
@@ -138,34 +149,38 @@ export function TransactionList() {
 
                 {filteredTransactions.length > 0 ? (
                     <ul className="space-y-4">
-                        {filteredTransactions.map((transaction) => (
-                            <li
-                                key={transaction.transaction_id}
-                                className="flex justify-between items-center text-sm"
-                            >
-                                <div>
-                                    <p className="font-medium">
-                                        {transaction.memo}
-                                    </p>
-                                    <p className="text-gray-400">
-                                        {transaction.year}年{transaction.month}
-                                        月{transaction.day}日
-                                    </p>
-                                </div>
-                                <p
-                                    className={`font-medium ${
-                                        transaction.amount > 0
-                                            ? "text-green-400"
-                                            : "text-red-400"
-                                    }`}
+                        {filteredTransactions.map((transaction) => {
+                            const isIncome =
+                                transaction.transaction_type_id === 1;
+
+                            return (
+                                <li
+                                    key={transaction.transaction_id}
+                                    className="flex justify-between items-center text-sm"
                                 >
-                                    {transaction.amount > 0 ? "+" : "-"}¥
-                                    {Math.abs(
-                                        transaction.amount
-                                    ).toLocaleString()}
-                                </p>
-                            </li>
-                        ))}
+                                    <div>
+                                        <p className="font-medium">
+                                            {transaction.memo}
+                                        </p>
+                                        <p className="text-gray-400">
+                                            {formatDate(transaction.date)}{" "}
+                                        </p>
+                                    </div>
+                                    <p
+                                        className={`font-medium ${
+                                            isIncome
+                                                ? "text-green-400"
+                                                : "text-red-400"
+                                        }`}
+                                    >
+                                        {isIncome ? "+" : "-"}¥
+                                        {Math.abs(
+                                            transaction.amount
+                                        ).toLocaleString()}
+                                    </p>
+                                </li>
+                            );
+                        })}
                     </ul>
                 ) : (
                     <p className="text-gray-400 text-center py-4">
