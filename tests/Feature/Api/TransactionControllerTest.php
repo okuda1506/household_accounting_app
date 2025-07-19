@@ -41,8 +41,7 @@ class TransactionControllerTest extends TestCase
         // .make()ではDBに保存されずidが採番されないため、
         // TransactionResourceがidを必要とすることを考慮し、.create()でDBに保存します。
         $category = Category::factory()->create(['user_id' => $this->user->id]);
-        dump($category);
-        exit;
+        // ダミーの取引データを作成
         $transactions = Transaction::factory()->count(3)->create(['user_id' => $this->user->id, 'category_id' => $category->id]);
 
 
