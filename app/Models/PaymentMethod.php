@@ -16,6 +16,7 @@ class PaymentMethod extends Model
      */
     protected $fillable = [
         'name',
+        'transaction_type_id',
         'deleted',
     ];
 
@@ -33,5 +34,15 @@ class PaymentMethod extends Model
     {
         $this->deleted = true;
         $this->save();
+    }
+
+    /**
+     * 取引タイプとのリレーション
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function transactionType()
+    {
+        return $this->belongsTo(TransactionType::class);
     }
 }
