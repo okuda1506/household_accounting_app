@@ -1,8 +1,10 @@
 <?php
 namespace App\Http\Requests;
 
+use App\Models\PaymentMethod;
 use App\Models\Transaction;
 use App\Rules\CategoryBelongsToTransactionType;
+use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TransactionRequest extends FormRequest
@@ -50,7 +52,18 @@ class TransactionRequest extends FormRequest
                 new CategoryBelongsToTransactionType($transactionTypeId),
             ],
             'amount'              => 'required|numeric|min:0',
-            'payment_method_id'   => 'required|integer|exists:payment_methods,id',
+            'payment_method_id'   => [
+                'required',
+                'integer',
+                function (string $attribute, mixed $value, Closure $fail) use ($transactionTypeId) {
+                    $exists = PaymentMethod::where('id', $value)
+                        ->where('transaction_type_id', $transactionTypeId)
+                        ->exists();
+                    if (!$exists) {
+                        $fail(__('messages.invalid_payment_method_for_transaction_type'));
+                    }
+                },
+            ],
             'memo'                => 'nullable|string|max:255',
         ];
     }

@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\PaymentMethodController;
 use App\Http\Controllers\Api\TransactionController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -64,6 +65,15 @@ Route::prefix('transactions')
         Route::put('{id}', 'update')->name('update');
         // 取引削除
         Route::delete('{id}', 'destroy')->name('destroy');
+    });
+
+Route::prefix('payment-methods')
+    // ->middleware('auth:sanctum')
+    ->controller(PaymentMethodController::class)
+    ->name('api.payment_method.')
+    ->group(function () {
+        // 支払方法取得
+        Route::get('', 'index')->name('index');
     });
 
 Route::prefix('dashboard')

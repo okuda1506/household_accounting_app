@@ -9,6 +9,7 @@ return [
     'category_updated' => 'カテゴリを更新しました。',
     'category_deleted' => 'カテゴリを削除しました。',
     'category_sorted' => 'カテゴリの並び順を更新しました。',
+    'payment_method_list_fetched' => '支払方法一覧を取得しました。',
     'transaction_list_fetched' => 'カテゴリ一覧を取得しました。',
     'transaction_created' => '取引を登録しました。',
     'transaction_updated' => '取引を更新しました。',
@@ -37,6 +38,7 @@ return [
     // カスタムバリデーションメッセージ
     // --------------------------
     'invalid_category_for_transaction_type' => '選択されたカテゴリは指定された取引タイプに対応していません。',
+    'invalid_payment_method_for_transaction_type' => '選択された支払方法は指定された取引タイプに対応していません。',
 
     // --------------------------
     // エラーメッセージ
@@ -50,6 +52,7 @@ return [
     'category_update_failed' => 'カテゴリの更新に失敗しました。',
     'category_destroy_failed' => 'カテゴリの削除に失敗しました。',
     'category_sort_failed' => 'カテゴリの並び順の更新に失敗しました。',
+    'payment_method_get_failed' => '支払方法の取得に失敗しました。',
     'transaction_get_failed' => '取引データの取得に失敗しました。',
     'transaction_store_failed' => '取引の登録に失敗しました。',
     'transaction_update_failed' => '取引の更新に失敗しました。',

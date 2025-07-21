@@ -19,7 +19,7 @@ class TransactionController extends Controller
     }
 
     /**
-     * 取引一覧
+     * 取引一覧を取得する
      *
      * @return JsonResponse
      */
