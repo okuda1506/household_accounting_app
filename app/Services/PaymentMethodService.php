@@ -3,9 +3,7 @@ namespace App\Services;
 
 use App\Models\PaymentMethod;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 
 /**
  * 支払方法関連のビジネスロジックを管理するサービスクラス

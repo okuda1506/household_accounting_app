@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Response;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PaymentMethodResource;
@@ -28,7 +29,7 @@ class PaymentMethodController extends Controller
                 $this->paymentMethodService->getPaymentMethods()
             );
         } catch (\Exception $e) {
-            return ApiResponse::error(null, [__('messages.transaction_get_failed')], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error(null, [__('messages.payment_method_get_failed')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::success($paymentMethods, __('messages.payment_method_list_fetched'));
