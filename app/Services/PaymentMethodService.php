@@ -23,8 +23,8 @@ class PaymentMethodService
             return PaymentMethod::where('deleted', false)
                 ->orderBy('id')
                 ->get();
-        } catch (\Exception $e) {
-            throw new \Exception(__('messages.payment_method_get_failed'), Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+            } catch (\Exception $e) {
+                throw new \Exception(__('messages.payment_method_get_failed'), Response::HTTP_INTERNAL_SERVER_ERROR, $e);
+            }
     }
 }
