@@ -4,9 +4,9 @@ namespace App\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use App\Models\Category;
+use App\Models\PaymentMethod;
 
-class CategoryBelongsToTransactionType implements ValidationRule
+class PaymentMethodBelongsToTransactionType implements ValidationRule
 {
     protected $transactionTypeId;
 
@@ -27,12 +27,12 @@ class CategoryBelongsToTransactionType implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $isValid = Category::where('id', $value)
+        $isValid = PaymentMethod::where('id', $value)
             ->where('transaction_type_id', $this->transactionTypeId)
             ->exists();
 
         if (!$isValid) {
-            $fail(__('messages.invalid_category_for_transaction_type'));
+            $fail(__('messages.invalid_payment_method_for_transaction_type'));
         }
     }
 }

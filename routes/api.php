@@ -68,7 +68,7 @@ Route::prefix('transactions')
     });
 
 Route::prefix('payment-methods')
-    // ->middleware('auth:sanctum')
+    ->middleware('auth:sanctum')
     ->controller(PaymentMethodController::class)
     ->name('api.payment_method.')
     ->group(function () {

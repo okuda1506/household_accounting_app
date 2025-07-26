@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 use App\Models\PaymentMethod;
 use App\Models\Transaction;
 use App\Rules\CategoryBelongsToTransactionType;
-use Closure;
+use App\Rules\PaymentMethodBelongsToTransactionType;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TransactionRequest extends FormRequest
@@ -43,26 +43,20 @@ class TransactionRequest extends FormRequest
         $transactionTypeId = $this->input('transaction_type_id');
 
         return [
-            'transaction_date'    => 'required|date_format:Y/m/d',
+            'transaction_date'    => 'required|date_format:Y-m-d',
             'transaction_type_id' => 'required|integer|exists:transaction_types,id',
             'category_id'         => [
-                'required',
+                'bail',
                 'integer',
                 'exists:categories,id',
                 new CategoryBelongsToTransactionType($transactionTypeId),
             ],
             'amount'              => 'required|numeric|min:0',
             'payment_method_id'   => [
-                'required',
+                'bail',
                 'integer',
-                function (string $attribute, mixed $value, Closure $fail) use ($transactionTypeId) {
-                    $exists = PaymentMethod::where('id', $value)
-                        ->where('transaction_type_id', $transactionTypeId)
-                        ->exists();
-                    if (!$exists) {
-                        $fail(__('messages.invalid_payment_method_for_transaction_type'));
-                    }
-                },
+                'exists:payment_methods,id',
+                new PaymentMethodBelongsToTransactionType($transactionTypeId),
             ],
             'memo'                => 'nullable|string|max:255',
         ];
@@ -71,10 +65,20 @@ class TransactionRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'user_id.required' => __('messages.user_id_required'),
-            'user_id.integer'  => __('messages.user_id_integer'),
-            'user_id.exists'   => __('messages.user_id_exists'),
-
+            'transaction_date.required' => __('messages.transaction_date_required'),
+            'transaction_date.date_format' => __('messages.transaction_date_date_format'),
+            'transaction_type_id.required' => __('messages.transaction_type_id_required'),
+            'transaction_type_id.integer'  => __('messages.transaction_type_id_integer'),
+            'transaction_type_id.exists'   => __('messages.transaction_type_id_exists'),
+            'category_id.required' => __('messages.category_id_required'),
+            'category_id.exists' => __('messages.category_id_exists'),
+            'amount.required' => __('messages.amount_required'),
+            'amount.numeric' => __('messages.amount_numeric'),
+            'amount.min' => __('messages.amount_min'),
+            'payment_method_id.required' => __('messages.payment_method_id_required'),
+            'payment_method_id.exists' => __('messages.payment_method_id_exists'),
+            'memo.string' => __('messages.memo_string'),
+            'memo.max' => __('messages.memo_max'),
         ];
     }
 }
