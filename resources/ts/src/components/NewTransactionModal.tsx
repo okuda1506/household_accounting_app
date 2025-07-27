@@ -27,7 +27,6 @@ export function NewTransactionModal() {
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        // ここで新しい取引を追加するロジックを実装します
         console.log("新しい取引が追加されました");
         setOpen(false);
     };
