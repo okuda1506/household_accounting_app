@@ -1,10 +1,9 @@
-import { NewTransactionModal } from "../components/NewTransactionModal";
+import { NewTransactionModal } from "../components/transaction/NewTransactionModal";
 import { useState } from "react";
 import { NavigationModal } from "../components/NavigationModal";
-import { TransactionList } from "../components/TransactionList";
+import { TransactionList } from "../components/transaction/TransactionList";
 
 export default function Transactions() {
-
     return (
         <div className="min-h-screen bg-black text-white">
             <nav className="border-b border-gray-800">

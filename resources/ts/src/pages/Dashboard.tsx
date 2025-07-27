@@ -6,7 +6,7 @@ import {
     CardTitle,
 } from "../components/ui/card";
 import { ExpenseChart } from "../components/ExpenseChart";
-import { NewTransactionModal } from "../components/NewTransactionModal";
+import { NewTransactionModal } from "../components/transaction/NewTransactionModal";
 import { NavigationModal } from "../components/NavigationModal";
 import api from "../../lib/axios";
 

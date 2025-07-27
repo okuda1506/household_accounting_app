@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "./ui/select";
-import api from "../../lib/axios";
-import { Transaction } from "../types/transactions";
+} from "../ui/select";
+import api from "../../../lib/axios";
+import { Transaction } from "../../types/transactions";
 import { toast } from "react-toastify";
 
 export function TransactionList() {

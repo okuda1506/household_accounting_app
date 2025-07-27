@@ -1,29 +1,31 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "../components/ui/button";
-import { DatePicker } from "../components/ui/date-picker";
+import { Button } from "../ui/button";
+import { DatePicker } from "../ui/date-picker";
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "../components/ui/dialog";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
+} from "../ui/dialog";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "../components/ui/select";
+} from "../ui/select";
 
 export function NewTransactionModal() {
     const [open, setOpen] = useState(false);
 
-    const [transactionDate, setTransactionDate] = useState<Date | undefined>(new Date());
+    const [transactionDate, setTransactionDate] = useState<Date | undefined>(
+        new Date()
+    );
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
@@ -100,9 +102,15 @@ export function NewTransactionModal() {
                             </SelectTrigger>
                             <SelectContent className="bg-gray-800 text-white">
                                 <SelectItem value="現金">現金</SelectItem>
-                                <SelectItem value="クレジットカード">クレジットカード</SelectItem>
-                                <SelectItem value="銀行振込">銀行振込</SelectItem>
-                                <SelectItem value="電子マネー">電子マネー</SelectItem>
+                                <SelectItem value="クレジットカード">
+                                    クレジットカード
+                                </SelectItem>
+                                <SelectItem value="銀行振込">
+                                    銀行振込
+                                </SelectItem>
+                                <SelectItem value="電子マネー">
+                                    電子マネー
+                                </SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
