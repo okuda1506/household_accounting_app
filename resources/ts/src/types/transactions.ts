@@ -4,7 +4,6 @@ export type Transaction = {
     date: string;
     memo: string;
     amount: number;
-    // APIレスポンスにないが、フロントで追加して使う
     year: number;
     month: number;
     day: number;
