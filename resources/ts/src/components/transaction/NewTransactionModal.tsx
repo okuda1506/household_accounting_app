@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
 import {
@@ -19,18 +19,83 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../ui/select";
+import api from "../../../lib/axios";
+import { toast } from "react-toastify";
+import { Category } from "../../types/categories";
 
 export function NewTransactionModal() {
     const [open, setOpen] = useState(false);
-
+    const [transactionType, setTransactionType] = useState<
+        "income" | "expense"
+    >("income");
+    const [category, setCategory] = useState("");
+    const [amount, setAmount] = useState("");
+    const [payment, setPayment] = useState("");
+    const [description, setDescription] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const [transactionDate, setTransactionDate] = useState<Date | undefined>(
         new Date()
     );
+    const [allCategories, setAllCategories] = useState<Category[]>([]);
 
-    const handleSubmit = (event: React.FormEvent) => {
+    useEffect(() => {
+        if (open) {
+            const fetchCategories = async () => {
+                try {
+                    const res = await api.get("/categories");
+                    setAllCategories(res.data.data);
+                } catch (err) {
+                    toast.error("カテゴリの取得に失敗しました。");
+                }
+            };
+            fetchCategories();
+        }
+    }, [open]);
+
+    // 取引タイプが変更されたら、カテゴリの選択をリセット
+    useEffect(() => {
+        setCategory("");
+    }, [transactionType]);
+
+    const filteredCategories = allCategories.filter(
+        (c) =>
+            c.transaction_type_id === (transactionType === "income" ? 1 : 2)
+    );
+
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        console.log("新しい取引が追加されました");
-        setOpen(false);
+
+        const transaction_type_id = transactionType === "income" ? 1 : 2;
+
+        try {
+            const res = await api.post("/transactions", {
+                transaction_date: transactionDate?.toISOString(), //todo: 要確認
+                transaction_type_id,
+                category_id: Number(category),
+                amount: Number(amount),
+                payment_method_id: payment,
+                memo: description,
+            });
+
+            if (res.data.success) {
+                setOpen(false);
+                setTransactionType("income");
+                setCategory("");
+                setAmount("");
+                setPayment("");
+                setDescription("");
+                setTransactionDate(new Date());
+                setErrorMessage("");
+                toast.success("取引を登録しました");
+            }
+        } catch (err: any) {
+            const messageArray = err.response?.data?.messages;
+            if (Array.isArray(messageArray)) {
+                setErrorMessage(messageArray.join(" "));
+            } else {
+                setErrorMessage("登録に失敗しました。");
+            }
+        }
     };
 
     return (
@@ -59,7 +124,12 @@ export function NewTransactionModal() {
                     {/* 取引タイプ */}
                     <div>
                         <Label htmlFor="type">取引タイプ</Label>
-                        <Select defaultValue="income">
+                        <Select
+                            value={transactionType}
+                            onValueChange={(val) =>
+                                setTransactionType(val as "income" | "expense")
+                            }
+                        >
                             <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
                                 <SelectValue placeholder="選択してください" />
                             </SelectTrigger>
@@ -71,15 +141,20 @@ export function NewTransactionModal() {
                     </div>
                     {/* カテゴリ */}
                     <div>
-                        <Label htmlFor="type">カテゴリ</Label>
-                        <Select defaultValue="給与">
-                            <SelectTrigger className="bg-gray-800 border-gray-700text-white">
+                        <Label htmlFor="category">カテゴリ</Label>
+                        <Select value={category} onValueChange={setCategory}>
+                            <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
                                 <SelectValue placeholder="選択してください" />
                             </SelectTrigger>
                             <SelectContent className="bg-gray-800 text-white">
-                                <SelectItem value="給与">給与</SelectItem>
-                                <SelectItem value="副収入">副収入</SelectItem>
-                                <SelectItem value="その他">その他</SelectItem>
+                                {filteredCategories.map((cat) => (
+                                    <SelectItem
+                                        key={cat.category_id}
+                                        value={String(cat.category_id)}
+                                    >
+                                        {cat.name}
+                                    </SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
                     </div>
@@ -90,10 +165,12 @@ export function NewTransactionModal() {
                             id="amount"
                             type="number"
                             className="bg-gray-800 border-gray-700"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
                         />
                     </div>
                     {/* 支払方法 */}
-                    {/* todo: 取引タイプが支出の場合この項目は要るのか検討が必要 */}
+                    {/* todo: 支払方法も動的に取得・表示するように修正する */}
                     <div>
                         <Label htmlFor="type">支払方法</Label>
                         <Select defaultValue="現金">
@@ -120,8 +197,15 @@ export function NewTransactionModal() {
                         <Input
                             id="description"
                             className="bg-gray-800 border-gray-700"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
                         />
                     </div>
+
+                    {errorMessage && (
+                        <p className="text-sm text-red-400">{errorMessage}</p>
+                    )}
+
                     <Button type="submit" className="w-full">
                         追加
                     </Button>
