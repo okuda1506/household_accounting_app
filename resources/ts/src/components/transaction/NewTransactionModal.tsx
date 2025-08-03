@@ -22,6 +22,7 @@ import {
 import api from "../../../lib/axios";
 import { toast } from "react-toastify";
 import { Category } from "../../types/categories";
+import { PaymentMethod } from "../../types/paymentMethod";
 
 export function NewTransactionModal() {
     const [open, setOpen] = useState(false);
@@ -30,13 +31,16 @@ export function NewTransactionModal() {
     >("income");
     const [category, setCategory] = useState("");
     const [amount, setAmount] = useState("");
-    const [payment, setPayment] = useState("");
+    const [paymentMethod, setPaymentMethod] = useState("");
     const [description, setDescription] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [transactionDate, setTransactionDate] = useState<Date | undefined>(
         new Date()
     );
     const [allCategories, setAllCategories] = useState<Category[]>([]);
+    const [allPaymentMethods, setAllPaymentMethods] = useState<PaymentMethod[]>(
+        []
+    );
 
     useEffect(() => {
         if (open) {
@@ -49,17 +53,31 @@ export function NewTransactionModal() {
                 }
             };
             fetchCategories();
+
+            const fetchPaymentMethods = async () => {
+                try {
+                    const res = await api.get("/payment-methods");
+                    setAllPaymentMethods(res.data.data);
+                } catch (err) {
+                    toast.error("支払方法の取得に失敗しました。");
+                }
+            };
+            fetchPaymentMethods();
         }
     }, [open]);
 
-    // 取引タイプが変更されたら、カテゴリの選択をリセット
+    // 取引タイプが変更されたらカテゴリと支払方法の選択をリセット
     useEffect(() => {
         setCategory("");
+        setPaymentMethod("");
     }, [transactionType]);
 
     const filteredCategories = allCategories.filter(
-        (c) =>
-            c.transaction_type_id === (transactionType === "income" ? 1 : 2)
+        (c) => c.transaction_type_id === (transactionType === "income" ? 1 : 2)
+    );
+
+    const filteredPaymentMethods = allPaymentMethods.filter(
+        (p) => p.transaction_type_id === (transactionType === "income" ? 1 : 2)
     );
 
     const handleSubmit = async (event: React.FormEvent) => {
@@ -73,7 +91,7 @@ export function NewTransactionModal() {
                 transaction_type_id,
                 category_id: Number(category),
                 amount: Number(amount),
-                payment_method_id: payment,
+                payment_method_id: Number(paymentMethod),
                 memo: description,
             });
 
@@ -82,7 +100,7 @@ export function NewTransactionModal() {
                 setTransactionType("income");
                 setCategory("");
                 setAmount("");
-                setPayment("");
+                setPaymentMethod("");
                 setDescription("");
                 setTransactionDate(new Date());
                 setErrorMessage("");
@@ -170,24 +188,24 @@ export function NewTransactionModal() {
                         />
                     </div>
                     {/* 支払方法 */}
-                    {/* todo: 支払方法も動的に取得・表示するように修正する */}
                     <div>
-                        <Label htmlFor="type">支払方法</Label>
-                        <Select defaultValue="現金">
+                        <Label htmlFor="payment-method">支払方法</Label>
+                        <Select
+                            value={paymentMethod}
+                            onValueChange={setPaymentMethod}
+                        >
                             <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
                                 <SelectValue placeholder="選択してください" />
                             </SelectTrigger>
                             <SelectContent className="bg-gray-800 text-white">
-                                <SelectItem value="現金">現金</SelectItem>
-                                <SelectItem value="クレジットカード">
-                                    クレジットカード
-                                </SelectItem>
-                                <SelectItem value="銀行振込">
-                                    銀行振込
-                                </SelectItem>
-                                <SelectItem value="電子マネー">
-                                    電子マネー
-                                </SelectItem>
+                                {filteredPaymentMethods.map((pay) => (
+                                    <SelectItem
+                                        key={pay.payment_method_id}
+                                        value={String(pay.payment_method_id)}
+                                    >
+                                        {pay.name}
+                                    </SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
                     </div>
