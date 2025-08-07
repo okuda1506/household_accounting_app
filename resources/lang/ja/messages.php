@@ -37,7 +37,7 @@ return [
     'transaction_date_date_format' => '取引日が無効です。',
     'category_id_required' => 'カテゴリは必須です。',
     'category_id_exists' => 'カテゴリを選択してください。',
-    'amount_required' => '金額は必須です。',
+    'amount_required' => '金額を入力してください。',
     'amount_numeric' => '金額は数値で入力してください。',
     'amount_min' => '金額は0以上の値を入力してください。',
     'payment_method_id_required' => '支払方法は必須です。',
