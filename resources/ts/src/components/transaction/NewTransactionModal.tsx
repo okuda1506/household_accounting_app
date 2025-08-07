@@ -99,7 +99,7 @@ export function NewTransactionModal() {
                 transaction_date: transactionDate?.toISOString(), //todo: 要確認
                 transaction_type_id,
                 category_id: Number(category),
-                amount: Number(amount),
+                amount: amount === "" ? null : Number(amount),
                 payment_method_id: Number(paymentMethod),
                 memo: description,
             });
