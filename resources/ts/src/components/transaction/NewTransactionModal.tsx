@@ -33,7 +33,7 @@ export function NewTransactionModal() {
     const [amount, setAmount] = useState("");
     const [paymentMethod, setPaymentMethod] = useState("");
     const [description, setDescription] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
+    const [errors, setErrors] = useState<{ [key: string]: string[] }>({});
     const [transactionDate, setTransactionDate] = useState<Date | undefined>(
         new Date()
     );
@@ -63,6 +63,15 @@ export function NewTransactionModal() {
                 }
             };
             fetchPaymentMethods();
+        } else {
+            // モーダルが閉じたときにフォームの状態をリセット
+            setTransactionType("income");
+            setCategory("");
+            setAmount("");
+            setPaymentMethod("");
+            setDescription("");
+            setTransactionDate(new Date());
+            setErrors({});
         }
     }, [open]);
 
@@ -97,21 +106,37 @@ export function NewTransactionModal() {
 
             if (res.data.success) {
                 setOpen(false);
-                setTransactionType("income");
-                setCategory("");
-                setAmount("");
-                setPaymentMethod("");
-                setDescription("");
-                setTransactionDate(new Date());
-                setErrorMessage("");
                 toast.success("取引を登録しました");
             }
         } catch (err: any) {
-            const messageArray = err.response?.data?.messages;
-            if (Array.isArray(messageArray)) {
-                setErrorMessage(messageArray.join(" "));
+            if (
+                err.response &&
+                err.response.status === 422 &&
+                Array.isArray(err.response.data.messages)
+            ) {
+                const newErrors: { [key: string]: string[] } = {};
+                const errorMessages: string[] = err.response.data.messages;
+
+                // エラーメッセージをキーワードで振り分ける
+                errorMessages.forEach((msg) => {
+                    if (msg.includes("取引日")) {
+                        newErrors.transaction_date = [msg];
+                    } else if (msg.includes("タイプ")) {
+                        newErrors.transaction_type_id = [msg];
+                    } else if (msg.includes("カテゴリ")) {
+                        newErrors.category_id = [msg];
+                    } else if (msg.includes("金額")) {
+                        newErrors.amount = [msg];
+                    } else if (msg.includes("支払方法")) {
+                        newErrors.payment_method_id = [msg];
+                    } else {
+                        // どのキーワードにも一致しないエラー
+                        newErrors.general = [...(newErrors.general || []), msg];
+                    }
+                });
+                setErrors(newErrors);
             } else {
-                setErrorMessage("登録に失敗しました。");
+                setErrors({ general: ["登録に失敗しました。"] });
             }
         }
     };
@@ -133,7 +158,12 @@ export function NewTransactionModal() {
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <Label htmlFor="transaction-date">取引日</Label>
+                        <div className="flex items-center justify-between mb-1">
+                            <Label htmlFor="transaction-date">取引日</Label>
+                            <p className="h-5 text-sm text-red-400 text-right">
+                                {errors.transaction_date?.[0]}
+                            </p>
+                        </div>
                         <DatePicker
                             date={transactionDate}
                             setDate={setTransactionDate}
@@ -141,14 +171,25 @@ export function NewTransactionModal() {
                     </div>
                     {/* 取引タイプ */}
                     <div>
-                        <Label htmlFor="type">取引タイプ</Label>
+                        <div className="flex items-center justify-between mb-1">
+                            <Label htmlFor="type">取引タイプ</Label>
+                            <p className="h-5 text-sm text-red-400 text-right">
+                                {errors.transaction_type_id?.[0]}
+                            </p>
+                        </div>
                         <Select
                             value={transactionType}
                             onValueChange={(val) =>
                                 setTransactionType(val as "income" | "expense")
                             }
                         >
-                            <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                            <SelectTrigger
+                                className={`bg-gray-800 border-gray-700 text-white ${
+                                    errors.transaction_type_id
+                                        ? "border-red-500"
+                                        : ""
+                                }`}
+                            >
                                 <SelectValue placeholder="選択してください" />
                             </SelectTrigger>
                             <SelectContent className="bg-gray-800 text-white">
@@ -159,9 +200,18 @@ export function NewTransactionModal() {
                     </div>
                     {/* カテゴリ */}
                     <div>
-                        <Label htmlFor="category">カテゴリ</Label>
+                        <div className="flex items-center justify-between mb-1">
+                            <Label htmlFor="category">カテゴリ</Label>
+                            <p className="h-5 text-sm text-red-400 text-right">
+                                {errors.category_id?.[0]}
+                            </p>
+                        </div>
                         <Select value={category} onValueChange={setCategory}>
-                            <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                            <SelectTrigger
+                                className={`bg-gray-800 border-gray-700 text-white ${
+                                    errors.category_id ? "border-red-500" : ""
+                                }`}
+                            >
                                 <SelectValue placeholder="選択してください" />
                             </SelectTrigger>
                             <SelectContent className="bg-gray-800 text-white">
@@ -178,23 +228,41 @@ export function NewTransactionModal() {
                     </div>
                     {/* 金額 */}
                     <div>
-                        <Label htmlFor="amount">金額</Label>
+                        <div className="flex items-center justify-between mb-1">
+                            <Label htmlFor="amount">金額</Label>
+                            <p className="h-5 text-sm text-red-400 text-right">
+                                {errors.amount?.[0]}
+                            </p>
+                        </div>
                         <Input
                             id="amount"
                             type="number"
-                            className="bg-gray-800 border-gray-700"
+                            className={`bg-gray-800 border-gray-700 ${
+                                errors.amount ? "border-red-500" : ""
+                            }`}
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
                         />
                     </div>
                     {/* 支払方法 */}
                     <div>
-                        <Label htmlFor="payment-method">支払方法</Label>
+                        <div className="flex items-center justify-between mb-1">
+                            <Label htmlFor="payment-method">支払方法</Label>
+                            <p className="h-5 text-sm text-red-400 text-right">
+                                {errors.payment_method_id?.[0]}
+                            </p>
+                        </div>
                         <Select
                             value={paymentMethod}
                             onValueChange={setPaymentMethod}
                         >
-                            <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                            <SelectTrigger
+                                className={`bg-gray-800 border-gray-700 text-white ${
+                                    errors.payment_method_id
+                                        ? "border-red-500"
+                                        : ""
+                                }`}
+                            >
                                 <SelectValue placeholder="選択してください" />
                             </SelectTrigger>
                             <SelectContent className="bg-gray-800 text-white">
@@ -211,17 +279,28 @@ export function NewTransactionModal() {
                     </div>
                     {/* メモ */}
                     <div>
-                        <Label htmlFor="description">メモ</Label>
+                        <div className="flex items-center justify-between mb-1">
+                            <Label htmlFor="description">メモ</Label>
+                            <p className="h-5 text-sm text-red-400 text-right">
+                                {errors.memo?.[0]}
+                            </p>
+                        </div>
                         <Input
                             id="description"
-                            className="bg-gray-800 border-gray-700"
+                            className={`bg-gray-800 border-gray-700 ${
+                                errors.memo ? "border-red-500" : ""
+                            }`}
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                         />
                     </div>
 
-                    {errorMessage && (
-                        <p className="text-sm text-red-400">{errorMessage}</p>
+                    {errors.general && (
+                        <div className="text-sm text-red-400 space-y-1">
+                            {errors.general.map((msg, index) => (
+                                <p key={index}>{msg}</p>
+                            ))}
+                        </div>
                     )}
 
                     <Button type="submit" className="w-full">
