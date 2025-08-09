@@ -1,5 +1,6 @@
 "use client";
 
+import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
@@ -24,7 +25,11 @@ import { toast } from "react-toastify";
 import { Category } from "../../types/categories";
 import { PaymentMethod } from "../../types/paymentMethod";
 
-export function NewTransactionModal() {
+type Props = {
+    onSuccess: () => void;
+};
+
+export function NewTransactionModal({ onSuccess }: Props) {
     const [open, setOpen] = useState(false);
     const [transactionType, setTransactionType] = useState<
         "income" | "expense"
@@ -94,9 +99,13 @@ export function NewTransactionModal() {
 
         const transaction_type_id = transactionType === "income" ? 1 : 2;
 
+        const formattedDate = transactionDate
+            ? format(transactionDate, "yyyy-MM-dd HH:mm:ss")
+            : undefined;
+
         try {
             const res = await api.post("/transactions", {
-                transaction_date: transactionDate?.toISOString(), //todo: 要確認
+                transaction_date: formattedDate,
                 transaction_type_id,
                 category_id: Number(category),
                 amount: amount === "" ? null : Number(amount),
@@ -107,6 +116,7 @@ export function NewTransactionModal() {
             if (res.data.success) {
                 setOpen(false);
                 toast.success("取引を登録しました");
+                onSuccess();
             }
         } catch (err: any) {
             if (

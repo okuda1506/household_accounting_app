@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { format } from "date-fns";
 import {
     Card,
     CardContent,
@@ -38,13 +39,8 @@ export default function Dashboard() {
     }, []);
 
     const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        const hours = date.getHours().toString().padStart(2, "0");
-        const minutes = date.getMinutes().toString().padStart(2, "0");
-
-        return `${month}月${day}日 ${hours}:${minutes}`;
+        // const date = new Date(dateString);
+        return format(dateString, "M月d日");
     };
 
     return (
