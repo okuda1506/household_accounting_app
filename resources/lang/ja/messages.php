@@ -34,7 +34,7 @@ return [
     'sorted_category_ids_integer' => 'カテゴリIDは整数で指定してください。',
     'sorted_category_ids_exists' => '指定されたカテゴリIDが存在しません。',
     'transaction_date_required' => '取引日は必須です。',
-    'transaction_date_date_format' => '取引日が無効です。',
+    'transaction_date_date' => '取引日が無効です。',
     'category_id_required' => 'カテゴリは必須です。',
     'category_id_exists' => 'カテゴリを選択してください。',
     'amount_required' => '金額を入力してください。',

@@ -39,9 +39,24 @@ export default function Dashboard() {
     }, []);
 
     const formatDate = (dateString: string) => {
-        // const date = new Date(dateString);
         return format(dateString, "M月d日");
     };
+
+    const fetchDashboardData = () => {
+        api.get<DashboardResponse>("/dashboard")
+            .then((res) => {
+                setSummary(res.data.monthly_summary);
+                setTrend(res.data.expense_trend);
+                setTransactions(res.data.recent_transactions);
+            })
+            .catch((err) => {
+                console.error("ダッシュボードの取得に失敗", err);
+            });
+    };
+
+    useEffect(() => {
+        fetchDashboardData();
+    }, []);
 
     return (
         <div className="min-h-screen bg-black text-white">
@@ -56,7 +71,7 @@ export default function Dashboard() {
             <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 sm:px-0 space-y-6">
                     <div className="fixed bottom-4 right-4">
-                        <NewTransactionModal />
+                        <NewTransactionModal onSuccess={fetchDashboardData} />
                     </div>
                     <Card className="bg-black border-gray-800">
                         <CardHeader>
