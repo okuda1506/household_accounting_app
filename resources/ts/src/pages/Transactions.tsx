@@ -4,6 +4,7 @@ import { NavigationModal } from "../components/NavigationModal";
 import { TransactionList } from "../components/transaction/TransactionList";
 import api from "../../lib/axios";
 import { Transaction } from "../types/transactions";
+import { RawTransaction } from "../types/rawTransaction";
 import { toast } from "react-toastify";
 
 export default function Transactions() {
@@ -12,10 +13,10 @@ export default function Transactions() {
     const fetchTransactions = async () => {
         try {
             const res = await api.get("/transactions");
-            const rawTransactions = res.data.data;
+            const rawTransactions: RawTransaction[] = res.data.data;
 
             const parsedTransactions: Transaction[] = rawTransactions.map(
-                (t: any) => {
+                (t: RawTransaction) => {
                     const date = new Date(t.transaction_date);
                     return {
                         transaction_id:
