@@ -49,25 +49,20 @@ export function NewTransactionModal({ onSuccess }: Props) {
 
     useEffect(() => {
         if (open) {
-            const fetchCategories = async () => {
+            const fetchInitialData = async () => {
                 try {
-                    const res = await api.get("/categories");
-                    setAllCategories(res.data.data);
+                    const [categoriesRes, paymentMethodsRes] =
+                        await Promise.all([
+                            api.get("/categories"),
+                            api.get("/payment-methods"),
+                        ]);
+                    setAllCategories(categoriesRes.data.data);
+                    setAllPaymentMethods(paymentMethodsRes.data.data);
                 } catch (err) {
-                    toast.error("カテゴリの取得に失敗しました。");
+                    toast.error("カテゴリ・支払方法の取得に失敗しました。");
                 }
             };
-            fetchCategories();
-
-            const fetchPaymentMethods = async () => {
-                try {
-                    const res = await api.get("/payment-methods");
-                    setAllPaymentMethods(res.data.data);
-                } catch (err) {
-                    toast.error("支払方法の取得に失敗しました。");
-                }
-            };
-            fetchPaymentMethods();
+            fetchInitialData();
         } else {
             // モーダルが閉じたときにフォームの状態をリセット
             setTransactionType("income");
