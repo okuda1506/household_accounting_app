@@ -44,8 +44,7 @@ class DashboardService
             ->where('user_id', $userId)
             ->where('transaction_type_id', self::TRANSACTION_TYPE_INCOME)
             ->where('deleted', self::IS_NOT_DELETED)
-                                                                         // ->whereBetween('transaction_date', [$this->startOfMonth, $this->endOfMonth])
-            ->whereBetween('transaction_date', ['2025-03-01', '2025-03-30']) // todo: テスト実装（後で上記に戻す）
+            ->whereBetween('transaction_date', [$this->startOfMonth, $this->endOfMonth])
             ->sum('amount');
 
         // 今月の合計支出
@@ -53,8 +52,7 @@ class DashboardService
             ->where('user_id', $userId)
             ->where('transaction_type_id', self::TRANSACTION_TYPE_EXPENSE)
             ->where('deleted', self::IS_NOT_DELETED)
-                                                                         // ->whereBetween('transaction_date', [$this->startOfMonth, $this->endOfMonth])
-            ->whereBetween('transaction_date', ['2025-03-01', '2025-03-30']) // todo: テスト実装（後で上記に戻す）
+            ->whereBetween('transaction_date', [$this->startOfMonth, $this->endOfMonth])
             ->sum('amount');
 
         return [

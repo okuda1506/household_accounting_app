@@ -43,7 +43,7 @@ class TransactionRequest extends FormRequest
         $transactionTypeId = $this->input('transaction_type_id');
 
         return [
-            'transaction_date'    => 'required|date_format:Y-m-d',
+            'transaction_date'    => 'required|date',
             'transaction_type_id' => 'required|integer|exists:transaction_types,id',
             'category_id'         => [
                 'bail',
@@ -66,7 +66,7 @@ class TransactionRequest extends FormRequest
     {
         return [
             'transaction_date.required' => __('messages.transaction_date_required'),
-            'transaction_date.date_format' => __('messages.transaction_date_date_format'),
+            'transaction_date.date' => __('messages.transaction_date_date'),
             'transaction_type_id.required' => __('messages.transaction_type_id_required'),
             'transaction_type_id.integer'  => __('messages.transaction_type_id_integer'),
             'transaction_type_id.exists'   => __('messages.transaction_type_id_exists'),

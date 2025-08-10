@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { format } from "date-fns";
 import {
     Card,
     CardContent,
@@ -6,7 +7,7 @@ import {
     CardTitle,
 } from "../components/ui/card";
 import { ExpenseChart } from "../components/ExpenseChart";
-import { NewTransactionModal } from "../components/NewTransactionModal";
+import { NewTransactionModal } from "../components/transaction/NewTransactionModal";
 import { NavigationModal } from "../components/NavigationModal";
 import api from "../../lib/axios";
 
@@ -38,14 +39,24 @@ export default function Dashboard() {
     }, []);
 
     const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        const hours = date.getHours().toString().padStart(2, "0");
-        const minutes = date.getMinutes().toString().padStart(2, "0");
-
-        return `${month}月${day}日 ${hours}:${minutes}`;
+        return format(dateString, "M月d日");
     };
+
+    const fetchDashboardData = () => {
+        api.get<DashboardResponse>("/dashboard")
+            .then((res) => {
+                setSummary(res.data.monthly_summary);
+                setTrend(res.data.expense_trend);
+                setTransactions(res.data.recent_transactions);
+            })
+            .catch((err) => {
+                console.error("ダッシュボードの取得に失敗", err);
+            });
+    };
+
+    useEffect(() => {
+        fetchDashboardData();
+    }, []);
 
     return (
         <div className="min-h-screen bg-black text-white">
@@ -60,7 +71,7 @@ export default function Dashboard() {
             <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 sm:px-0 space-y-6">
                     <div className="fixed bottom-4 right-4">
-                        <NewTransactionModal />
+                        <NewTransactionModal onSuccess={fetchDashboardData} />
                     </div>
                     <Card className="bg-black border-gray-800">
                         <CardHeader>

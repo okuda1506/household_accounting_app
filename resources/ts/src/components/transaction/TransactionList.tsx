@@ -1,65 +1,29 @@
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { useState } from "react";
+import { format } from "date-fns";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "./ui/select";
-import api from "../../lib/axios";
-import { Transaction } from "../types/transactions";
-import { toast } from "react-toastify";
+} from "../ui/select";
+import { Transaction } from "../../types/transactions";
 
-export function TransactionList() {
+type TransactionListProps = {
+    transactions: Transaction[];
+};
+
+export function TransactionList({ transactions }: TransactionListProps) {
     const now = new Date();
     const [selectedYear, setSelectedYear] = useState<number>(now.getFullYear());
     const [selectedMonth, setSelectedMonth] = useState<number>(
         now.getMonth() + 1
     );
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
-
-    const fetchTransactions = async () => {
-        try {
-            const res = await api.get("/transactions");
-            const rawTransactions = res.data.data;
-
-            const parsedTransactions: Transaction[] = rawTransactions.map(
-                (t: any) => {
-                    const date = new Date(t.transaction_date);
-                    return {
-                        transaction_id:
-                            t.transaction_id ??
-                            `${t.user_id}-${t.transaction_date}`, // 適当なユニークキーを生成
-                        transaction_type_id: t.transaction_type_id,
-                        date: t.transaction_date,
-                        memo: t.memo ?? "",
-                        amount: Number(t.amount),
-                        year: date.getFullYear(),
-                        month: date.getMonth() + 1,
-                        day: date.getDate(),
-                    };
-                }
-            );
-
-            setTransactions(parsedTransactions);
-        } catch (err) {
-            toast.error("取引データの取得に失敗しました");
-        }
-    };
-
-    useEffect(() => {
-        fetchTransactions();
-    }, []);
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        const hours = date.getHours().toString().padStart(2, "0");
-        const minutes = date.getMinutes().toString().padStart(2, "0");
-
-        return `${month}月${day}日 ${hours}:${minutes}`;
+        return format(date, "M月d日");
     };
 
     // 取引年の選択肢を動的に生成する
