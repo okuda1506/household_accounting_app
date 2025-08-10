@@ -46,6 +46,10 @@ export function NewTransactionModal({ onSuccess }: Props) {
     const [allPaymentMethods, setAllPaymentMethods] = useState<PaymentMethod[]>(
         []
     );
+    const TRANSACTION_TYPE_IDS = {
+        INCOME: 1,
+        EXPENSE: 2,
+    } as const;
 
     useEffect(() => {
         if (open) {
@@ -82,7 +86,7 @@ export function NewTransactionModal({ onSuccess }: Props) {
     }, [transactionType]);
 
     const filteredCategories = allCategories.filter(
-        (c) => c.transaction_type_id === (transactionType === "income" ? 1 : 2)
+        (c) => c.transaction_type_id === (transactionType === "income" ? TRANSACTION_TYPE_IDS.INCOME : TRANSACTION_TYPE_IDS.EXPENSE)
     );
 
     const filteredPaymentMethods = allPaymentMethods.filter(
