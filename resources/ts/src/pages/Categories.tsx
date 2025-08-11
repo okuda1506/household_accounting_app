@@ -153,10 +153,7 @@ export default function Categories() {
                         open={editModalOpen}
                         setOpen={setEditModalOpen}
                         category={editingCategory}
-                        onSuccess={() => {
-                            fetchCategories();
-                            setEditModalOpen(false);
-                        }}
+                        onSuccess={fetchCategories}
                     />
                 )}
             </main>
