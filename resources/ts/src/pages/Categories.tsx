@@ -67,7 +67,7 @@ export default function Categories() {
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
                         <span className="text-xl font-semibold">
-                            카테고리 목록
+                            Category
                         </span>
                         <NavigationModal />
                     </div>
@@ -84,7 +84,7 @@ export default function Categories() {
                         <CardHeader>
                             <div className="flex items-center justify-between w-full">
                                 <CardTitle className="text-lg font-medium">
-                                    카테고리 목록
+                                    カテゴリ一覧
                                 </CardTitle>
                                 <Select
                                     defaultValue="income"
