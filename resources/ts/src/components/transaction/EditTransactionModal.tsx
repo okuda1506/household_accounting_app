@@ -42,7 +42,6 @@ export function EditTransactionModal({
 
         try {
             const res = await api.put(`/transactions/${transaction.transaction_id}`, {
-                user_id: transaction.user_id,
                 transaction_type_id: transaction.transaction_type_id,
             });
 
