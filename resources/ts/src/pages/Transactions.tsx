@@ -60,7 +60,7 @@ export default function Transactions() {
                     <div className="fixed bottom-6 right-6 z-50">
                         <NewTransactionModal onSuccess={fetchTransactions} />
                     </div>
-                    <TransactionList transactions={transactions} />
+                    <TransactionList transactions={transactions} onSuccess={fetchTransactions} />
                 </div>
             </main>
         </div>
