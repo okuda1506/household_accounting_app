@@ -86,17 +86,28 @@ export function NewTransactionModal({ onSuccess }: Props) {
     }, [transactionType]);
 
     const filteredCategories = allCategories.filter(
-        (c) => c.transaction_type_id === (transactionType === "income" ? TRANSACTION_TYPE_IDS.INCOME : TRANSACTION_TYPE_IDS.EXPENSE)
+        (c) =>
+            c.transaction_type_id ===
+            (transactionType === "income"
+                ? TRANSACTION_TYPE_IDS.INCOME
+                : TRANSACTION_TYPE_IDS.EXPENSE)
     );
 
     const filteredPaymentMethods = allPaymentMethods.filter(
-        (p) => p.transaction_type_id === (transactionType === "income" ? 1 : 2)
+        (p) =>
+            p.transaction_type_id ===
+            (transactionType === "income"
+                ? TRANSACTION_TYPE_IDS.INCOME
+                : TRANSACTION_TYPE_IDS.EXPENSE)
     );
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        const transaction_type_id = transactionType === "income" ? 1 : 2;
+        const transaction_type_id =
+            transactionType === "income"
+                ? TRANSACTION_TYPE_IDS.INCOME
+                : TRANSACTION_TYPE_IDS.EXPENSE;
 
         const formattedDate = transactionDate
             ? format(transactionDate, "yyyy-MM-dd HH:mm:ss")
