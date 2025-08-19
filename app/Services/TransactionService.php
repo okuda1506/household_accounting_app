@@ -39,7 +39,7 @@ class TransactionService
                         ->orderBy('sort_no');
                     ;
                 },
-                'paymentMethod' => function ($query) use ($userId): void {
+                'paymentMethod' => function ($query): void {
                     $query->where('deleted', false);
                 },
             ])
