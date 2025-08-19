@@ -31,10 +31,23 @@ class TransactionService
     public function getTransactions(int $userId): Collection
     {
         try {
-            return Transaction::where('deleted', false)
+            return Transaction::with([
+                'category'      => function ($query) use ($userId): void {
+                    $query
+                        ->where('user_id', $userId)
+                        ->where('deleted', false)
+                        ->orderBy('sort_no');
+                    ;
+                },
+                'paymentMethod' => function ($query): void {
+                    $query->where('deleted', false);
+                },
+            ])
                 ->where('user_id', $userId)
+                ->where('deleted', false)
                 ->orderBy('transaction_date')
                 ->get();
+
         } catch (\Exception $e) {
             throw new \Exception(__('messages.category_get_failed'), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
