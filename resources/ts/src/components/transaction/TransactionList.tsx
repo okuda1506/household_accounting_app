@@ -131,13 +131,13 @@ export function TransactionList({
 
                     {filteredTransactions.length > 0 ? (
                         <ul className="space-y-4">
-                            {filteredTransactions.map((transaction) => {
+                            {filteredTransactions.map((transaction, index) => {
                                 const isIncome =
                                     transaction.transaction_type_id === 1;
 
                                 return (
                                     <li
-                                        key={transaction.transaction_id}
+                                        key={transaction.transaction_id ?? index}
                                         className="hover:bg-gray-700 cursor-pointer rounded-md px-4 py-3 flex justify-between items-center text-sm"
                                         onClick={() => {
                                             setEditingTransaction(transaction);
