@@ -98,9 +98,9 @@ class TransactionControllerTest extends TestCase
 
         // 検証
         $response->assertStatus(Response::HTTP_OK) // ApiResponse::successはデフォルトで200を返す
-            ->assertJson([
-                'data' => ['transaction_id' => $newTransaction->id],
+            ->assertJson([ // assertJsonの配列は1つにまとめる
                 'data' => [
+                    'transaction_id' => $newTransaction->id,
                     'memo' => '夕食',
                     'amount' => 1500.00, // amountはdecimal:2でキャストされるため
                 ],
@@ -154,6 +154,7 @@ class TransactionControllerTest extends TestCase
 
         // 検証
         $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonPath('data.transaction_id', $updatedTransaction->id)
             ->assertJsonPath('data.memo', '更新されたメモ')
             ->assertJsonPath('message', __('messages.transaction_updated'));
     }
