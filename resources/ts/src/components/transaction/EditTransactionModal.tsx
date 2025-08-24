@@ -62,6 +62,17 @@ export function EditTransactionModal({
     const transactionType =
         transaction.transaction_type_id === 1 ? "income" : "expense";
 
+    useEffect(() => {
+        if (open) {
+            setCategory(String(transaction.category_id));
+            setAmount(Math.abs(transaction.amount));
+            setPaymentMethod(String(transaction.payment_method_id));
+            setDescription(transaction.memo);
+            setTransactionDate(new Date(transaction.date));
+            setErrors({});
+        }
+    }, [open, transaction]);
+
     const filteredCategories = allCategories.filter(
         (c) =>
             c.transaction_type_id ===
