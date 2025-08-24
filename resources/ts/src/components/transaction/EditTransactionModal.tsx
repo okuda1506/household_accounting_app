@@ -44,7 +44,7 @@ export function EditTransactionModal({
 }: Props) {
     const [category, setCategory] = useState(String(transaction.category_id));
     // 金額はUI上では常に正の数として扱う
-    const [amount, setAmount] = useState(Math.abs(transaction.amount));
+    const [amount, setAmount] = useState(String(Math.abs(transaction.amount)));
     const [paymentMethod, setPaymentMethod] = useState(
         String(transaction.payment_method_id)
     );
@@ -65,7 +65,7 @@ export function EditTransactionModal({
     useEffect(() => {
         if (open) {
             setCategory(String(transaction.category_id));
-            setAmount(Math.abs(transaction.amount));
+            setAmount(String(Math.abs(transaction.amount)));
             setPaymentMethod(String(transaction.payment_method_id));
             setDescription(transaction.memo);
             setTransactionDate(new Date(transaction.date));
@@ -227,9 +227,7 @@ export function EditTransactionModal({
                                 errors.amount ? "border-red-500" : ""
                             }`}
                             value={amount}
-                            onChange={(e) =>
-                                setAmount(Number(e.target.value))
-                            }
+                            onChange={(e) => setAmount(e.target.value)}
                         />
                     </div>
                     {/* 支払方法 */}

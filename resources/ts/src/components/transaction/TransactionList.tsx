@@ -12,8 +12,6 @@ import { Transaction } from "../../types/transactions";
 import { EditTransactionModal } from "./EditTransactionModal";
 import { Category } from "../../types/categories";
 import { PaymentMethod } from "../../types/paymentMethod";
-import api from "../../../lib/axios";
-import { toast } from "react-toastify";
 
 type TransactionListProps = {
     transactions: Transaction[];
