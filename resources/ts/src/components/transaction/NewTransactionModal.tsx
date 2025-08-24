@@ -27,9 +27,15 @@ import { PaymentMethod } from "../../types/paymentMethod";
 
 type Props = {
     onSuccess: () => void;
+    allCategories: Category[];
+    allPaymentMethods: PaymentMethod[];
 };
 
-export function NewTransactionModal({ onSuccess }: Props) {
+export function NewTransactionModal({
+    onSuccess,
+    allCategories,
+    allPaymentMethods,
+}: Props) {
     const [open, setOpen] = useState(false);
     const [transactionType, setTransactionType] = useState<
         "income" | "expense"
@@ -42,32 +48,13 @@ export function NewTransactionModal({ onSuccess }: Props) {
     const [transactionDate, setTransactionDate] = useState<Date | undefined>(
         new Date()
     );
-    const [allCategories, setAllCategories] = useState<Category[]>([]);
-    const [allPaymentMethods, setAllPaymentMethods] = useState<PaymentMethod[]>(
-        []
-    );
     const TRANSACTION_TYPE_IDS = {
         INCOME: 1,
         EXPENSE: 2,
     } as const;
 
     useEffect(() => {
-        if (open) {
-            const fetchInitialData = async () => {
-                try {
-                    const [categoriesRes, paymentMethodsRes] =
-                        await Promise.all([
-                            api.get("/categories"),
-                            api.get("/payment-methods"),
-                        ]);
-                    setAllCategories(categoriesRes.data.data);
-                    setAllPaymentMethods(paymentMethodsRes.data.data);
-                } catch (err) {
-                    toast.error("カテゴリ・支払方法の取得に失敗しました。");
-                }
-            };
-            fetchInitialData();
-        } else {
+        if (!open) {
             // モーダルが閉じたときにフォームの状態をリセット
             setTransactionType("income");
             setCategory("");

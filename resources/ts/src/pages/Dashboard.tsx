@@ -17,40 +17,42 @@ import type {
     RecentTransaction,
     DashboardResponse,
 } from "../types/dashboard";
+import { Category } from "../types/categories";
+import { PaymentMethod } from "../types/paymentMethod";
+import { toast } from "react-toastify";
 
 export default function Dashboard() {
     const [summary, setSummary] = useState<MonthlySummary | null>(null);
     const [trend, setTrend] = useState<ExpenseTrend[]>([]);
     const [transactions, setTransactions] = useState<RecentTransaction[]>([]);
+    const [allCategories, setAllCategories] = useState<Category[]>([]);
+    const [allPaymentMethods, setAllPaymentMethods] = useState<PaymentMethod[]>(
+        []
+    );
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
-
-    useEffect(() => {
-        api.get<DashboardResponse>("/dashboard")
-            .then((res) => {
-                setSummary(res.data.monthly_summary);
-                setTrend(res.data.expense_trend);
-                setTransactions(res.data.recent_transactions);
-            })
-            .catch((err) => {
-                console.error("ダッシュボードの取得に失敗", err);
-            });
-    }, []);
 
     const formatDate = (dateString: string) => {
         return format(dateString, "M月d日");
     };
 
     const fetchDashboardData = () => {
-        api.get<DashboardResponse>("/dashboard")
-            .then((res) => {
-                setSummary(res.data.monthly_summary);
-                setTrend(res.data.expense_trend);
-                setTransactions(res.data.recent_transactions);
+        Promise.all([
+            api.get<DashboardResponse>("/dashboard"),
+            api.get("/categories"),
+            api.get("/payment-methods"),
+        ])
+            .then(([dashboardRes, categoriesRes, paymentMethodsRes]) => {
+                setSummary(dashboardRes.data.monthly_summary);
+                setTrend(dashboardRes.data.expense_trend);
+                setTransactions(dashboardRes.data.recent_transactions);
+                setAllCategories(categoriesRes.data.data);
+                setAllPaymentMethods(paymentMethodsRes.data.data);
             })
             .catch((err) => {
-                console.error("ダッシュボードの取得に失敗", err);
+                console.error("初期データの取得に失敗", err);
+                toast.error("初期データの取得に失敗しました。");
             });
     };
 
@@ -71,7 +73,11 @@ export default function Dashboard() {
             <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 sm:px-0 space-y-6">
                     <div className="fixed bottom-4 right-4">
-                        <NewTransactionModal onSuccess={fetchDashboardData} />
+                        <NewTransactionModal
+                            onSuccess={fetchDashboardData}
+                            allCategories={allCategories}
+                            allPaymentMethods={allPaymentMethods}
+                        />
                     </div>
                     <Card className="bg-black border-gray-800">
                         <CardHeader>

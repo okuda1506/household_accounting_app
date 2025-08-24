@@ -30,6 +30,8 @@ type Props = {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
     onSuccess: () => void;
     transaction: Transaction;
+    allCategories: Category[];
+    allPaymentMethods: PaymentMethod[];
 };
 
 export function EditTransactionModal({
@@ -37,6 +39,8 @@ export function EditTransactionModal({
     setOpen,
     onSuccess,
     transaction,
+    allCategories,
+    allPaymentMethods,
 }: Props) {
     const [category, setCategory] = useState(String(transaction.category_id));
     // 金額はUI上では常に正の数として扱う
@@ -49,10 +53,6 @@ export function EditTransactionModal({
     const [transactionDate, setTransactionDate] = useState<Date | undefined>(
         new Date(transaction.date)
     );
-    const [allCategories, setAllCategories] = useState<Category[]>([]);
-    const [allPaymentMethods, setAllPaymentMethods] = useState<PaymentMethod[]>(
-        []
-    );
     const TRANSACTION_TYPE_IDS = {
         INCOME: 1,
         EXPENSE: 2,
@@ -61,25 +61,6 @@ export function EditTransactionModal({
     // transaction_type_idは表示のみ（変更不可）
     const transactionType =
         transaction.transaction_type_id === 1 ? "income" : "expense";
-
-    useEffect(() => {
-        if (open) {
-            const fetchInitialData = async () => {
-                try {
-                    const [categoriesRes, paymentMethodsRes] =
-                        await Promise.all([
-                            api.get("/categories"),
-                            api.get("/payment-methods"),
-                        ]);
-                    setAllCategories(categoriesRes.data.data);
-                    setAllPaymentMethods(paymentMethodsRes.data.data);
-                } catch (err) {
-                    toast.error("カテゴリ・支払方法の取得に失敗しました。");
-                }
-            };
-            fetchInitialData();
-        }
-    }, [open]);
 
     const filteredCategories = allCategories.filter(
         (c) =>

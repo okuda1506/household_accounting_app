@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
@@ -10,15 +10,23 @@ import {
 } from "../ui/select";
 import { Transaction } from "../../types/transactions";
 import { EditTransactionModal } from "./EditTransactionModal";
+import { Category } from "../../types/categories";
+import { PaymentMethod } from "../../types/paymentMethod";
+import api from "../../../lib/axios";
+import { toast } from "react-toastify";
 
 type TransactionListProps = {
     transactions: Transaction[];
     onSuccess: () => void;
+    allCategories: Category[];
+    allPaymentMethods: PaymentMethod[];
 };
 
 export function TransactionList({
     transactions,
     onSuccess,
+    allCategories,
+    allPaymentMethods,
 }: TransactionListProps) {
     const now = new Date();
     const [selectedYear, setSelectedYear] = useState<number>(now.getFullYear());
@@ -182,6 +190,8 @@ export function TransactionList({
                     setOpen={setEditModalOpen}
                     transaction={editingTransaction}
                     onSuccess={onSuccess}
+                    allCategories={allCategories}
+                    allPaymentMethods={allPaymentMethods}
                 />
             )}
         </>
