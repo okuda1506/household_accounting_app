@@ -129,6 +129,7 @@ export function EditTransactionModal({
                 const errorMessages: string[] = err.response.data.messages;
 
                 // エラーメッセージをキーワードで振り分ける
+                // todo: リファクタリング必要 （API側でフィールドごとにエラーを返すようにするとか）https://github.com/okuda1506/household_accounting_app/pull/6#discussion_r2299634668
                 errorMessages.forEach((msg) => {
                     if (msg.includes("取引日")) {
                         newErrors.transaction_date = [msg];
@@ -147,7 +148,7 @@ export function EditTransactionModal({
                 });
                 setErrors(newErrors);
             } else {
-                setErrors({ general: ["登録に失敗しました。"] });
+                setErrors({ general: ["更新に失敗しました。"] });
             }
         }
     };

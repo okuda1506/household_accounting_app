@@ -1,5 +1,5 @@
 export type Transaction = {
-    transaction_id?: number;
+    transaction_id: number;
     transaction_type_id: number;
     category_id: string;
     date: string;
