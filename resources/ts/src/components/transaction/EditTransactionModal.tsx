@@ -9,7 +9,6 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -22,55 +21,57 @@ import {
 } from "../ui/select";
 import api from "../../../lib/axios";
 import { toast } from "react-toastify";
+import { Transaction } from "../../types/transactions";
 import { Category } from "../../types/categories";
 import { PaymentMethod } from "../../types/paymentMethod";
 
 type Props = {
+    open: boolean;
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
     onSuccess: () => void;
+    transaction: Transaction;
     allCategories: Category[];
     allPaymentMethods: PaymentMethod[];
 };
 
-export function NewTransactionModal({
+export function EditTransactionModal({
+    open,
+    setOpen,
     onSuccess,
+    transaction,
     allCategories,
     allPaymentMethods,
 }: Props) {
-    const [open, setOpen] = useState(false);
-    const [transactionType, setTransactionType] = useState<
-        "income" | "expense"
-    >("income");
-    const [category, setCategory] = useState("");
-    const [amount, setAmount] = useState("");
-    const [paymentMethod, setPaymentMethod] = useState("");
-    const [description, setDescription] = useState("");
+    const [category, setCategory] = useState(String(transaction.category_id));
+    // 金額はUI上では常に正の数として扱う
+    const [amount, setAmount] = useState(String(Math.abs(transaction.amount)));
+    const [paymentMethod, setPaymentMethod] = useState(
+        String(transaction.payment_method_id)
+    );
+    const [description, setDescription] = useState(transaction.memo);
     const [errors, setErrors] = useState<{ [key: string]: string[] }>({});
     const [transactionDate, setTransactionDate] = useState<Date | undefined>(
-        new Date()
+        new Date(transaction.date)
     );
     const TRANSACTION_TYPE_IDS = {
         INCOME: 1,
         EXPENSE: 2,
     } as const;
 
+    // transaction_type_idは表示のみ（変更不可）
+    const transactionType =
+        transaction.transaction_type_id === 1 ? "income" : "expense";
+
     useEffect(() => {
-        if (!open) {
-            // モーダルが閉じたときにフォームの状態をリセット
-            setTransactionType("income");
-            setCategory("");
-            setAmount("");
-            setPaymentMethod("");
-            setDescription("");
-            setTransactionDate(new Date());
+        if (open) {
+            setCategory(String(transaction.category_id));
+            setAmount(String(Math.abs(transaction.amount)));
+            setPaymentMethod(String(transaction.payment_method_id));
+            setDescription(transaction.memo);
+            setTransactionDate(new Date(transaction.date));
             setErrors({});
         }
-    }, [open]);
-
-    // 取引タイプが変更されたらカテゴリと支払方法の選択をリセット
-    useEffect(() => {
-        setCategory("");
-        setPaymentMethod("");
-    }, [transactionType]);
+    }, [open, transaction]);
 
     const filteredCategories = allCategories.filter(
         (c) =>
@@ -101,18 +102,21 @@ export function NewTransactionModal({
             : undefined;
 
         try {
-            const res = await api.post("/transactions", {
-                transaction_date: formattedDate,
-                transaction_type_id,
-                category_id: Number(category),
-                amount: amount === "" ? null : Number(amount),
-                payment_method_id: Number(paymentMethod),
-                memo: description,
-            });
+            const res = await api.put(
+                `/transactions/${transaction.transaction_id}`,
+                {
+                    transaction_date: formattedDate,
+                    transaction_type_id,
+                    category_id: Number(category),
+                    amount: Number(amount),
+                    payment_method_id: Number(paymentMethod),
+                    memo: description,
+                }
+            );
 
             if (res.data.success) {
                 setOpen(false);
-                toast.success("取引を登録しました");
+                toast.success("取引を更新しました");
                 onSuccess();
             }
         } catch (err: any) {
@@ -125,6 +129,7 @@ export function NewTransactionModal({
                 const errorMessages: string[] = err.response.data.messages;
 
                 // エラーメッセージをキーワードで振り分ける
+                // todo: リファクタリング必要 （API側でフィールドごとにエラーを返すようにするとか）https://github.com/okuda1506/household_accounting_app/pull/6#discussion_r2299634668
                 errorMessages.forEach((msg) => {
                     if (msg.includes("取引日")) {
                         newErrors.transaction_date = [msg];
@@ -143,25 +148,16 @@ export function NewTransactionModal({
                 });
                 setErrors(newErrors);
             } else {
-                setErrors({ general: ["登録に失敗しました。"] });
+                setErrors({ general: ["更新に失敗しました。"] });
             }
         }
     };
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button
-                    variant="outline"
-                    className="bg-transparent text-white border-gray-700 hover:bg-gray-800"
-                    size="circle"
-                >
-                    ＋
-                </Button>
-            </DialogTrigger>
             <DialogContent className="bg-gray-900 text-white">
                 <DialogHeader>
-                    <DialogTitle>新規取引</DialogTitle>
+                    <DialogTitle>取引編集</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
@@ -178,26 +174,10 @@ export function NewTransactionModal({
                     </div>
                     {/* 取引タイプ */}
                     <div>
-                        <div className="flex items-center justify-between mb-1">
-                            <Label htmlFor="type">取引タイプ</Label>
-                            <p className="h-5 text-sm text-red-400 text-right">
-                                {errors.transaction_type_id?.[0]}
-                            </p>
-                        </div>
-                        <Select
-                            value={transactionType}
-                            onValueChange={(val) =>
-                                setTransactionType(val as "income" | "expense")
-                            }
-                        >
-                            <SelectTrigger
-                                className={`bg-gray-800 border-gray-700 text-white ${
-                                    errors.transaction_type_id
-                                        ? "border-red-500"
-                                        : ""
-                                }`}
-                            >
-                                <SelectValue placeholder="選択してください" />
+                        <Label htmlFor="type">取引タイプ</Label>
+                        <Select value={transactionType} disabled>
+                            <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                                <SelectValue />
                             </SelectTrigger>
                             <SelectContent className="bg-gray-800 text-white">
                                 <SelectItem value="income">収入</SelectItem>
@@ -219,7 +199,7 @@ export function NewTransactionModal({
                                     errors.category_id ? "border-red-500" : ""
                                 }`}
                             >
-                                <SelectValue placeholder="選択してください" />
+                                <SelectValue />
                             </SelectTrigger>
                             <SelectContent className="bg-gray-800 text-white">
                                 {filteredCategories.map((cat) => (
@@ -270,7 +250,7 @@ export function NewTransactionModal({
                                         : ""
                                 }`}
                             >
-                                <SelectValue placeholder="選択してください" />
+                                <SelectValue placeholder="支払方法を選択..." />
                             </SelectTrigger>
                             <SelectContent className="bg-gray-800 text-white">
                                 {filteredPaymentMethods.map((pay) => (
@@ -311,7 +291,7 @@ export function NewTransactionModal({
                     )}
 
                     <Button type="submit" className="w-full">
-                        追加
+                        更新
                     </Button>
                 </form>
             </DialogContent>
