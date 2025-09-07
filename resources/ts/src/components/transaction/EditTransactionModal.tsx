@@ -159,6 +159,17 @@ export function EditTransactionModal({
         }
     };
 
+    const handleDelete = async () => {
+        try {
+            await api.delete(`/transactions/${transaction.transaction_id}`);
+            toast.success("取引を削除しました。");
+            onSuccess();
+            setOpen(false);
+        } catch (err) {
+            toast.error("取引の削除に失敗しました。");
+        }
+    };
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="bg-gray-900 text-white">
@@ -323,11 +334,12 @@ export function EditTransactionModal({
                                 <AlertDialogCancel className="bg-transparent text-white border-gray-600 hover:bg-gray-800 hover:text-white">
                                     キャンセル
                                 </AlertDialogCancel>
-                                <AlertDialogAction className="bg-red-600 hover:bg-red-700">
+                                <AlertDialogAction
+                                    onClick={handleDelete}
+                                    className="bg-red-600 hover:bg-red-700"
+                                >
                                     削除
                                 </AlertDialogAction>
-                                {/* todo: 削除機能実装 */}
-                                {/* <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">削除</AlertDialogAction> */}
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
