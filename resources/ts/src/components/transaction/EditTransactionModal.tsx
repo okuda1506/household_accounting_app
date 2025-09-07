@@ -4,12 +4,18 @@ import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from "../ui/dialog";
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "../../../components/ui/alert-dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import {
@@ -153,6 +159,17 @@ export function EditTransactionModal({
         }
     };
 
+    const handleDelete = async () => {
+        try {
+            await api.delete(`/transactions/${transaction.transaction_id}`);
+            toast.success("取引を削除しました。");
+            onSuccess();
+            setOpen(false);
+        } catch (err) {
+            toast.error("取引の削除に失敗しました。");
+        }
+    };
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="bg-gray-900 text-white">
@@ -290,9 +307,42 @@ export function EditTransactionModal({
                         </div>
                     )}
 
-                    <Button type="submit" className="w-full">
+                    <Button type="submit" className="w-full hover:bg-gray-600">
                         更新
                     </Button>
+
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button
+                                type="button"
+                                variant="destructive"
+                                className="w-full bg-gray-800 hover:bg-gray-600"
+                            >
+                                削除
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="bg-gray-900 text-white border-gray-700">
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                    本当に削除しますか？
+                                </AlertDialogTitle>
+                                <AlertDialogDescription className="text-gray-400">
+                                    この操作は元に戻せません。
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel className="bg-transparent text-white border-gray-600 hover:bg-gray-800 hover:text-white">
+                                    キャンセル
+                                </AlertDialogCancel>
+                                <AlertDialogAction
+                                    onClick={handleDelete}
+                                    className="bg-red-600 hover:bg-red-700"
+                                >
+                                    削除
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </form>
             </DialogContent>
         </Dialog>
