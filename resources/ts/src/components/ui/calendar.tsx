@@ -2,6 +2,7 @@
 
 import type * as React from "react";
 import { DayPicker, getDefaultClassNames } from "react-day-picker";
+import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 import { cn } from "../../../lib/utils";
 import { buttonVariants } from "./button";
@@ -18,6 +19,12 @@ function Calendar({
     return (
         <DayPicker
             showOutsideDays={showOutsideDays}
+            formatters={{
+                formatCaption: (month, options) =>
+                    format(month, "yyyy年 M月", {
+                        locale: options?.locale,
+                    }),
+            }}
             className={cn("p-3", className)}
             classNames={{
                 months: `relative flex ${defaultClassNames.month}`,
