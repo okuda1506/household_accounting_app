@@ -2,15 +2,11 @@
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
-
+import { useState } from "react";
 import { cn } from "../../../lib/utils";
 import { Button } from "./button";
 import { Calendar } from "./calendar";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "./popover";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 interface DatePickerProps {
     date: Date | undefined;
@@ -19,8 +15,10 @@ interface DatePickerProps {
 }
 
 export function DatePicker({ date, setDate, className }: DatePickerProps) {
+    const [open, setOpen] = useState(false);
+
     return (
-        <Popover>
+        <Popover modal={true} open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button
                     variant={"outline"}
@@ -40,7 +38,10 @@ export function DatePicker({ date, setDate, className }: DatePickerProps) {
                 <Calendar
                     mode="single"
                     selected={date}
-                    onSelect={setDate}
+                    onSelect={(selectedDate) => {
+                        setDate(selectedDate);
+                        setOpen(false);
+                    }}
                     initialFocus
                     className="text-white"
                 />
