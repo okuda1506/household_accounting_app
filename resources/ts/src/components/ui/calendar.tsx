@@ -23,9 +23,12 @@ function Calendar({
             classNames={{
                 months: `relative flex ${defaultClassNames.month}`,
                 month_caption: `relative mx-10 flex h-7 items-center justify-center ${defaultClassNames.month_caption}`,
-                weekdays: cn("flex flex-row", classNames?.weekdays),
+                weekdays: cn(
+                    "flex flex-row border-b border-gray-700 pb-2",
+                    classNames?.weekdays
+                ),
                 weekday: cn(
-                    "w-8 text-sm font-normal text-muted-foreground",
+                    "w-8 text-sm font-normal text-white",
                     classNames?.weekday
                 ),
                 month: cn("w-full", classNames?.month),
