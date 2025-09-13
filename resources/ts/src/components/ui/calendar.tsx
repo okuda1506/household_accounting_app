@@ -1,7 +1,6 @@
 "use client";
 
 import type * as React from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker, getDefaultClassNames } from "react-day-picker";
 import { ja } from "date-fns/locale";
 import { cn } from "../../../lib/utils";

@@ -38,8 +38,10 @@ export function DatePicker({ date, setDate, className }: DatePickerProps) {
                 <Calendar
                     mode="single"
                     selected={date}
-                    onSelect={(selectedDate) => {
-                        setDate(selectedDate);
+                    onSelect={(selectedDate: Date | undefined) => {
+                        if (selectedDate) {
+                            setDate(selectedDate);
+                        }
                         setOpen(false);
                     }}
                     initialFocus
