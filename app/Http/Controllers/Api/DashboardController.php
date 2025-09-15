@@ -23,14 +23,15 @@ class DashboardController extends Controller
     public function getDashboardData(): JsonResponse
     {
         try {
-            $userId = auth()->id();
+            $user = auth()->user()->only(['id', 'name', 'email']);
 
             // フロントに表示する各項目のデータを取得
-            $summary      = $this->dashboardService->getSummary($userId);
-            $trend        = $this->dashboardService->getMonthlyExpenseTrend($userId);
-            $transactions = $this->dashboardService->getRecentTransactions($userId);
+            $summary      = $this->dashboardService->getSummary($user['id']);
+            $trend        = $this->dashboardService->getMonthlyExpenseTrend($user['id']);
+            $transactions = $this->dashboardService->getRecentTransactions($user['id']);
 
             return response()->json([
+                'user'                => $user,
                 'monthly_summary'     => $summary,
                 'expense_trend'       => $trend,
                 'recent_transactions' => $transactions,

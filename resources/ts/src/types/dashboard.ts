@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 export interface MonthlySummary {
     income: string;
     expense: string;
@@ -28,4 +30,5 @@ export interface DashboardResponse {
     monthly_summary: MonthlySummary;
     expense_trend: ExpenseTrend[];
     recent_transactions: RecentTransaction[];
+    user: User;
 }

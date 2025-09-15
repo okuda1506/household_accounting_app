@@ -17,6 +17,7 @@ import type {
     RecentTransaction,
     DashboardResponse,
 } from "../types/dashboard";
+import { User } from "../types/user";
 import { Category } from "../types/categories";
 import { PaymentMethod } from "../types/paymentMethod";
 import { toast } from "react-toastify";
@@ -25,6 +26,7 @@ export default function Dashboard() {
     const [summary, setSummary] = useState<MonthlySummary | null>(null);
     const [trend, setTrend] = useState<ExpenseTrend[]>([]);
     const [transactions, setTransactions] = useState<RecentTransaction[]>([]);
+    const [user, setUser] = useState<User | null>(null);
     const [allCategories, setAllCategories] = useState<Category[]>([]);
     const [allPaymentMethods, setAllPaymentMethods] = useState<PaymentMethod[]>(
         []
@@ -47,6 +49,7 @@ export default function Dashboard() {
                 setSummary(dashboardRes.data.monthly_summary);
                 setTrend(dashboardRes.data.expense_trend);
                 setTransactions(dashboardRes.data.recent_transactions);
+                setUser(dashboardRes.data.user);
                 setAllCategories(categoriesRes.data.data);
                 setAllPaymentMethods(paymentMethodsRes.data.data);
             })
@@ -65,7 +68,10 @@ export default function Dashboard() {
             <nav className="border-b border-gray-800">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
-                        <span className="text-xl font-semibold">ホーム</span>
+                        <span className="text-xl font-semibold">
+                            {/* todo: 名前の表示位置検討 */}
+                            {user ? `こんにちは、${user.name}さん` : "ホーム"}
+                        </span>
                         <NavigationModal />
                     </div>
                 </div>
