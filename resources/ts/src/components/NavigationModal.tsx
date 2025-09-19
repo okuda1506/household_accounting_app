@@ -31,7 +31,7 @@ export function NavigationModal() {
             </DialogTrigger>
             <DialogContent className="bg-gray-900 text-white">
                 <DialogHeader>
-                    <DialogTitle>メニュー</DialogTitle>
+                    <DialogTitle>Menu</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
                     <Link
@@ -39,21 +39,21 @@ export function NavigationModal() {
                         className="flex items-center px-4 py-3"
                         onClick={closeModal}
                     >
-                        <span>ホーム</span>
+                        <span>Dashboard</span>
                     </Link>
                     <Link
                         to="/categories"
                         className="flex items-center px-4 py-3"
                         onClick={closeModal}
                     >
-                        <span>カテゴリ</span>
+                        <span>Categories</span>
                     </Link>
                     <Link
                         to="/transactions"
                         className="flex items-center px-4 py-3"
                         onClick={closeModal}
                     >
-                        <span>取引一覧</span>
+                        <span>Transactions</span>
                     </Link>
                 </div>
             </DialogContent>

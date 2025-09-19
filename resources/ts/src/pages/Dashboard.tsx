@@ -69,8 +69,7 @@ export default function Dashboard() {
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
                         <span className="text-xl font-semibold">
-                            {/* todo: 名前の表示位置検討 */}
-                            {user ? `こんにちは、${user.name}さん` : "ホーム"}
+                            Dashboard
                         </span>
                         <NavigationModal />
                     </div>
@@ -85,10 +84,13 @@ export default function Dashboard() {
                             allPaymentMethods={allPaymentMethods}
                         />
                     </div>
+                    <div>
+                        <h1 className="text-2xl">{user ? `Hey, ${user.name}` : "\u00A0"} !</h1>
+                    </div>
                     <Card className="bg-black border-gray-800">
                         <CardHeader>
                             <CardTitle className="text-lg font-medium">
-                                今月の収支情報
+                                This Month’s Summary
                             </CardTitle>
                             <p className="text-gray-400">
                                 {year}年 {month}月
@@ -98,7 +100,7 @@ export default function Dashboard() {
                             {summary && (
                                 <div className="flex justify-between items-center text-sm">
                                     <div>
-                                        <p className="text-gray-400">収入</p>
+                                        <p className="text-gray-400">Income</p>
                                         <p className="text-xl font-semibold text-green-400">
                                             ¥
                                             {parseInt(
@@ -107,7 +109,7 @@ export default function Dashboard() {
                                         </p>
                                     </div>
                                     <div>
-                                        <p className="text-gray-400">支出</p>
+                                        <p className="text-gray-400">Expense</p>
                                         <p className="text-xl font-semibold text-red-400">
                                             ¥
                                             {parseInt(
@@ -116,7 +118,7 @@ export default function Dashboard() {
                                         </p>
                                     </div>
                                     <div>
-                                        <p className="text-gray-400">収支</p>
+                                        <p className="text-gray-400">Expense</p>
                                         <p className="text-xl font-semibold">
                                             ¥{summary.balance.toLocaleString()}
                                         </p>
@@ -131,7 +133,7 @@ export default function Dashboard() {
                     <Card className="bg-black border-gray-800">
                         <CardHeader>
                             <CardTitle className="text-lg font-medium">
-                                最近の取引
+                                Recent Transactions
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
