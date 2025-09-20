@@ -85,7 +85,7 @@ export default function Dashboard() {
                         />
                     </div>
                     <div>
-                        <h1 className="text-2xl">{user ? `Hey, ${user.name}` : "\u00A0"} !</h1>
+                        <h1 className="text-2xl">{user ? `Hey, ${user.name} 🖐️` : "\u00A0"}</h1>
                     </div>
                     <Card className="bg-black border-gray-800">
                         <CardHeader>
