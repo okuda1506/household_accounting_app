@@ -36,24 +36,31 @@ export function NavigationModal() {
                 <div className="space-y-4">
                     <Link
                         to="/"
-                        className="flex items-center px-4 py-3"
+                        className="flex items-center justify-center rounded-md px-4 py-3 hover:bg-gray-800"
                         onClick={closeModal}
                     >
                         <span>Dashboard</span>
                     </Link>
                     <Link
                         to="/categories"
-                        className="flex items-center px-4 py-3"
+                        className="flex items-center justify-center rounded-md px-4 py-3 hover:bg-gray-800"
                         onClick={closeModal}
                     >
                         <span>Categories</span>
                     </Link>
                     <Link
                         to="/transactions"
-                        className="flex items-center px-4 py-3"
+                        className="flex items-center justify-center rounded-md px-4 py-3 hover:bg-gray-800"
                         onClick={closeModal}
                     >
                         <span>Transactions</span>
+                    </Link>
+                    <Link
+                        to="/settings"
+                        className="flex items-center justify-center rounded-md px-4 py-3 hover:bg-gray-800"
+                        onClick={closeModal}
+                    >
+                        <span>Settings</span>
                     </Link>
                 </div>
             </DialogContent>
