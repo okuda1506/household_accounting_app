@@ -14,6 +14,7 @@ return [
     'transaction_created' => '取引を登録しました。',
     'transaction_updated' => '取引を更新しました。',
     'transaction_deleted' => '取引を削除しました。',
+    'logged_out' => 'ログアウトしました。',
 
     // --------------------------
     // バリデーションメッセージ

@@ -10,13 +10,29 @@ import {
     DialogTrigger,
 } from "../components/ui/dialog";
 import { Bars3Icon as MenuIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../lib/axios";
+import { toast } from "react-toastify";
 
 export function NavigationModal() {
     const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
 
     const closeModal = () => {
         setOpen(false);
+    };
+
+    const handleLogout = async () => {
+        closeModal();
+        try {
+            await api.post("/logout");
+            localStorage.removeItem("access_token");
+            toast.success("ログアウトしました。");
+            navigate("/login", { replace: true });
+        } catch (error) {
+            console.error("ログアウトに失敗しました", error);
+            toast.error("ログアウトに失敗しました。");
+        }
     };
 
     return (
@@ -55,13 +71,12 @@ export function NavigationModal() {
                     >
                         <span>Transactions</span>
                     </Link>
-                    <Link
-                        to="/settings"
-                        className="flex items-center justify-center rounded-md px-4 py-3 hover:bg-gray-800"
-                        onClick={closeModal}
+                    <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center justify-center rounded-md px-4 py-3 hover:bg-gray-800"
                     >
-                        <span>Settings</span>
-                    </Link>
+                        <span>Logout</span>
+                    </button>
                 </div>
             </DialogContent>
         </Dialog>

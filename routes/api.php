@@ -84,3 +84,13 @@ Route::prefix('dashboard')
         // ダッシュボード情報
         Route::get('', 'getDashboardData')->name('getDashboardData');
     });
+
+Route::prefix('logout')
+    ->middleware('auth:sanctum')
+    ->group(function () {
+        Route::post('', function (Request $request) {
+            $request->user()->currentAccessToken()->delete();
+
+            return response()->json(['message' => __('messages.logged_out')]);
+        })->name('api.logout');
+    });
