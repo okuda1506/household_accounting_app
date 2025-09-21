@@ -13,7 +13,8 @@ Route::post('/register', [RegisteredUserController::class, 'store']);
 Route::post('/login', function (Request $request) {
     $credentials = $request->only('email', 'password');
 
-    if (! Auth::attempt($credentials)) {
+    // deleted が false のユーザーのみを認証対象とする
+    if (! Auth::attempt($credentials + ['deleted' => false])) {
         return response()->json(['message' => __('messages.login_failed')], 401);
     }
 
@@ -21,8 +22,9 @@ Route::post('/login', function (Request $request) {
     $token = $user->createToken('access_token')->plainTextToken;
 
     return response()->json([
-        'token' => $token,
-        'user'  => $user,
+        'message' => __('messages.logged_in'),
+        'token'   => $token,
+        'user'    => $user,
     ]);
 });
 
