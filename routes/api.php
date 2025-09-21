@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\PaymentMethodController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -96,3 +97,8 @@ Route::prefix('logout')
             return response()->json(['message' => __('messages.logged_out')]);
         })->name('api.logout');
     });
+
+// アカウント削除
+Route::delete('/delete-user', [ProfileController::class, 'destroyApi'])
+    ->middleware('auth:sanctum')
+    ->name('api.profile.destroy');
