@@ -18,6 +18,7 @@ React + TypeScript + Laravel を使用
 - 月ごとの収支サマリ表示
 - カテゴリ管理（収入 / 支出）
 - 取引登録 / 編集 / 削除
+- 言語切替（英語 / 日本語 / 韓国語）
 - ダークモード対応
 
 ## セットアップ
@@ -49,6 +50,7 @@ Built with React, TypeScript, and Laravel.
 - Monthly balance summary
 - Category management (income/expense)
 - Register, edit, and delete transactions
+- Language switching (English / Japanese / Korean)
 - Dark mode support
 
 ### Setup
@@ -80,6 +82,7 @@ React, TypeScript, Laravel로 제작되었습니다.
 - 월별 수입/지출 요약 표시
 - 카테고리 관리(수입/지출)
 - 거래 등록, 편집, 삭제
+- 언어 전환 (영어 / 일본어 / 한국어)
 - 다크 모드 지원
 
 ### 셋업
