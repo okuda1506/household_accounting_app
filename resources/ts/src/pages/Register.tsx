@@ -9,38 +9,39 @@ import {
     CardTitle,
 } from "../components/ui/card";
 
-const Login = () => {
+const Register = () => {
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [remember, setRemember] = useState(false);
-    const [errors, setErrors] = useState<string[]>([]);
+    const [passwordConfirmation, setPasswordConfirmation] = useState("");
+    const [errors, setErrors] = useState<Record<string, string[]>>({});
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setErrors([]);
+        setErrors({});
 
         try {
-            const response = await api.post("/login", {
+            const response = await api.post("/register", {
+                name,
                 email,
                 password,
-                remember, // todo: 多分ここ機能してない
+                password_confirmation: passwordConfirmation,
             });
 
             const accessToken = response.data.token;
             localStorage.setItem("access_token", accessToken);
-            toast.success("ログインしました");
+            toast.success(
+                response.data.message || "ユーザー登録が完了しました。"
+            );
             navigate("/");
         } catch (error: any) {
-            if (error.response?.data?.errors) {
-                const allErrors = Object.values(
-                    error.response.data.errors
-                ).flat();
-                setErrors(allErrors as string[]);
-                console.log(errors);
+            if (error.response?.status === 422 && error.response.data.errors) {
+                setErrors(error.response.data.errors);
+                toast.error("入力内容に誤りがあります。");
             } else {
-                const fallbackMessage = "ログインに失敗しました";
-                setErrors([fallbackMessage]);
+                const fallbackMessage = "登録に失敗しました。";
+                setErrors({ general: [fallbackMessage] });
                 toast.error(fallbackMessage);
             }
         }
@@ -51,11 +52,35 @@ const Login = () => {
             <Card className="relative bg-black border border-gray-800 w-full max-w-md">
                 <CardHeader>
                     <CardTitle className="text-center text-lg font-semibold">
-                        ログイン
+                        新規登録
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
+                        {/* Name */}
+                        <div>
+                            <label
+                                htmlFor="name"
+                                className="block text-sm text-white mb-1"
+                            >
+                                名前
+                            </label>
+                            <input
+                                id="name"
+                                type="text"
+                                autoComplete="name"
+                                required
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="w-full px-3 py-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                            {errors.name && (
+                                <p className="text-red-500 text-xs mt-1">
+                                    {errors.name[0]}
+                                </p>
+                            )}
+                        </div>
+
                         {/* Email */}
                         <div>
                             <label
@@ -67,12 +92,17 @@ const Login = () => {
                             <input
                                 id="email"
                                 type="email"
-                                autoComplete="username"
+                                autoComplete="email"
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full px-3 py-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
+                            {errors.email && (
+                                <p className="text-red-500 text-xs mt-1">
+                                    {errors.email[0]}
+                                </p>
+                            )}
                         </div>
 
                         {/* Password */}
@@ -86,29 +116,38 @@ const Login = () => {
                             <input
                                 id="password"
                                 type="password"
-                                autoComplete="current-password"
+                                autoComplete="new-password"
                                 required
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="w-full px-3 py-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
+                            {errors.password && (
+                                <p className="text-red-500 text-xs mt-1">
+                                    {errors.password[0]}
+                                </p>
+                            )}
                         </div>
 
-                        {/* Remember Me */}
-                        <div className="flex items-center">
-                            <input
-                                id="remember_me"
-                                type="checkbox"
-                                checked={remember}
-                                onChange={(e) => setRemember(e.target.checked)}
-                                className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
-                            />
+                        {/* Password Confirmation */}
+                        <div>
                             <label
-                                htmlFor="remember_me"
-                                className="ml-2 text-sm text-white"
+                                htmlFor="password_confirmation"
+                                className="block text-sm text-white mb-1"
                             >
-                                サインイン状態を保持
+                                パスワード (確認用)
                             </label>
+                            <input
+                                id="password_confirmation"
+                                type="password"
+                                autoComplete="new-password"
+                                required
+                                value={passwordConfirmation}
+                                onChange={(e) =>
+                                    setPasswordConfirmation(e.target.value)
+                                }
+                                className="w-full px-3 py-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
                         </div>
 
                         {/* Submit */}
@@ -117,19 +156,13 @@ const Login = () => {
                                 type="submit"
                                 className="w-full rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
-                                サインイン
+                                サインアップ
                             </button>
-                            <a
-                                href="/forgot-password"
-                                className="block text-sm text-gray-400 underline hover:text-gray-200"
-                            >
-                                パスワードをお忘れの場合
-                            </a>
                             <Link
-                                to="/register"
+                                to="/login"
                                 className="block text-sm text-gray-400 underline hover:text-gray-200"
                             >
-                                サインアップはこちら
+                                アカウントをお持ちですか？
                             </Link>
                         </div>
                     </form>
@@ -139,4 +172,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default Register;

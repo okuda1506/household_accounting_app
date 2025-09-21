@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Categories from "./pages/Categories";
@@ -22,6 +23,7 @@ function App() {
                         closeButton={false}
                     />
                     <Routes>
+                        <Route path="/register" element={<Register />} />
                         <Route path="/login" element={<Login />} />
                         <Route
                             path="/"

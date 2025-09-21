@@ -14,7 +14,7 @@ Route::post('/login', function (Request $request) {
     $credentials = $request->only('email', 'password');
 
     if (! Auth::attempt($credentials)) {
-        return response()->json(['message' => 'Unauthorized'], 401);
+        return response()->json(['message' => __('messages.login_failed')], 401);
     }
 
     $user  = Auth::user();
