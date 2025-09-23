@@ -1,64 +1,119 @@
 "use client";
 
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "../../components/ui/alert-dialog";
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "../components/ui/dialog";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 
-type Props = {
-    children: React.ReactElement;
-};
-
-export function DeleteAccountDialog({ children }: Props) {
+export const DeleteAccountDialog = ({
+    children,
+}: {
+    children: React.ReactNode;
+}) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
 
-    const handleDeleteAccount = async () => {
+    const handleDelete = async () => {
+        setIsSubmitting(true);
+        setError(null);
+
         try {
-            await api.delete("/delete-user");
+            const response = await api.delete("/delete-user", {
+                data: { password },
+            });
+
+            toast.success(
+                response.data.message || "アカウントを削除しました。"
+            );
             localStorage.removeItem("access_token");
-            toast.success("アカウントを削除しました。");
+            setIsOpen(false);
             navigate("/login", { replace: true });
-        } catch (error: any) {
-            const message =
-                error.response?.data?.message ||
-                "アカウントの削除に失敗しました。";
-            toast.error(message);
-            console.error("アカウントの削除に失敗しました", error);
+        } catch (err: any) {
+            if (
+                err.response?.status === 422 &&
+                err.response.data.errors.password
+            ) {
+                setError(err.response.data.errors.password[0]);
+            } else {
+                toast.error(
+                    err.response?.data?.message ||
+                        "アカウントの削除に失敗しました。"
+                );
+            }
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
+    const handleOpenChange = (open: boolean) => {
+        if (!open) {
+            setPassword("");
+            setError(null);
+            setIsSubmitting(false);
+        }
+        setIsOpen(open);
+    };
+
     return (
-        <AlertDialog>
-            <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
-            <AlertDialogContent className="bg-gray-900 text-white border-gray-700">
-                <AlertDialogHeader>
-                    <AlertDialogTitle>本当に退会しますか？</AlertDialogTitle>
-                    <AlertDialogDescription className="text-gray-400">
-                        この操作は元に戻せません。アカウントを削除すると、関連するすべてのデータが完全に削除されます。
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                    <AlertDialogCancel className="bg-gray-800 border-gray-700 hover:bg-gray-700">
-                        キャンセル
-                    </AlertDialogCancel>
-                    <AlertDialogAction
-                        onClick={handleDeleteAccount}
-                        className="bg-red-600 hover:bg-red-700 text-white"
+        <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+            <DialogTrigger asChild>{children}</DialogTrigger>
+            <DialogContent className="sm:max-w-[425px] bg-black border-gray-800 text-white">
+                <DialogHeader>
+                    <DialogTitle>アカウントを削除</DialogTitle>
+                    <DialogDescription className="text-gray-400">
+                        この操作は元に戻せません。続行するにはパスワードを入力してください。
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="py-4 space-y-2">
+                    <Label htmlFor="password-confirm" className="text-white">
+                        パスワード
+                    </Label>
+                    <Input
+                        id="password-confirm"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="bg-gray-900 border-gray-700 focus:ring-indigo-500"
+                        autoComplete="current-password"
+                    />
+                    {error && (
+                        <p className="text-red-500 text-sm pt-1">{error}</p>
+                    )}
+                </div>
+                <DialogFooter>
+                    <DialogClose asChild>
+                        <Button
+                            variant="outline"
+                            onMouseDown={(e) => e.preventDefault()}
+                        >
+                            キャンセル
+                        </Button>
+                    </DialogClose>
+                    <Button
+                        variant="destructive"
+                        onClick={handleDelete}
+                        disabled={isSubmitting || !password}
                     >
-                        退会する
-                    </AlertDialogAction>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
+                        {isSubmitting ? "削除中..." : "アカウントを削除"}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
-}
+};
