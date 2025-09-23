@@ -66,10 +66,6 @@ class ProfileController extends Controller
      */
     public function destroyApi(Request $request): JsonResponse
     {
-        $request->validate([
-            'password' => ['required', 'current_password'],
-        ]);
-
         $user = $request->user();
 
         $user->delete();

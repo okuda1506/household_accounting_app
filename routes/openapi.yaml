@@ -26,12 +26,12 @@ components:
         name:
           type: string
           description: User Name
-          example: 'Takuya Okuda'
+          example: "Takuya Okuda"
         email:
           type: string
           format: email
           description: Email address
-          example: 'user@example.com'
+          example: "user@example.com"
         created_at:
           type: string
           format: date-time
@@ -46,10 +46,10 @@ components:
           example: 1
         name:
           type: string
-          example: '食費'
+          example: "食費"
         transaction_type_id:
           type: integer
-          description: '1: Income, 2: Expense'
+          description: "1: Income, 2: Expense"
           example: 2
         sort_no:
           type: integer
@@ -63,13 +63,13 @@ components:
         transaction_date:
           type: string
           format: date
-          example: '2025-09-20'
+          example: "2025-09-20"
         amount:
           type: number
           example: 1500
         memo:
           type: string
-          example: 'スーパーでの買い物'
+          example: "スーパーでの買い物"
         category_id:
           type: integer
           example: 1
@@ -84,20 +84,20 @@ components:
           example: 1
         name:
           type: string
-          example: '現金'
+          example: "現金"
     ErrorValidation:
       type: object
       properties:
         message:
           type: string
-          example: 'The given data was invalid.'
+          example: "The given data was invalid."
         errors:
           type: object
           additionalProperties:
             type: array
             items:
               type: string
-              example: 'The field name field is required.'
+              example: "The field name field is required."
 
 tags:
   - name: Auth
@@ -134,21 +134,21 @@ paths:
               properties:
                 name:
                   type: string
-                  example: 'Takuya Okuda'
+                  example: "Takuya Okuda"
                 email:
                   type: string
                   format: email
-                  example: 'new_user@example.com'
+                  example: "new_user@example.com"
                 password:
                   type: string
                   format: password
-                  example: 'password'
+                  example: "password"
                 password_confirmation:
                   type: string
                   format: password
-                  example: 'password'
+                  example: "password"
       responses:
-        '201':
+        "201":
           description: User registered successfully
           content:
             application/json:
@@ -157,18 +157,18 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'ユーザー登録が完了しました。'
+                    example: "ユーザー登録が完了しました。"
                   user:
-                    $ref: '#/components/schemas/User'
+                    $ref: "#/components/schemas/User"
                   token:
                     type: string
-                    example: '1|abcdef...'
-        '422':
+                    example: "1|abcdef..."
+        "422":
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorValidation'
+                $ref: "#/components/schemas/ErrorValidation"
 
   /login:
     post:
@@ -188,13 +188,13 @@ paths:
                 email:
                   type: string
                   format: email
-                  example: 'user@example.com'
+                  example: "user@example.com"
                 password:
                   type: string
                   format: password
-                  example: 'password'
+                  example: "password"
       responses:
-        '200':
+        "200":
           description: Login successful
           content:
             application/json:
@@ -203,13 +203,13 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'ログインしました。'
+                    example: "ログインしました。"
                   user:
-                    $ref: '#/components/schemas/User'
+                    $ref: "#/components/schemas/User"
                   token:
                     type: string
-                    example: '2|abcdef...'
-        '401':
+                    example: "2|abcdef..."
+        "401":
           description: Unauthorized
           content:
             application/json:
@@ -218,7 +218,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'メールアドレスまたはパスワードが正しくありません。'
+                    example: "メールアドレスまたはパスワードが正しくありません。"
 
   /logout:
     post:
@@ -228,7 +228,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Logout successful
           content:
             application/json:
@@ -237,7 +237,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'ログアウトしました。'
+                    example: "ログアウトしました。"
 
   /delete-user:
     delete:
@@ -246,22 +246,8 @@ paths:
       summary: Delete the current user's account
       security:
         - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - password
-              properties:
-                password:
-                  type: string
-                  format: password
-                  description: The user's current password for confirmation.
-                  example: 'current-password'
       responses:
-        '200':
+        "200":
           description: Account deleted successfully
           content:
             application/json:
@@ -270,13 +256,13 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'アカウントを削除しました。'
-        '422':
+                    example: "アカウントを削除しました。"
+        "422":
           description: Validation error (e.g., wrong password)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorValidation'
+                $ref: "#/components/schemas/ErrorValidation"
 
   # User
   /me:
@@ -287,12 +273,12 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: "#/components/schemas/User"
 
   # Dashboard
   /dashboard:
@@ -303,7 +289,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
@@ -311,7 +297,7 @@ paths:
                 type: object
                 properties:
                   user:
-                    $ref: '#/components/schemas/User'
+                    $ref: "#/components/schemas/User"
                   monthly_summary:
                     type: object
                     properties:
@@ -333,7 +319,7 @@ paths:
                   recent_transactions:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Transaction'
+                      $ref: "#/components/schemas/Transaction"
 
   # Categories
   /categories:
@@ -344,14 +330,14 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: A list of categories.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Category'
+                  $ref: "#/components/schemas/Category"
     post:
       tags:
         - Categories
@@ -361,7 +347,7 @@ paths:
       requestBody:
         # ...
       responses:
-        '201':
+        "201":
           description: Category created.
 
   /categories/{id}:
@@ -380,7 +366,7 @@ paths:
       requestBody:
         # ...
       responses:
-        '200':
+        "200":
           description: Category updated.
     delete:
       tags:
@@ -395,7 +381,7 @@ paths:
           schema:
             type: integer
       responses:
-        '204':
+        "204":
           description: Category deleted.
 
   /categories/sort:
@@ -408,7 +394,7 @@ paths:
       requestBody:
         # ...
       responses:
-        '200':
+        "200":
           description: Categories sorted.
 
   # Transactions
@@ -420,7 +406,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: A list of transactions.
     post:
       tags:
@@ -429,7 +415,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '201':
+        "201":
           description: Transaction created.
 
   # ... (Transactions update/delete, Payment Methods)

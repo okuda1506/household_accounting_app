@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "../components/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -9,10 +8,12 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "../components/ui/dialog";
+import { Button } from "../components/ui/button";
 import { Bars3Icon as MenuIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../lib/axios";
 import { toast } from "react-toastify";
+import { DeleteAccountDialog } from "./DeleteAccountDialog";
 
 export function NavigationModal() {
     const [open, setOpen] = useState(false);
@@ -77,6 +78,11 @@ export function NavigationModal() {
                     >
                         <span>Logout</span>
                     </button>
+                    <DeleteAccountDialog>
+                        <button className="w-full flex items-center justify-center rounded-md px-4 py-3 hover:bg-gray-800">
+                            <span>Delete Account</span>
+                        </button>
+                    </DeleteAccountDialog>
                 </div>
             </DialogContent>
         </Dialog>
