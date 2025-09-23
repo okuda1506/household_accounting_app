@@ -130,7 +130,7 @@ export default function Dashboard() {
                                         </p>
                                     </div>
                                     <div>
-                                        <p className="text-gray-400">Expense</p>
+                                        <p className="text-gray-400">Balance</p>
                                         <p className="text-xl font-semibold">
                                             ¥{summary.balance.toLocaleString()}
                                         </p>
