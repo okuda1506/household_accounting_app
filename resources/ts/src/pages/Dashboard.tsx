@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
+import { TypeAnimation } from "react-type-animation";
 import {
     Card,
     CardContent,
@@ -17,6 +18,7 @@ import type {
     RecentTransaction,
     DashboardResponse,
 } from "../types/dashboard";
+import { User } from "../types/user";
 import { Category } from "../types/categories";
 import { PaymentMethod } from "../types/paymentMethod";
 import { toast } from "react-toastify";
@@ -25,6 +27,7 @@ export default function Dashboard() {
     const [summary, setSummary] = useState<MonthlySummary | null>(null);
     const [trend, setTrend] = useState<ExpenseTrend[]>([]);
     const [transactions, setTransactions] = useState<RecentTransaction[]>([]);
+    const [user, setUser] = useState<User | null>(null);
     const [allCategories, setAllCategories] = useState<Category[]>([]);
     const [allPaymentMethods, setAllPaymentMethods] = useState<PaymentMethod[]>(
         []
@@ -47,6 +50,7 @@ export default function Dashboard() {
                 setSummary(dashboardRes.data.monthly_summary);
                 setTrend(dashboardRes.data.expense_trend);
                 setTransactions(dashboardRes.data.recent_transactions);
+                setUser(dashboardRes.data.user);
                 setAllCategories(categoriesRes.data.data);
                 setAllPaymentMethods(paymentMethodsRes.data.data);
             })
@@ -65,7 +69,9 @@ export default function Dashboard() {
             <nav className="border-b border-gray-800">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
-                        <span className="text-xl font-semibold">ホーム</span>
+                        <span className="text-xl font-semibold">
+                            Dashboard
+                        </span>
                         <NavigationModal />
                     </div>
                 </div>
@@ -79,10 +85,24 @@ export default function Dashboard() {
                             allPaymentMethods={allPaymentMethods}
                         />
                     </div>
+                    <div>
+                        {user ? (
+                            <TypeAnimation
+                                sequence={[`Hey, ${user.name} 🖐️`]}
+                                wrapper="h1"
+                                speed={50}
+                                className="text-2xl"
+                                cursor={false}
+                                repeat={0}
+                            />
+                        ) : (
+                            <h1 className="text-2xl h-8">{"\u00A0"}</h1>
+                        )}
+                    </div>
                     <Card className="bg-black border-gray-800">
                         <CardHeader>
                             <CardTitle className="text-lg font-medium">
-                                今月の収支情報
+                                This Month’s Summary
                             </CardTitle>
                             <p className="text-gray-400">
                                 {year}年 {month}月
@@ -92,7 +112,7 @@ export default function Dashboard() {
                             {summary && (
                                 <div className="flex justify-between items-center text-sm">
                                     <div>
-                                        <p className="text-gray-400">収入</p>
+                                        <p className="text-gray-400">Income</p>
                                         <p className="text-xl font-semibold text-green-400">
                                             ¥
                                             {parseInt(
@@ -101,7 +121,7 @@ export default function Dashboard() {
                                         </p>
                                     </div>
                                     <div>
-                                        <p className="text-gray-400">支出</p>
+                                        <p className="text-gray-400">Expense</p>
                                         <p className="text-xl font-semibold text-red-400">
                                             ¥
                                             {parseInt(
@@ -110,7 +130,7 @@ export default function Dashboard() {
                                         </p>
                                     </div>
                                     <div>
-                                        <p className="text-gray-400">収支</p>
+                                        <p className="text-gray-400">Balance</p>
                                         <p className="text-xl font-semibold">
                                             ¥{summary.balance.toLocaleString()}
                                         </p>
@@ -125,7 +145,7 @@ export default function Dashboard() {
                     <Card className="bg-black border-gray-800">
                         <CardHeader>
                             <CardTitle className="text-lg font-medium">
-                                最近の取引
+                                Recent Transactions
                             </CardTitle>
                         </CardHeader>
                         <CardContent>

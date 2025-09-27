@@ -37,7 +37,7 @@ export function ExpenseChart({ trend }: ExpenseChartProps) {
         <Card className="bg-black border-gray-800">
             <CardHeader>
                 <CardTitle className="text-lg font-medium">
-                    月間支出推移
+                    Monthly Expense Trend
                 </CardTitle>
             </CardHeader>
             <CardContent>

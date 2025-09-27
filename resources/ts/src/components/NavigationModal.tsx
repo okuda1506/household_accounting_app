@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "../components/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -9,14 +8,32 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "../components/ui/dialog";
+import { Button } from "../components/ui/button";
 import { Bars3Icon as MenuIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../lib/axios";
+import { toast } from "react-toastify";
+import { DeleteAccountDialog } from "./DeleteAccountDialog";
 
 export function NavigationModal() {
     const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
 
     const closeModal = () => {
         setOpen(false);
+    };
+
+    const handleLogout = async () => {
+        closeModal();
+        try {
+            await api.post("/logout");
+            localStorage.removeItem("access_token");
+            toast.success("ログアウトしました。");
+            navigate("/login", { replace: true });
+        } catch (error) {
+            console.error("ログアウトに失敗しました", error);
+            toast.error("ログアウトに失敗しました。");
+        }
     };
 
     return (
@@ -31,30 +48,41 @@ export function NavigationModal() {
             </DialogTrigger>
             <DialogContent className="bg-gray-900 text-white">
                 <DialogHeader>
-                    <DialogTitle>メニュー</DialogTitle>
+                    <DialogTitle>Menu</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
                     <Link
                         to="/"
-                        className="flex items-center px-4 py-3"
+                        className="flex items-center justify-center rounded-md px-4 py-3 hover:bg-gray-800"
                         onClick={closeModal}
                     >
-                        <span>ホーム</span>
+                        <span>Dashboard</span>
                     </Link>
                     <Link
                         to="/categories"
-                        className="flex items-center px-4 py-3"
+                        className="flex items-center justify-center rounded-md px-4 py-3 hover:bg-gray-800"
                         onClick={closeModal}
                     >
-                        <span>カテゴリ</span>
+                        <span>Categories</span>
                     </Link>
                     <Link
                         to="/transactions"
-                        className="flex items-center px-4 py-3"
+                        className="flex items-center justify-center rounded-md px-4 py-3 hover:bg-gray-800"
                         onClick={closeModal}
                     >
-                        <span>取引一覧</span>
+                        <span>Transactions</span>
                     </Link>
+                    <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center justify-center rounded-md px-4 py-3 hover:bg-gray-800"
+                    >
+                        <span>Logout</span>
+                    </button>
+                    <DeleteAccountDialog>
+                        <button className="w-full flex items-center justify-center rounded-md px-4 py-3 hover:bg-gray-800">
+                            <span>Delete Account</span>
+                        </button>
+                    </DeleteAccountDialog>
                 </div>
             </DialogContent>
         </Dialog>

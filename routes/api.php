@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\PaymentMethodController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -13,16 +14,18 @@ Route::post('/register', [RegisteredUserController::class, 'store']);
 Route::post('/login', function (Request $request) {
     $credentials = $request->only('email', 'password');
 
-    if (! Auth::attempt($credentials)) {
-        return response()->json(['message' => 'Unauthorized'], 401);
+    // deleted が false のユーザーのみを認証対象とする
+    if (! Auth::attempt($credentials + ['deleted' => false])) {
+        return response()->json(['message' => __('messages.login_failed')], 401);
     }
 
     $user  = Auth::user();
     $token = $user->createToken('access_token')->plainTextToken;
 
     return response()->json([
-        'token' => $token,
-        'user'  => $user,
+        'message' => __('messages.logged_in'),
+        'token'   => $token,
+        'user'    => $user,
     ]);
 });
 
@@ -84,3 +87,18 @@ Route::prefix('dashboard')
         // ダッシュボード情報
         Route::get('', 'getDashboardData')->name('getDashboardData');
     });
+
+Route::prefix('logout')
+    ->middleware('auth:sanctum')
+    ->group(function () {
+        Route::post('', function (Request $request) {
+            $request->user()->currentAccessToken()->delete();
+
+            return response()->json(['message' => __('messages.logged_out')]);
+        })->name('api.logout');
+    });
+
+// アカウント削除
+Route::delete('/delete-user', [ProfileController::class, 'destroyApi'])
+    ->middleware('auth:sanctum')
+    ->name('api.profile.destroy');

@@ -7,18 +7,20 @@
 ## 概要
 
 モダンでシンプルな家計簿管理アプリ<br>
-収入・支出カテゴリの追加や編集、月ごとの収支管理が可能<br>
+収入 / 支出カテゴリの追加や編集、月毎の収支管理が可能<br>
 React + TypeScript + Laravel を使用
 
 - 無駄な機能が一切なくシンプルでモダンなUI設計
 - SPA仕様のため高速で家計簿のデータ登録や更新等が可能
 
-## 主な機能
+## 機能
 
 - 月ごとの収支サマリ表示
-- カテゴリ管理（収入/支出）
-- 取引登録・編集・削除
+- カテゴリ管理（収入 / 支出）
+- 取引登録 / 編集 / 削除
+- 言語切替（英語 / 日本語 / 韓国語）
 - ダークモード対応
+- AIによる支出管理アドバイス（※実装予定）
 
 ## セットアップ
 
@@ -49,6 +51,7 @@ Built with React, TypeScript, and Laravel.
 - Monthly balance summary
 - Category management (income/expense)
 - Register, edit, and delete transactions
+- Language switching (English / Japanese / Korean)
 - Dark mode support
 
 ### Setup
@@ -80,6 +83,7 @@ React, TypeScript, Laravel로 제작되었습니다.
 - 월별 수입/지출 요약 표시
 - 카테고리 관리(수입/지출)
 - 거래 등록, 편집, 삭제
+- 언어 전환 (영어 / 일본어 / 한국어)
 - 다크 모드 지원
 
 ### 셋업

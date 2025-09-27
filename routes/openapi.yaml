@@ -1,0 +1,422 @@
+openapi: 3.0.3
+info:
+  title: Household Accounting App API
+  description: |-
+    This is the API documentation for the Household Accounting App.
+    Built with React, TypeScript, and Laravel.
+  version: 1.0.0
+servers:
+  - url: http://localhost/api
+    description: Local development server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: User ID
+          example: 1
+        name:
+          type: string
+          description: User Name
+          example: "Takuya Okuda"
+        email:
+          type: string
+          format: email
+          description: Email address
+          example: "user@example.com"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "食費"
+        transaction_type_id:
+          type: integer
+          description: "1: Income, 2: Expense"
+          example: 2
+        sort_no:
+          type: integer
+          example: 1
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        transaction_date:
+          type: string
+          format: date
+          example: "2025-09-20"
+        amount:
+          type: number
+          example: 1500
+        memo:
+          type: string
+          example: "スーパーでの買い物"
+        category_id:
+          type: integer
+          example: 1
+        payment_method_id:
+          type: integer
+          example: 1
+    PaymentMethod:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "現金"
+    ErrorValidation:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "The given data was invalid."
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+              example: "The field name field is required."
+
+tags:
+  - name: Auth
+    description: Authentication endpoints
+  - name: User
+    description: User related endpoints
+  - name: Dashboard
+    description: Dashboard data
+  - name: Categories
+    description: Operations about categories
+  - name: Transactions
+    description: Operations about transactions
+  - name: Payment Methods
+    description: Operations about payment methods
+
+paths:
+  # Auth
+  /register:
+    post:
+      tags:
+        - Auth
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - password_confirmation
+              properties:
+                name:
+                  type: string
+                  example: "Takuya Okuda"
+                email:
+                  type: string
+                  format: email
+                  example: "new_user@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "password"
+                password_confirmation:
+                  type: string
+                  format: password
+                  example: "password"
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "ユーザー登録が完了しました。"
+                  user:
+                    $ref: "#/components/schemas/User"
+                  token:
+                    type: string
+                    example: "1|abcdef..."
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorValidation"
+
+  /login:
+    post:
+      tags:
+        - Auth
+      summary: Log in a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "password"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "ログインしました。"
+                  user:
+                    $ref: "#/components/schemas/User"
+                  token:
+                    type: string
+                    example: "2|abcdef..."
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "メールアドレスまたはパスワードが正しくありません。"
+
+  /logout:
+    post:
+      tags:
+        - Auth
+      summary: Log out the current user
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "ログアウトしました。"
+
+  /delete-user:
+    delete:
+      tags:
+        - Auth
+      summary: Delete the current user's account
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Account deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "アカウントを削除しました。"
+        "422":
+          description: Validation error (e.g., wrong password)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorValidation"
+
+  # User
+  /me:
+    get:
+      tags:
+        - User
+      summary: Get the authenticated user's information
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  # Dashboard
+  /dashboard:
+    get:
+      tags:
+        - Dashboard
+      summary: Get dashboard data
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: "#/components/schemas/User"
+                  monthly_summary:
+                    type: object
+                    properties:
+                      income:
+                        type: string
+                      expense:
+                        type: string
+                      balance:
+                        type: number
+                  expense_trend:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        month:
+                          type: string
+                        total_expense:
+                          type: string
+                  recent_transactions:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Transaction"
+
+  # Categories
+  /categories:
+    get:
+      tags:
+        - Categories
+      summary: Get a list of categories
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: A list of categories.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+    post:
+      tags:
+        - Categories
+      summary: Create a new category
+      security:
+        - bearerAuth: []
+      requestBody:
+        # ...
+      responses:
+        "201":
+          description: Category created.
+
+  /categories/{id}:
+    put:
+      tags:
+        - Categories
+      summary: Update a category
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        # ...
+      responses:
+        "200":
+          description: Category updated.
+    delete:
+      tags:
+        - Categories
+      summary: Delete a category
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Category deleted.
+
+  /categories/sort:
+    post:
+      tags:
+        - Categories
+      summary: Sort categories
+      security:
+        - bearerAuth: []
+      requestBody:
+        # ...
+      responses:
+        "200":
+          description: Categories sorted.
+
+  # Transactions
+  /transactions:
+    get:
+      tags:
+        - Transactions
+      summary: Get a list of transactions
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: A list of transactions.
+    post:
+      tags:
+        - Transactions
+      summary: Create a new transaction
+      security:
+        - bearerAuth: []
+      responses:
+        "201":
+          description: Transaction created.
+
+  # ... (Transactions update/delete, Payment Methods)
+  # For brevity, other endpoints are omitted but would follow the same structure.
