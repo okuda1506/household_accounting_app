@@ -96,22 +96,23 @@ export const DeleteAccountDialog = ({
                         <p className="text-red-500 text-sm pt-1">{error}</p>
                     )}
                 </div>
-                <DialogFooter>
+                <DialogFooter className="gap-2">
                     <DialogClose asChild>
                         <Button
-                            variant="outline"
+                            className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700"
                             onMouseDown={(e) => e.preventDefault()}
                         >
                             キャンセル
                         </Button>
                     </DialogClose>
                     <Button
+                        className="w-full"
                         variant="destructive"
                         onClick={handleDelete}
                         disabled={isSubmitting || !password}
                         onMouseDown={(e) => e.preventDefault()}
                     >
-                        {isSubmitting ? "削除中..." : "アカウントを削除"}
+                        {isSubmitting ? "削除中..." : "削除"}
                     </Button>
                 </DialogFooter>
             </DialogContent>
