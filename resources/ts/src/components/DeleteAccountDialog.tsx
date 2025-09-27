@@ -109,6 +109,7 @@ export const DeleteAccountDialog = ({
                         variant="destructive"
                         onClick={handleDelete}
                         disabled={isSubmitting || !password}
+                        onMouseDown={(e) => e.preventDefault()}
                     >
                         {isSubmitting ? "削除中..." : "アカウントを削除"}
                     </Button>
