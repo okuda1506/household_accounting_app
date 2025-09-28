@@ -69,9 +69,7 @@ export default function Dashboard() {
             <nav className="border-b border-gray-800">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
-                        <span className="text-xl font-semibold">
-                            Dashboard
-                        </span>
+                        <span className="text-xl font-semibold">Dashboard</span>
                         <NavigationModal />
                     </div>
                 </div>
@@ -149,45 +147,52 @@ export default function Dashboard() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <ul className="space-y-4">
-                                {transactions.map((transaction) => {
-                                    const amount = parseFloat(
-                                        transaction.amount
-                                    );
-                                    const isIncome =
-                                        transaction.transaction_type_id === 1;
+                            {transactions.length > 0 ? (
+                                <ul className="space-y-4">
+                                    {transactions.map((transaction) => {
+                                        const amount = parseFloat(
+                                            transaction.amount
+                                        );
+                                        const isIncome =
+                                            transaction.transaction_type_id ===
+                                            1;
 
-                                    return (
-                                        <li
-                                            key={transaction.id}
-                                            className="flex justify-between items-center text-sm"
-                                        >
-                                            <div>
-                                                <p className="font-medium">
-                                                    {transaction.memo}
-                                                </p>
-                                                <p className="text-gray-400">
-                                                    {formatDate(
-                                                        transaction.transaction_date
-                                                    )}{" "}
-                                                </p>
-                                            </div>
-                                            <p
-                                                className={`font-medium ${
-                                                    isIncome
-                                                        ? "text-green-400"
-                                                        : "text-red-400"
-                                                }`}
+                                        return (
+                                            <li
+                                                key={transaction.id}
+                                                className="flex justify-between items-center text-sm"
                                             >
-                                                {isIncome ? "+" : "-"}¥
-                                                {Math.abs(
-                                                    amount
-                                                ).toLocaleString()}
-                                            </p>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
+                                                <div>
+                                                    <p className="font-medium">
+                                                        {transaction.memo}
+                                                    </p>
+                                                    <p className="text-gray-400">
+                                                        {formatDate(
+                                                            transaction.transaction_date
+                                                        )}{" "}
+                                                    </p>
+                                                </div>
+                                                <p
+                                                    className={`font-medium ${
+                                                        isIncome
+                                                            ? "text-green-400"
+                                                            : "text-red-400"
+                                                    }`}
+                                                >
+                                                    {isIncome ? "+" : "-"}¥
+                                                    {Math.abs(
+                                                        amount
+                                                    ).toLocaleString()}
+                                                </p>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            ) : (
+                                <p className="text-gray-400">
+                                    最近の取引はありません。
+                                </p>
+                            )}
                         </CardContent>
                     </Card>
                 </div>
