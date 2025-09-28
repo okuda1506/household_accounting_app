@@ -38,10 +38,9 @@ export function TransactionList({
     };
 
     // 取引年の選択肢を動的に生成する
-    const transactionYears = transactions.map((t) => t.year);
-    const years = Array.from(new Set([selectedYear, ...transactionYears])).sort(
-        (a, b) => b - a
-    );
+    const years = Array.from(
+        new Set([selectedYear, ...transactions.map((t) => t.year)])
+    ).sort((a, b) => b - a);
 
     const filteredTransactions = transactions.filter(
         (transaction) =>

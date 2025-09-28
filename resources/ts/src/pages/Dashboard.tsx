@@ -189,7 +189,7 @@ export default function Dashboard() {
                                     })}
                                 </ul>
                             ) : (
-                                <p className="text-gray-400">
+                                <p className="text-gray-400 text-center py-4">
                                     最近の取引はありません。
                                 </p>
                             )}
