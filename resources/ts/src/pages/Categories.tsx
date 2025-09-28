@@ -66,9 +66,7 @@ export default function Categories() {
             <nav className="border-b border-gray-800">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
-                        <span className="text-xl font-semibold">
-                            カテゴリ
-                        </span>
+                        <span className="text-xl font-semibold">カテゴリ</span>
                         <NavigationModal />
                     </div>
                 </div>
@@ -76,7 +74,7 @@ export default function Categories() {
 
             <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 sm:px-0 space-y-6">
-                    <div className="flex justify-end">
+                    <div className="fixed bottom-4 right-4 z-50">
                         <NewCategoryModal onSuccess={fetchCategories} />
                     </div>
 

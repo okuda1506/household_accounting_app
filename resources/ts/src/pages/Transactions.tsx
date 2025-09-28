@@ -12,7 +12,9 @@ import { PaymentMethod } from "../types/paymentMethod";
 export default function Transactions() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [allCategories, setAllCategories] = useState<Category[]>([]);
-    const [allPaymentMethods, setAllPaymentMethods] = useState<PaymentMethod[]>([]);
+    const [allPaymentMethods, setAllPaymentMethods] = useState<PaymentMethod[]>(
+        []
+    );
 
     const fetchTransactions = async () => {
         try {
@@ -66,9 +68,7 @@ export default function Transactions() {
             <nav className="border-b border-gray-800">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
-                        <span className="text-xl font-semibold">
-                            取引一覧
-                        </span>
+                        <span className="text-xl font-semibold">取引一覧</span>
                         <NavigationModal />
                     </div>
                 </div>
@@ -76,7 +76,7 @@ export default function Transactions() {
 
             <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 sm:px-0 space-y-6">
-                    <div className="fixed bottom-6 right-6 z-50">
+                    <div className="fixed bottom-4 right-4 z-50">
                         <NewTransactionModal
                             onSuccess={fetchTransactions}
                             allCategories={allCategories}
