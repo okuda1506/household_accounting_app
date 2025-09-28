@@ -88,6 +88,7 @@ class DashboardService
             ->where('user_id', $userId)
             ->where('transaction_type_id', self::TRANSACTION_TYPE_EXPENSE)
             ->whereBetween('transaction_date', [$start->toDateString(), $now->copy()->endOfMonth()->toDateString()])
+            ->where('deleted', self::IS_NOT_DELETED)
             ->groupByRaw('YEAR(transaction_date), MONTH(transaction_date)')
             ->get()
             ->keyBy(function ($item) {
