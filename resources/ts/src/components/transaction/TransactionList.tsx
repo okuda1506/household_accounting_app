@@ -38,7 +38,8 @@ export function TransactionList({
     };
 
     // 取引年の選択肢を動的に生成する
-    const years = Array.from(new Set(transactions.map((t) => t.year))).sort(
+    const transactionYears = transactions.map((t) => t.year);
+    const years = Array.from(new Set([selectedYear, ...transactionYears])).sort(
         (a, b) => b - a
     );
 
@@ -143,7 +144,9 @@ export function TransactionList({
 
                                 return (
                                     <li
-                                        key={transaction.transaction_id ?? index}
+                                        key={
+                                            transaction.transaction_id ?? index
+                                        }
                                         className="hover:bg-gray-700 cursor-pointer rounded-md px-4 py-3 flex justify-between items-center text-sm"
                                         onClick={() => {
                                             setEditingTransaction(transaction);
