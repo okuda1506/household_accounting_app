@@ -117,6 +117,7 @@ class DashboardService
     {
         $transactions = DB::table('transactions')
             ->where('user_id', $userId)
+            ->where('deleted', self::IS_NOT_DELETED)
             ->orderBy('transaction_date', 'desc')
             ->limit(self::RECENT_TRANSACTIONS_LIMIT)
             ->get();
