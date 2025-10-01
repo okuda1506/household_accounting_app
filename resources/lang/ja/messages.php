@@ -74,5 +74,6 @@ return [
     'transaction_not_found'                       => '指定された取引データが見つかりません。',
     'transaction_destroy_failed'                  => '取引の削除に失敗しました。',
     'dashboard_get_failed'                        => 'ダッシュボード情報の取得に失敗しました。',
+    'user_already_deleted'                        => 'このメールアドレスはすでに使用されています。退会済みの場合は再開手続きをしてください。',
     'login_failed'                                => 'メールアドレスまたはパスワードが正しくありません。',
 ];
