@@ -32,17 +32,12 @@ const Login = () => {
             toast.success("ログインしました");
             navigate("/");
         } catch (error: any) {
-            if (error.response?.data?.errors) {
-                const allErrors = Object.values(
-                    error.response.data.errors
-                ).flat();
-                setErrors(allErrors as string[]);
-                console.log(errors);
-            } else {
-                const fallbackMessage = "ログインに失敗しました";
-                setErrors([fallbackMessage]);
-                toast.error(fallbackMessage);
-            }
+            const message =
+                error.response?.data?.message || "ログインに失敗しました。";
+            setErrors([message]);
+            toast.error(
+                "ログインに失敗しました"
+            );
         }
     };
 
@@ -56,6 +51,13 @@ const Login = () => {
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
+                        {errors.length > 0 && (
+                            <div className="bg-red-900/30 border border-red-500/50 text-red-400 text-sm p-3 rounded-md">
+                                {errors.map((error, index) => (
+                                    <p key={index}>{error}</p>
+                                ))}
+                            </div>
+                        )}
                         {/* Email */}
                         <div>
                             <label
