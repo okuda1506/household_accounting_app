@@ -36,8 +36,8 @@ const Register = () => {
             );
             navigate("/");
         } catch (error: any) {
-            if (error.response?.status === 422 && error.response.data.errors) {
-                setErrors(error.response.data.errors);
+            if (error.status === 422) {
+                setErrors(error.response.data.messages);
                 toast.error("入力内容に誤りがあります。");
             } else {
                 const fallbackMessage = "登録に失敗しました。";
@@ -74,9 +74,9 @@ const Register = () => {
                                 onChange={(e) => setName(e.target.value)}
                                 className="w-full px-3 py-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
-                            {errors.name && (
+                            {errors && (
                                 <p className="text-red-500 text-xs mt-1">
-                                    {errors.name[0]}
+                                    {errors[0]}
                                 </p>
                             )}
                         </div>
