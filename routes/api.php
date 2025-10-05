@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\PaymentMethodController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -12,28 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [RegisteredUserController::class, 'store']);
-Route::post('/login', function (Request $request) {
-    $credentials = $request->only('email', 'password');
-
-    $user = User::where('email', $credentials['email'])->first();
-
-    if (! $user || ! Hash::check($credentials['password'], $user->password)) {
-        return response()->json(['message' => __('messages.login_failed')], 401);
-    }
-
-    // 退会済みユーザーチェック
-    if ($user->deleted) {
-        return response()->json(['message' => __('messages.user_already_deleted')], 401);
-    }
-
-    $token = $user->createToken('access_token')->plainTextToken;
-
-    return response()->json([
-        'message' => __('messages.logged_in'),
-        'token'   => $token,
-        'user'    => $user,
-    ]);
-});
+Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 
 // access_token用
 Route::middleware('auth:sanctum')->get('/me', function (Request $request) {

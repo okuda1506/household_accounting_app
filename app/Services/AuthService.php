@@ -53,4 +53,37 @@ class AuthService
             'token' => $token,
         ];
     }
+
+    /**
+     * ログイン
+     *
+     * @param Request $request
+     * @return array{user: User, token: string}
+     * @throws ValidationException
+     */
+    public function loginUser(Request $request): array
+    {
+        $credentials = $request->validate([
+            'email'    => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        $user = User::where('email', $credentials['email'])->first();
+
+        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => __('messages.login_failed'),
+            ]);
+        }
+
+        if ($user->deleted) {
+            throw ValidationException::withMessages([
+                'email' => __('messages.user_already_deleted'),
+            ]);
+        }
+
+        $token = $user->createToken('access_token')->plainTextToken;
+
+        return ['user' => $user, 'token' => $token];
+    }
 }

@@ -8,6 +8,7 @@ import {
     CardHeader,
     CardTitle,
 } from "../components/ui/card";
+import { ChartNoAxesColumn } from "lucide-react";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -27,17 +28,13 @@ const Login = () => {
                 remember, // todo: 多分ここ機能してない
             });
 
-            const accessToken = response.data.token;
+            const accessToken = response.data.data.token;
             localStorage.setItem("access_token", accessToken);
             toast.success("ログインしました");
             navigate("/");
         } catch (error: any) {
-            const message =
-                error.response?.data?.message || "ログインに失敗しました。";
-            setErrors([message]);
-            toast.error(
-                "ログインに失敗しました"
-            );
+            setErrors([error.response.data.messages[0]]);
+            toast.error("ログインに失敗しました");
         }
     };
 
@@ -46,7 +43,7 @@ const Login = () => {
             <Card className="relative bg-black border border-gray-800 w-full max-w-md">
                 <CardHeader>
                     <CardTitle className="text-center text-lg font-semibold">
-                        ログイン
+                        サインイン
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
