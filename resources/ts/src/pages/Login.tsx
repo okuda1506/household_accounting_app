@@ -30,7 +30,7 @@ const Login = () => {
 
             const accessToken = response.data.data.token;
             localStorage.setItem("access_token", accessToken);
-            toast.success("ログインしました");
+            toast.success(response.data.message);
             navigate("/");
         } catch (error: any) {
             setErrors([error.response.data.messages[0]]);

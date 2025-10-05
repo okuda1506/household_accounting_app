@@ -86,4 +86,15 @@ class AuthService
 
         return ['user' => $user, 'token' => $token];
     }
+
+    /**
+     * ログアウト
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function logoutUser(Request $request): void
+    {
+        $request->user()->currentAccessToken()->delete();
+    }
 }

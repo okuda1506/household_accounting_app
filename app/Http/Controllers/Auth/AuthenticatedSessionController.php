@@ -1,16 +1,15 @@
 <?php
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Helpers\ApiResponse;
-use App\Http\Resources\UserResource;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -49,21 +48,21 @@ class AuthenticatedSessionController extends Controller
 
         return ApiResponse::success(
             ['user' => new UserResource($result['user']), 'token' => $result['token']],
-            __('messages.logged_in')
+            __('messages.user_signed_in')
         );
     }
 
     /**
-     * Destroy an authenticated session.
+     * Destroy an authenticated session for API.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request): JsonResponse
     {
-        Auth::guard('web')->logout();
+        try {
+            $this->authService->logoutUser($request);
+        } catch (\Exception $e) {
+            return ApiResponse::error(null, [$e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return redirect('/');
+        return ApiResponse::success(null, __('messages.user_signed_out'));
     }
 }
