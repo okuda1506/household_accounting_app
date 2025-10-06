@@ -72,7 +72,7 @@ class AuthService
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([
-                'email' => __('messages.login_failed'),
+                'email' => __('messages.signin_failed'),
             ]);
         }
 
