@@ -43,7 +43,8 @@ class AuthenticatedSessionController extends Controller
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
         } catch (\Exception $e) {
-            return ApiResponse::error(null, [$e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            \Illuminate\Support\Facades\Log::error($e);
+            return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::success(
@@ -60,7 +61,8 @@ class AuthenticatedSessionController extends Controller
         try {
             $this->authService->logoutUser($request);
         } catch (\Exception $e) {
-            return ApiResponse::error(null, [$e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            \Illuminate\Support\Facades\Log::error($e);
+            return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::success(null, __('messages.user_signed_out'));
