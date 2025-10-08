@@ -26,13 +26,12 @@ export function NavigationModal() {
     const handleLogout = async () => {
         closeModal();
         try {
-            await api.post("/logout");
+            const response = await api.post("/logout");
             localStorage.removeItem("access_token");
-            toast.success("ログアウトしました。");
+            toast.success(response.data.message);
             navigate("/login", { replace: true });
         } catch (error) {
-            console.error("ログアウトに失敗しました", error);
-            toast.error("ログアウトに失敗しました。");
+            toast.error("サインアウトに失敗しました。");
         }
     };
 

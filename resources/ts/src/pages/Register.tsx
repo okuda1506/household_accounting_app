@@ -14,12 +14,12 @@ const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
-    const [errors, setErrors] = useState<Record<string, string[]>>({});
+    const [errors, setErrors] = useState<string[]>([]);
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setErrors({});
+        setErrors([]);
 
         try {
             const response = await api.post("/register", {
@@ -36,12 +36,12 @@ const Register = () => {
             );
             navigate("/");
         } catch (error: any) {
-            if (error.response?.status === 422 && error.response.data.errors) {
-                setErrors(error.response.data.errors);
+            if (error.response?.status === 422) {
+                setErrors(error.response.data.messages);
                 toast.error("入力内容に誤りがあります。");
             } else {
                 const fallbackMessage = "登録に失敗しました。";
-                setErrors({ general: [fallbackMessage] });
+                setErrors([error.response.data.messages[0]]);
                 toast.error(fallbackMessage);
             }
         }
@@ -57,6 +57,13 @@ const Register = () => {
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
+                        {errors.length > 0 && (
+                            <div className="bg-red-900/30 border border-red-500/50 text-red-400 text-sm p-3 rounded-md">
+                                {errors.map((error, index) => (
+                                    <p key={index}>{error}</p>
+                                ))}
+                            </div>
+                        )}
                         {/* Name */}
                         <div>
                             <label
@@ -74,11 +81,6 @@ const Register = () => {
                                 onChange={(e) => setName(e.target.value)}
                                 className="w-full px-3 py-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
-                            {errors.name && (
-                                <p className="text-red-500 text-xs mt-1">
-                                    {errors.name[0]}
-                                </p>
-                            )}
                         </div>
 
                         {/* Email */}

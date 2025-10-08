@@ -14,9 +14,9 @@ return [
     'transaction_created'                         => '取引を登録しました。',
     'transaction_updated'                         => '取引を更新しました。',
     'transaction_deleted'                         => '取引を削除しました。',
-    'logged_out'                                  => 'ログアウトしました。',
+    'user_signed_out'                             => 'サインアウトしました。',
     'user_registered'                             => 'ユーザー登録が完了しました。',
-    'logged_in'                                   => 'ログインしました。',
+    'user_signed_in'                              => 'サインインしました。',
     'account_deleted'                             => 'アカウントを削除しました。',
 
     // --------------------------
@@ -58,6 +58,7 @@ return [
     // --------------------------
     // エラーメッセージ
     // --------------------------
+    'server_error'                                => 'サーバーでエラーが発生しました。',
     'unauthorized'                                => 'この操作を実行する権限がありません。',
     'validation_error'                            => '入力内容に誤りがあります。再度確認してください。',
     'category_not_found'                          => 'カテゴリを選択してください',
@@ -74,5 +75,6 @@ return [
     'transaction_not_found'                       => '指定された取引データが見つかりません。',
     'transaction_destroy_failed'                  => '取引の削除に失敗しました。',
     'dashboard_get_failed'                        => 'ダッシュボード情報の取得に失敗しました。',
-    'login_failed'                                => 'メールアドレスまたはパスワードが正しくありません。',
+    'user_already_deleted'                        => 'このアカウントは既に退会済みです。ご利用の場合は再開手続きをしてください。',
+    'signin_failed'                               => 'メールアドレスまたはパスワードが正しくありません。',
 ];

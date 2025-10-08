@@ -8,6 +8,7 @@ import {
     CardHeader,
     CardTitle,
 } from "../components/ui/card";
+import { ChartNoAxesColumn } from "lucide-react";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -27,22 +28,14 @@ const Login = () => {
                 remember, // todo: 多分ここ機能してない
             });
 
-            const accessToken = response.data.token;
+            const accessToken = response.data.data.token;
             localStorage.setItem("access_token", accessToken);
-            toast.success("ログインしました");
+            toast.success(response.data.message);
             navigate("/");
         } catch (error: any) {
-            if (error.response?.data?.errors) {
-                const allErrors = Object.values(
-                    error.response.data.errors
-                ).flat();
-                setErrors(allErrors as string[]);
-                console.log(errors);
-            } else {
-                const fallbackMessage = "ログインに失敗しました";
-                setErrors([fallbackMessage]);
-                toast.error(fallbackMessage);
-            }
+            const fallbackMessage = "ログインに失敗しました。";
+            setErrors([error.response.data.messages[0]]);
+            toast.error(fallbackMessage);
         }
     };
 
@@ -51,11 +44,18 @@ const Login = () => {
             <Card className="relative bg-black border border-gray-800 w-full max-w-md">
                 <CardHeader>
                     <CardTitle className="text-center text-lg font-semibold">
-                        ログイン
+                        サインイン
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
+                        {errors.length > 0 && (
+                            <div className="bg-red-900/30 border border-red-500/50 text-red-400 text-sm p-3 rounded-md">
+                                {errors.map((error, index) => (
+                                    <p key={index}>{error}</p>
+                                ))}
+                            </div>
+                        )}
                         {/* Email */}
                         <div>
                             <label
