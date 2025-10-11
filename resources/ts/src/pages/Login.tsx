@@ -56,6 +56,20 @@ const Login = () => {
                                 ))}
                             </div>
                         )}
+                        {errors.some((error) =>
+                            error.includes(
+                                "このアカウントは既に退会済みです。ご利用の場合は再開手続きをしてください。"
+                            )
+                        ) && (
+                            <div>
+                                <a
+                                    href="/forgot-password"
+                                    className="block text-sm text-red-400 underline"
+                                >
+                                    再開手続きはこちら
+                                </a>
+                            </div>
+                        )}
                         {/* Email */}
                         <div>
                             <label
