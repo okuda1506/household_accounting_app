@@ -43,6 +43,7 @@ class NewPasswordController extends Controller
             function ($user) use ($request) {
                 $user->forceFill([
                     'password' => Hash::make($request->password),
+                    'deleted' => false, // アカウントを再有効化
                     'remember_token' => Str::random(60),
                 ])->save();
 
