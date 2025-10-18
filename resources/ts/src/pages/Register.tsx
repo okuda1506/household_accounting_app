@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
@@ -16,6 +16,13 @@ const Register = () => {
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [errors, setErrors] = useState<string[]>([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+            const token = localStorage.getItem("access_token");
+            if (token) {
+                navigate("/", { replace: true });
+            }
+        }, [navigate]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
