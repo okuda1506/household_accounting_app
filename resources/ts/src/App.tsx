@@ -31,6 +31,14 @@ function App() {
                             element={<ForgotPassword />}
                         />
                         <Route
+                            path="/"
+                            element={
+                                <PrivateRoute>
+                                    <Dashboard />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
                             path="/categories"
                             element={
                                 <PrivateRoute>
