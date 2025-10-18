@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Categories from "./pages/Categories";
 import Transactions from "./pages/Transactions";
+import ForgotPassword from "./pages/ForgotPassword";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { ToastContainer } from "react-toastify";
 import { Slide } from "react-toastify";
@@ -26,12 +27,8 @@ function App() {
                         <Route path="/register" element={<Register />} />
                         <Route path="/login" element={<Login />} />
                         <Route
-                            path="/"
-                            element={
-                                <PrivateRoute>
-                                    <Dashboard />
-                                </PrivateRoute>
-                            }
+                            path="/forgot-password"
+                            element={<ForgotPassword />}
                         />
                         <Route
                             path="/categories"

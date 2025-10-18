@@ -24,6 +24,8 @@ return [
     // --------------------------
     'user_id_required'                            => 'ユーザーIDは必須です。',
     'user_id_integer'                             => 'ユーザーIDは数値でなければなりません。',
+    'user_email_invalid'                          => 'メールアドレスが不正です。',
+    'user_email_not_found'                        => 'メールアドレスが見つかりません。',
     'user_id_exists'                              => '無効なユーザーIDです。',
     'name_required'                               => 'カテゴリ名は必須です。',
     'name_string'                                 => 'カテゴリ名は文字列でなければなりません。',

@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Notifications\ReactivateAccount;
+use App\Services\AuthService;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 
@@ -15,32 +18,29 @@ class PasswordResetLinkController extends Controller
 {
     /**
      * Handle an incoming password reset link request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
      */
+    private AuthService $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
     public function store(Request $request): JsonResponse
     {
-        $request->validate(['email' => ['required', 'email']]);
+        try {
+            $status = $this->authService->sendPasswordResetLink($request);
 
-        // ユーザーの状態を確認
-        $user = User::where('email', $request->email)->first();
-
-        // ユーザーが存在しない場合は通常のパスワードリセットと同じ挙動にする
-        // そのためメールアドレスの存在を外部に推測させない
-        $status = Password::sendResetLink($request->only('email'), function ($user) {
-            // 通知をカスタマイズ
-            $token = Password::createToken($user);
-            if ($user->deleted) {
-                // 退会済みの場合はアカウント再開用の通知を送る
-                $user->notify(new ReactivateAccount($token));
-            } else {
-                // アクティブな場合は通常のパスワードリセット通知を送る
-                $user->notify(new ResetPassword($token));
-            }
-        });
-
-        return $status == Password::RESET_LINK_SENT
-            ? response()->json(['status' => __($status)])
-            : throw ValidationException::withMessages(['email' => [__($status)]]);
+            return ApiResponse::success(['status' => __($status)], __('passwords.sent'));
+        } catch (ValidationException $e) {
+            return ApiResponse::error(
+                __('messages.validation_error'),
+                $e->errors(),
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error($e);
+            return ApiResponse::error(__('messages.server_error'), [$e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

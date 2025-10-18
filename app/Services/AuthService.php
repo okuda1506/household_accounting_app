@@ -2,10 +2,13 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Notifications\ReactivateAccount;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -107,5 +110,38 @@ class AuthService
     public function logoutUser(Request $request): void
     {
         $request->user()->currentAccessToken()->delete();
+    }
+
+    /**
+     * パスワードリセットリンクの送信
+     *
+     * @param Request $request
+     * @return string
+     * @throws ValidationException
+     */
+    public function sendPasswordResetLink(Request $request): string
+    {
+        $validated = $request->validate(['email' => ['required', 'email']]);
+
+        if (!$validated) {
+            throw ValidationException::withMessages([
+                'email' => __('messages.user_email_invalid'),
+            ]);
+        }
+
+        $status = Password::sendResetLink($request->only('email'), function ($user) {
+            $token = Password::createToken($user);
+            if ($user->deleted) {
+                $user->notify(new ReactivateAccount($token));
+            } else {
+                $user->notify(new ResetPassword($token));
+            }
+        });
+
+        if ($status !== Password::RESET_LINK_SENT) {
+            throw ValidationException::withMessages(['email' => [__($status)]]);
+        }
+
+        return $status;
     }
 }
