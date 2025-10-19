@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Categories from "./pages/Categories";
 import Transactions from "./pages/Transactions";
 import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { ToastContainer } from "react-toastify";
 import { Slide } from "react-toastify";
@@ -29,6 +30,10 @@ function App() {
                         <Route
                             path="/forgot-password"
                             element={<ForgotPassword />}
+                        />
+                        <Route
+                            path="/reset-password/:token"
+                            element={<ResetPassword />}
                         />
                         <Route
                             path="/"

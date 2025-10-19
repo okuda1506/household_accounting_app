@@ -47,7 +47,7 @@ class ReactivateAccount extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $reactivateUrl = url(config('app.frontend_url') . "/reset-password/{$this->token}?email={$notifiable->getEmailForPasswordReset()}");
+        $reactivateUrl = url(config('app.url') . "/reset-password/{$this->token}?email={$notifiable->getEmailForPasswordReset()}");
 
         return (new MailMessage)
             ->subject(Lang::get('アカウントの利用再開'))
