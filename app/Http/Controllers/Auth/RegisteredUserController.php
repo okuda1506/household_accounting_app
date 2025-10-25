@@ -13,7 +13,6 @@ use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
-
     private AuthService $authService;
 
     public function __construct(AuthService $authService)
