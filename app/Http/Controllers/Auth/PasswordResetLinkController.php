@@ -29,18 +29,29 @@ class PasswordResetLinkController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
-            $status = $this->authService->sendPasswordResetLink($request);
+            $result = $this->authService->sendPasswordResetLink($request);
+        } catch (\Throwable $e) {
+            if ($e instanceof \Illuminate\Validation\ValidationException) {
+                $errors = $e->errors();
+                $status = Response::HTTP_UNPROCESSABLE_ENTITY;
+            } else {
+                \Illuminate\Support\Facades\Log::error($e);
+                $errors = [__('messages.server_error')];
+                $status = Response::HTTP_INTERNAL_SERVER_ERROR;
+            }
 
-            return ApiResponse::success(['status' => __($status)], __('passwords.sent'));
-        } catch (ValidationException $e) {
-            return ApiResponse::error(
-                __('messages.validation_error'),
-                $e->errors(),
-                Response::HTTP_UNPROCESSABLE_ENTITY
-            );
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error($e);
-            return ApiResponse::error(__('messages.server_error'), [$e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error(null, $errors, $status);
         }
+
+        $errorMap = [
+            Password::INVALID_USER => [__('messages.user_email_invalid'), Response::HTTP_UNPROCESSABLE_ENTITY],
+        ];
+
+        if (isset($errorMap[$result['status']])) {
+            [$message, $status] = $errorMap[$result['status']];
+            return ApiResponse::error(null, [$message], $status);
+        }
+
+        return ApiResponse::success(null, __('messages.user_send_password_reset_link'));
     }
 }

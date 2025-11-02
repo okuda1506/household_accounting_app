@@ -3,12 +3,14 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Notifications\ReactivateAccount;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -29,7 +31,6 @@ class AuthService
      */
     public function registerUser(Request $request): array
     {
-        // 退会済みユーザーチェック
         $validated = $request->validate([
             'name'     => ['required', 'string', 'max:255'],
             'email'    => ['required', 'string', 'lowercase', 'email', 'max:255'],
@@ -119,17 +120,11 @@ class AuthService
      * @return string
      * @throws ValidationException
      */
-    public function sendPasswordResetLink(Request $request): string
+    public function sendPasswordResetLink(Request $request): array
     {
         $validated = $request->validate(['email' => ['required', 'email']]);
 
-        if (!$validated) {
-            throw ValidationException::withMessages([
-                'email' => __('messages.user_email_invalid'),
-            ]);
-        }
-
-        $status = Password::sendResetLink($request->only('email'), function ($user) {
+        $status = Password::sendResetLink($validated, function ($user) {
             $token = Password::createToken($user);
             if ($user->deleted) {
                 $user->notify(new ReactivateAccount($token));
@@ -138,10 +133,42 @@ class AuthService
             }
         });
 
-        if ($status !== Password::RESET_LINK_SENT) {
-            throw ValidationException::withMessages(['email' => [__($status)]]);
-        }
-
-        return $status;
+        return [
+            'status' => $status,
+        ];
     }
+
+    /**
+     * パスワードリセット
+     *
+     * @param Request $request
+     * @return array
+     * @throws ValidationException
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => ['required'],
+            'email' => ['required', 'email'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user) use ($request) {
+                $user->forceFill([
+                    'password' => Hash::make($request->password),
+                    'deleted' => false, // アカウントを再有効化
+                    'remember_token' => Str::random(60),
+                ])->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        return [
+            'status' => $status,
+        ];
+    }
+
 }

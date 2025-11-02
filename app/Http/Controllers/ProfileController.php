@@ -77,6 +77,6 @@ class ProfileController extends Controller
         // 現在のアクセストークンを無効化
         $user->currentAccessToken()->delete();
 
-        return response()->json(['message' => __('messages.account_deleted')]);
+        return response()->json(['message' => __('messages.user_account_deleted')]);
     }
 }

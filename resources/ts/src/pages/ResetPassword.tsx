@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
+import { AlertTriangle } from "lucide-react";
 import {
     Card,
     CardContent,
@@ -13,7 +14,8 @@ const ResetPassword = () => {
     const { token } = useParams<{ token: string }>();
     const [searchParams] = useSearchParams();
     const email = searchParams.get("email") || "";
-
+    const [errors, setErrors] = useState<string[]>([]);
+    const [status, setStatus] = useState<string | null>(null);
     const [password, setPassword] = useState("");
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [isInvalidLink, setIsInvalidLink] = useState(false);
@@ -35,7 +37,8 @@ const ResetPassword = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
+        setErrors([]);
+        setStatus(null);
         try {
             const response = await api.post("/reset-password", {
                 email,
@@ -43,16 +46,17 @@ const ResetPassword = () => {
                 password,
                 password_confirmation: passwordConfirmation,
             });
-
+            setStatus(response.data.status);
             toast.success("パスワードを更新しました。");
             navigate("/login");
         } catch (error: any) {
             console.log(error);
+            setErrors(error.response.data.messages);
             toast.error("パスワードの更新に失敗しました。");
         }
     };
 
-    // --- 無効リンクの場合 ---
+    // 無効リンクの場合
     if (isInvalidLink) {
         return (
             <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
@@ -82,6 +86,17 @@ const ResetPassword = () => {
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
+                        {/* エラーメッセージ */}
+                        {errors.length > 0 && (
+                            <div className="bg-red-900/30 border border-red-500/50 text-red-400 text-sm p-3 rounded-md flex items-center space-x-2">
+                                <AlertTriangle className="h-5 w-5 text-red-400 flex-shrink-0" />
+                                <div>
+                                    {errors.map((error, index) => (
+                                        <p key={index}>{error}</p>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                         <div>
                             <label className="block text-sm text-white mb-1">
                                 メールアドレス
