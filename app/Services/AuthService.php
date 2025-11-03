@@ -124,8 +124,7 @@ class AuthService
     {
         $validated = $request->validate(['email' => ['required', 'email']]);
 
-        $status = Password::sendResetLink($validated, function ($user) {
-            $token = Password::createToken($user);
+        $status = Password::sendResetLink($validated, function ($user, $token) {
             if ($user->deleted) {
                 $user->notify(new ReactivateAccount($token));
             } else {
