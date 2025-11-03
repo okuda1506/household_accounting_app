@@ -50,7 +50,6 @@ const ResetPassword = () => {
             toast.success("パスワードを更新しました。");
             navigate("/login");
         } catch (error: any) {
-            console.log(error);
             setErrors(error.response.data.messages);
             toast.error("パスワードの更新に失敗しました。");
         }
