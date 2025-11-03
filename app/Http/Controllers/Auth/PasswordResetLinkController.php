@@ -32,7 +32,7 @@ class PasswordResetLinkController extends Controller
             $result = $this->authService->sendPasswordResetLink($request);
         } catch (\Throwable $e) {
             if ($e instanceof \Illuminate\Validation\ValidationException) {
-                $errors = $e->errors();
+                $errors = $e->validator->errors()->all();
                 $status = Response::HTTP_UNPROCESSABLE_ENTITY;
             } else {
                 \Illuminate\Support\Facades\Log::error($e);
