@@ -144,7 +144,7 @@ class AuthService
      * @return array
      * @throws ValidationException
      */
-    public function resetPassword(Request $request)
+    public function resetPassword(Request $request): array
     {
         $request->validate([
             'token' => ['required'],
