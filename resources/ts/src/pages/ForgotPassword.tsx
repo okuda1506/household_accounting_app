@@ -25,7 +25,6 @@ const ForgotPassword = () => {
             setStatus(response.data.status);
             toast.success("案内メールを送信しました。");
         } catch (error: any) {
-            console.log(error);
             setErrors(error.response.data.messages);
             toast.error("送信に失敗しました。");
         } finally {
