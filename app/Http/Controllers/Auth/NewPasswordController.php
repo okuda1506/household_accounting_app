@@ -39,7 +39,7 @@ class NewPasswordController extends Controller
             $result = $this->authService->resetPassword($request);
         } catch (\Throwable $e) {
             if ($e instanceof \Illuminate\Validation\ValidationException) {
-                $errors = [__('messages.user_password_confirmed')];
+                $errors = $e->validator->errors()->all();
                 $status = Response::HTTP_UNPROCESSABLE_ENTITY;
             } else {
                 \Illuminate\Support\Facades\Log::error($e);
