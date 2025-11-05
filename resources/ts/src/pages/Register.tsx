@@ -85,6 +85,7 @@ const Register = () => {
                                 </a>
                             </div>
                         )}
+
                         {/* Name */}
                         <div>
                             <label
@@ -121,12 +122,6 @@ const Register = () => {
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full px-3 py-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
-                            {/* todo: エラー確認 */}
-                            {errors.email && (
-                                <p className="text-red-500 text-xs mt-1">
-                                    {errors.email[0]}
-                                </p>
-                            )}
                         </div>
 
                         {/* Password */}
@@ -146,12 +141,6 @@ const Register = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="w-full px-3 py-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
-                            {/* todo: エラー確認 */}
-                            {errors.password && (
-                                <p className="text-red-500 text-xs mt-1">
-                                    {errors.password[0]}
-                                </p>
-                            )}
                         </div>
 
                         {/* Password Confirmation */}
