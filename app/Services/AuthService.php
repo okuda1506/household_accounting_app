@@ -138,19 +138,25 @@ class AuthService
     }
 
     /**
-     * パスワードリセット
+     * アカウント再開
      *
      * @param Request $request
      * @return array
      * @throws ValidationException
      */
-    public function resetPassword(Request $request): array
+    public function reactivateAccount(Request $request): array
     {
         $request->validate([
             'token' => ['required'],
             'email' => ['required', 'email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !$user->deleted) {
+            return ['status' => Password::INVALID_USER];
+        }
 
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
@@ -170,4 +176,41 @@ class AuthService
         ];
     }
 
+    /**
+     * パスワードリセット
+     *
+     * @param Request $request
+     * @return array
+     * @throws ValidationException
+     */
+    public function resetPassword(Request $request): array
+    {
+        $request->validate([
+            'token' => ['required'],
+            'email' => ['required', 'email'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || $user->deleted) {
+            return ['status' => Password::INVALID_USER];
+        }
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user) use ($request) {
+                $user->forceFill([
+                    'password' => Hash::make($request->password),
+                    'remember_token' => Str::random(60),
+                ])->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        return [
+            'status' => $status,
+        ];
+    }
 }

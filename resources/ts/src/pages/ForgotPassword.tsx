@@ -42,7 +42,7 @@ const ForgotPassword = () => {
                 </CardHeader>
                 <CardContent>
                     <div className="mb-4 text-sm text-gray-400">
-                        ご登録のメールアドレスを入力してください。パスワードリセット（またはアカウント再開）用のリンクをメールでお送りします。
+                        ご登録のメールアドレスを入力してください。パスワードリセット、またはアカウント再開用のリンクをメールでお送りします。
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-4">

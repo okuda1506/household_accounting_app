@@ -10,7 +10,7 @@ import {
     CardTitle,
 } from "../components/ui/card";
 
-const ResetPassword = () => {
+const ReactivateAccount = () => {
     const { token } = useParams<{ token: string }>();
     const [searchParams] = useSearchParams();
     const email = searchParams.get("email") || "";
@@ -25,7 +25,7 @@ const ResetPassword = () => {
         if (!token || !email) {
             setIsInvalidLink(true);
             toast.error(
-                "無効なパスワードリセットリンクです。再度メールを送信してください。"
+                "無効なアカウント再開リンクです。再度メールを送信してください。"
             );
 
             setTimeout(() => navigate("/forgot-password"), 10000);
@@ -39,20 +39,21 @@ const ResetPassword = () => {
         setErrors([]);
         setStatus(null);
         try {
-            const response = await api.post("/reset-password", {
+            const response = await api.post("/reactivate-account", {
                 email,
                 token,
                 password,
                 password_confirmation: passwordConfirmation,
             });
             setStatus(response.data.status);
-            toast.success("パスワードを更新しました。");
+            toast.success("アカウントを再開しました。");
             navigate("/login");
         } catch (error: any) {
+            console.log(error);
             setErrors(error.response.data.messages);
-            toast.error("パスワードの更新に失敗しました。");
+            toast.error("アカウントの再開に失敗しました。");
         }
-    };
+    }
 
     // 無効リンクの場合
     if (isInvalidLink) {
@@ -65,9 +66,9 @@ const ResetPassword = () => {
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="text-center text-gray-400">
-                        このパスワード再設定リンクは無効です。
+                        このアカウント再開リンクは無効です。
                         <br />
-                        10秒後にパスワード再発行画面へ移動します。
+                        10秒後にパスワード再設定画面へ移動します。
                     </CardContent>
                 </Card>
             </div>
@@ -79,7 +80,7 @@ const ResetPassword = () => {
             <Card className="relative bg-black border border-gray-800 w-full max-w-md">
                 <CardHeader>
                     <CardTitle className="text-center text-lg font-semibold">
-                        新しいパスワードを設定
+                        アカウントの再開
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -135,7 +136,7 @@ const ResetPassword = () => {
                                 type="submit"
                                 className="w-full rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
-                                パスワードを更新
+                                アカウントを再開
                             </button>
                         </div>
                     </form>
@@ -145,4 +146,4 @@ const ResetPassword = () => {
     );
 };
 
-export default ResetPassword;
+export default ReactivateAccount;

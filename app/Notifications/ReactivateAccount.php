@@ -47,13 +47,13 @@ class ReactivateAccount extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $reactivateUrl = url(config('app.url') . "/reset-password/{$this->token}?email=" . urlencode($notifiable->getEmailForPasswordReset()));
+        $reactivateUrl = url(config('app.url') . "/reactivate-account/{$this->token}?email=" . urlencode($notifiable->getEmailForPasswordReset()));
 
         return (new MailMessage)
             ->subject(Lang::get('アカウントの利用再開'))
             ->line(Lang::get('アカウントの利用を再開するには、以下のボタンをクリックしてパスワードを再設定してください。'))
             ->action(Lang::get('パスワードを再設定して利用を再開する'), $reactivateUrl)
-            ->line(Lang::get('このパスワードリセットリンクは :count 分で有効期限が切れます。', ['count' => config('auth.passwords.' . config('auth.defaults.passwords') . '.expire')]))
-            ->line(Lang::get('もしこの操作に心当たりがない場合は、このメールを無視してください。'));
+            ->line(Lang::get('このリンクは :count 分で有効期限が切れます。', ['count' => config('auth.passwords.' . config('auth.defaults.passwords') . '.expire')]))
+            ->line(Lang::get('もしこのメールに心当たりがない場合は、このメールを破棄してください。'));
     }
 }
