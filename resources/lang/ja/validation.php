@@ -13,6 +13,7 @@ return [
     */
 
     'unique' => ':attributeは既に使用されています。',
+    'email' => '有効なメールアドレス形式を指定してください。',
     'confirmed' => ':attributeが確認用項目と一致しません。',
     'current_password' => 'パスワードを正しく入力してください。',
 

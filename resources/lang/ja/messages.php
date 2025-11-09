@@ -17,13 +17,20 @@ return [
     'user_signed_out'                             => 'サインアウトしました。',
     'user_registered'                             => 'ユーザー登録が完了しました。',
     'user_signed_in'                              => 'サインインしました。',
-    'account_deleted'                             => 'アカウントを削除しました。',
+    'user_account_deleted'                        => 'アカウントを削除しました。',
+    'user_send_password_reset_link'               => '案内メールを送信しました。',
+    'user_password_reset'                         => 'パスワードを更新しました。',
+    'user_account_reactivated'                    => 'アカウントを再開しました。',
 
     // --------------------------
     // バリデーションメッセージ
     // --------------------------
     'user_id_required'                            => 'ユーザーIDは必須です。',
     'user_id_integer'                             => 'ユーザーIDは数値でなければなりません。',
+    'user_email_invalid'                          => '無効なメールアドレスです。',
+    'user_token_invalid'                          => '無効なトークンです。',
+    'user_email_not_found'                        => 'メールアドレスが見つかりません。',
+    'user_password_confirmed'                     => 'パスワードと確認用項目が一致しません。',
     'user_id_exists'                              => '無効なユーザーIDです。',
     'name_required'                               => 'カテゴリ名は必須です。',
     'name_string'                                 => 'カテゴリ名は文字列でなければなりません。',

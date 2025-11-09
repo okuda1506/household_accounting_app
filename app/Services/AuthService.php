@@ -2,10 +2,15 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Notifications\ReactivateAccount;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -26,7 +31,6 @@ class AuthService
      */
     public function registerUser(Request $request): array
     {
-        // 退会済みユーザーチェック
         $validated = $request->validate([
             'name'     => ['required', 'string', 'max:255'],
             'email'    => ['required', 'string', 'lowercase', 'email', 'max:255'],
@@ -107,5 +111,97 @@ class AuthService
     public function logoutUser(Request $request): void
     {
         $request->user()->currentAccessToken()->delete();
+    }
+
+    /**
+     * パスワードリセットリンクの送信
+     *
+     * @param Request $request
+     * @return array
+     * @throws ValidationException
+     */
+    public function sendPasswordResetLink(Request $request): array
+    {
+        $validated = $request->validate(['email' => ['required', 'email']]);
+
+        $status = Password::sendResetLink($validated, function ($user, $token) {
+            if ($user->deleted) {
+                $user->notify(new ReactivateAccount($token));
+            } else {
+                $user->notify(new ResetPassword($token));
+            }
+        });
+
+        return [
+            'status' => $status,
+        ];
+    }
+
+    /**
+     * アカウント再開
+     *
+     * @param Request $request
+     * @return array
+     * @throws ValidationException
+     */
+    public function reactivateAccount(Request $request): array
+    {
+        return $this->performPasswordReset($request, true);
+    }
+
+    /**
+     * パスワードリセット
+     *
+     * @param Request $request
+     * @return array
+     * @throws ValidationException
+     */
+    public function resetPassword(Request $request): array
+    {
+        return $this->performPasswordReset($request, false);
+    }
+
+    /**
+     * アカウント再開とパスワードリセットの共通メソッド
+     *
+     * - バリデーションチェック（トークン・メール・パスワード）
+     * - 対象ユーザーの存在と削除状態（削除済み／有効）を確認
+     * - パスワード更新および必要に応じてアカウントの再有効化を実行
+     *
+     * @param Request $request
+     * @return array
+     * @throws ValidationException
+     */
+    private function performPasswordReset(Request $request, bool $isReactivation): array
+    {
+        $request->validate([
+            'token'    => ['required'],
+            'email'    => ['required', 'email'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || ($isReactivation ? !$user->deleted : $user->deleted)) {
+            return ['status' => Password::INVALID_USER];
+        }
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user) use ($request, $isReactivation) {
+                $fillData = [
+                    'password'       => Hash::make($request->password),
+                    'remember_token' => Str::random(60),
+                ];
+                if ($isReactivation) {
+                    $fillData['deleted'] = false;
+                }
+                $user->forceFill($fillData)->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        return ['status' => $status];
     }
 }

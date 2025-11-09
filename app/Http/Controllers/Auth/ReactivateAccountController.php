@@ -4,21 +4,14 @@ namespace App\Http\Controllers\Auth;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Notifications\ReactivateAccount;
 use App\Services\AuthService;
-use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Validation\ValidationException;
 
-class PasswordResetLinkController extends Controller
+class ReactivateAccountController extends Controller
 {
-    /**
-     * Handle an incoming password reset link request.
-     */
     private AuthService $authService;
 
     public function __construct(AuthService $authService)
@@ -26,10 +19,15 @@ class PasswordResetLinkController extends Controller
         $this->authService = $authService;
     }
 
+    /**
+     * Handle an incoming new password request.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function store(Request $request): JsonResponse
     {
         try {
-            $result = $this->authService->sendPasswordResetLink($request);
+            $result = $this->authService->reactivateAccount($request);
         } catch (\Throwable $e) {
             if ($e instanceof \Illuminate\Validation\ValidationException) {
                 $errors = $e->validator->errors()->all();
@@ -44,14 +42,16 @@ class PasswordResetLinkController extends Controller
         }
 
         $errorMap = [
-            Password::INVALID_USER => [__('messages.user_email_invalid'), Response::HTTP_UNPROCESSABLE_ENTITY],
+            Password::INVALID_USER  => [__('messages.user_email_invalid'), Response::HTTP_UNPROCESSABLE_ENTITY],
+            Password::INVALID_TOKEN => [__('messages.user_token_invalid'), Response::HTTP_BAD_REQUEST],
         ];
 
         if (isset($errorMap[$result['status']])) {
             [$message, $status] = $errorMap[$result['status']];
+
             return ApiResponse::error(null, [$message], $status);
         }
 
-        return ApiResponse::success(null, __('messages.user_send_password_reset_link'));
+        return ApiResponse::success(null, __('messages.user_account_reactivated'));
     }
 }

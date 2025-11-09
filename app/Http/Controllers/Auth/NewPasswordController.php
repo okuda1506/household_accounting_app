@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Http\RedirectResponse;
+use App\Services\AuthService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
 class NewPasswordController extends Controller
 {
+    private AuthService $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
     /**
      * Display the password reset view.
      */
@@ -27,35 +33,34 @@ class NewPasswordController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): JsonResponse
     {
-        $request->validate([
-            'token' => ['required'],
-            'email' => ['required', 'email'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
-
-        // Here we will attempt to reset the user's password. If it is successful we
-        // will update the password on an actual user model and persist it to the
-        // database. Otherwise we will parse the error and return the response.
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user) use ($request) {
-                $user->forceFill([
-                    'password' => Hash::make($request->password),
-                    'remember_token' => Str::random(60),
-                ])->save();
-
-                event(new PasswordReset($user));
+        try {
+            $result = $this->authService->resetPassword($request);
+        } catch (\Throwable $e) {
+            if ($e instanceof \Illuminate\Validation\ValidationException) {
+                $errors = $e->validator->errors()->all();
+                $status = Response::HTTP_UNPROCESSABLE_ENTITY;
+            } else {
+                \Illuminate\Support\Facades\Log::error($e);
+                $errors = [__('messages.server_error')];
+                $status = Response::HTTP_INTERNAL_SERVER_ERROR;
             }
-        );
 
-        // If the password was successfully reset, we will redirect the user back to
-        // the application's home authenticated view. If there is an error we can
-        // redirect them back to where they came from with their error message.
-        return $status == Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => __($status)]);
+            return ApiResponse::error(null, $errors, $status);
+        }
+
+        $errorMap = [
+            Password::INVALID_USER  => [__('messages.user_email_invalid'), Response::HTTP_UNPROCESSABLE_ENTITY],
+            Password::INVALID_TOKEN => [__('messages.user_token_invalid'), Response::HTTP_BAD_REQUEST],
+        ];
+
+        if (isset($errorMap[$result['status']])) {
+            [$message, $status] = $errorMap[$result['status']];
+
+            return ApiResponse::error(null, [$message], $status);
+        }
+
+        return ApiResponse::success(null, __('messages.user_password_reset'));
     }
 }

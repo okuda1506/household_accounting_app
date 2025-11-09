@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
@@ -16,6 +16,13 @@ const Register = () => {
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [errors, setErrors] = useState<string[]>([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+            const token = localStorage.getItem("access_token");
+            if (token) {
+                navigate("/", { replace: true });
+            }
+        }, [navigate]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -64,6 +71,21 @@ const Register = () => {
                                 ))}
                             </div>
                         )}
+                        {errors.some((error) =>
+                            error.includes(
+                                "このアカウントは既に退会済みです。ご利用の場合は再開手続きをしてください。"
+                            )
+                        ) && (
+                            <div>
+                                <a
+                                    href="/forgot-password"
+                                    className="block text-sm text-red-400 underline"
+                                >
+                                    再開手続きはこちら
+                                </a>
+                            </div>
+                        )}
+
                         {/* Name */}
                         <div>
                             <label
@@ -100,11 +122,6 @@ const Register = () => {
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full px-3 py-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
-                            {errors.email && (
-                                <p className="text-red-500 text-xs mt-1">
-                                    {errors.email[0]}
-                                </p>
-                            )}
                         </div>
 
                         {/* Password */}
@@ -124,11 +141,6 @@ const Register = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="w-full px-3 py-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
-                            {errors.password && (
-                                <p className="text-red-500 text-xs mt-1">
-                                    {errors.password[0]}
-                                </p>
-                            )}
                         </div>
 
                         {/* Password Confirmation */}
