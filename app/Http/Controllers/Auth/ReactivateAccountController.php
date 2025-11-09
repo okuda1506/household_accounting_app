@@ -52,6 +52,6 @@ class ReactivateAccountController extends Controller
             return ApiResponse::error(null, [$message], $status);
         }
 
-        return ApiResponse::success(null, __('messages.user_password_reset'));
+        return ApiResponse::success(null, __('messages.user_account_reactivated'));
     }
 }

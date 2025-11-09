@@ -117,7 +117,7 @@ class AuthService
      * パスワードリセットリンクの送信
      *
      * @param Request $request
-     * @return string
+     * @return array
      * @throws ValidationException
      */
     public function sendPasswordResetLink(Request $request): array
@@ -146,34 +146,7 @@ class AuthService
      */
     public function reactivateAccount(Request $request): array
     {
-        $request->validate([
-            'token' => ['required'],
-            'email' => ['required', 'email'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
-
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !$user->deleted) {
-            return ['status' => Password::INVALID_USER];
-        }
-
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user) use ($request) {
-                $user->forceFill([
-                    'password' => Hash::make($request->password),
-                    'deleted' => false, // アカウントを再有効化
-                    'remember_token' => Str::random(60),
-                ])->save();
-
-                event(new PasswordReset($user));
-            }
-        );
-
-        return [
-            'status' => $status,
-        ];
+        return $this->performPasswordReset($request, true);
     }
 
     /**
@@ -185,32 +158,50 @@ class AuthService
      */
     public function resetPassword(Request $request): array
     {
+        return $this->performPasswordReset($request, false);
+    }
+
+    /**
+     * アカウント再開とパスワードリセットの共通メソッド
+     *
+     * - バリデーションチェック（トークン・メール・パスワード）
+     * - 対象ユーザーの存在と削除状態（削除済み／有効）を確認
+     * - パスワード更新および必要に応じてアカウントの再有効化を実行
+     *
+     * @param Request $request
+     * @return array
+     * @throws ValidationException
+     */
+    private function performPasswordReset(Request $request, bool $isReactivation): array
+    {
         $request->validate([
-            'token' => ['required'],
-            'email' => ['required', 'email'],
+            'token'    => ['required'],
+            'email'    => ['required', 'email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user || $user->deleted) {
+        if (!$user || ($isReactivation ? !$user->deleted : $user->deleted)) {
             return ['status' => Password::INVALID_USER];
         }
 
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user) use ($request) {
-                $user->forceFill([
-                    'password' => Hash::make($request->password),
+            function ($user) use ($request, $isReactivation) {
+                $fillData = [
+                    'password'       => Hash::make($request->password),
                     'remember_token' => Str::random(60),
-                ])->save();
+                ];
+                if ($isReactivation) {
+                    $fillData['deleted'] = false;
+                }
+                $user->forceFill($fillData)->save();
 
                 event(new PasswordReset($user));
             }
         );
 
-        return [
-            'status' => $status,
-        ];
+        return ['status' => $status];
     }
 }

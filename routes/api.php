@@ -14,8 +14,12 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
-Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.store');
+Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+    ->middleware('guest:sanctum')
+    ->name('password.email');
+Route::post('/reset-password', [NewPasswordController::class, 'store'])
+    ->middleware('guest:sanctum')
+    ->name('password.store');
 Route::post('/reactivate-account', [ReactivateAccountController::class, 'store'])
     ->middleware('guest:sanctum')
     ->name('account.reactivate');

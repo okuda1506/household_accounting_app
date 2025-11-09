@@ -12,17 +12,14 @@ import {
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
     const [errors, setErrors] = useState<string[]>([]);
-    const [status, setStatus] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setErrors([]);
-        setStatus(null);
         setIsSubmitting(true);
         try {
-            const response = await api.post("/forgot-password", { email });
-            setStatus(response.data.status);
+            await api.post("/forgot-password", { email });
             toast.success("案内メールを送信しました。");
         } catch (error: any) {
             setErrors(error.response.data.messages);
