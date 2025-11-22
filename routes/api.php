@@ -10,7 +10,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ProfileController;
-use App\Models\User;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +36,9 @@ Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+Route::put('/user/name', [UserController::class, 'updateName'])
+    ->middleware('auth:sanctum')
+    ->name('api.user.update_name');
 
 Route::prefix('categories')
     ->middleware('auth:sanctum')

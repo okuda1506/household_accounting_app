@@ -21,6 +21,7 @@ return [
     'user_send_password_reset_link'               => '案内メールを送信しました。',
     'user_password_reset'                         => 'パスワードを更新しました。',
     'user_account_reactivated'                    => 'アカウントを再開しました。',
+    'user_name_updated'                           => 'ユーザー名を更新しました。',
 
     // --------------------------
     // バリデーションメッセージ
