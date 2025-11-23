@@ -25,7 +25,7 @@ class UserController extends Controller
     public function updateName(UpdateUserNameRequest $request): JsonResponse
     {
         try {
-            $result = $this->userService->updateUserName(auth()->id(),$request->input('name'));
+            $this->userService->updateUserName(auth()->id(),$request->input('name'));
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error($e);
             return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
