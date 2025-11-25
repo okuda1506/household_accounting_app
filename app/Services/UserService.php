@@ -11,6 +11,7 @@ use App\Mail\EmailChangeCodeMail;
  * ユーザー関連のビジネスロジックを管理するサービスクラス
  *
  * - updateUserName(): ユーザー名を更新
+ * - sendEmailChangeCode(): メールアドレス変更の認証コードを送信
  */
 class UserService
 {
