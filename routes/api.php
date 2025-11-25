@@ -32,13 +32,15 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->midd
 Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
     return response()->json($request->user());
 });
-
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+// ユーザー名更新
 Route::put('/user/name', [UserController::class, 'updateName'])
     ->middleware('auth:sanctum')
     ->name('api.user.update_name');
+// 認証コード送信
+Route::middleware('auth:sanctum')->post('/user/email/request', [UserController::class, 'requestEmailChange']);
 
 Route::prefix('categories')
     ->middleware('auth:sanctum')
