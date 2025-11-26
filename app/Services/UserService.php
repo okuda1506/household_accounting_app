@@ -12,6 +12,7 @@ use App\Mail\EmailChangeCodeMail;
  *
  * - updateUserName(): ユーザー名を更新
  * - sendEmailChangeCode(): メールアドレス変更の認証コードを送信
+ * - verifyEmailChangeCode(): メールアドレス変更の認証コードを検証
  */
 class UserService
 {
@@ -42,7 +43,7 @@ class UserService
      */
     public function sendEmailChangeCode(int $userId, string $newEmail): void
     {
-        $code = rand(100000, 999999); // 6桁
+        $code = (string)rand(100000, 999999); // 6桁
 
         // 5分 TTL で Redis 保存
         Cache::put("email_change_code_{$userId}", [
@@ -51,5 +52,23 @@ class UserService
         ], now()->addMinutes(5));
 
         Mail::to($newEmail)->send(new EmailChangeCodeMail($code));
+    }
+
+    /**
+     * メールアドレス変更の認証コードを検証する
+     *
+     * @param int $userId
+     * @param string $email
+     * @param string $code
+     * @return boolean
+     * @throws \Exception
+     */
+    public function verifyEmailChangeCode(int $userId, string $email, string $code): bool
+    {
+        $data = Cache::get("email_change_code_{$userId}");
+
+        if (!$data) return false; // コード期限切れ
+
+        return $data['email'] === $email && $data['code'] === $code;
     }
 }
