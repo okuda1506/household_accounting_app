@@ -13,6 +13,7 @@ use App\Mail\EmailChangeCodeMail;
  * - updateUserName(): ユーザー名を更新
  * - sendEmailChangeCode(): メールアドレス変更の認証コードを送信
  * - verifyEmailChangeCode(): メールアドレス変更の認証コードを検証
+ * - updateEmail(): メールアドレスを更新
  */
 class UserService
 {
