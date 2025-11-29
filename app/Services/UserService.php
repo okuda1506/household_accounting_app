@@ -71,4 +71,24 @@ class UserService
 
         return $data['email'] === $email && $data['code'] === $code;
     }
+
+    /**
+     * メールアドレスを更新する
+     *
+     * @param int $userId
+     * @param string $email
+     * @return array
+     * @throws \Exception
+     */
+    public function updateEmail(int $userId, string $email): User
+    {
+        $user = User::findOrFail($userId);
+
+        $user->email = $email;
+        $user->save();
+
+        Cache::forget("email_change_code_{$userId}");
+
+        return $user;
+    }
 }

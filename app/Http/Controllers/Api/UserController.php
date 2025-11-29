@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserNameRequest;
 use App\Http\Requests\RequestEmailChangeRequest;
 use App\Http\Requests\VerifyEmailChangeCodeRequest;
+use App\Http\Requests\UpdateUserEmailRequest;
+use App\Http\Resources\UserResource;
 use App\Services\UserService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
@@ -77,5 +80,32 @@ class UserController extends Controller
         }
 
         return ApiResponse::success(null, __('messages.user_email_change_code_verified'));
+    }
+
+    /**
+     * メールアドレスを更新する
+     *
+     * @return JsonResponse
+     */
+    public function updateEmail(UpdateUserEmailRequest $request): JsonResponse
+    {
+        try {
+            if (!$this->userService->verifyEmailChangeCode(
+                auth()->id(),
+                $request->email,
+                $request->code
+            )) {
+                return ApiResponse::error(null, [__('messages.user_email_change_code_invalid')], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $user = $this->userService->updateEmail(auth()->id(), $request->email);
+        } catch (ModelNotFoundException $e) {
+            throw new \Exception(__('messages.user_not_found'), Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error($e);
+            return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return ApiResponse::success(new UserResource($user), __('messages.user_email_updated'));
     }
 }

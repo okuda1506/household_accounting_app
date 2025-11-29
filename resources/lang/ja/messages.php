@@ -25,6 +25,7 @@ return [
     'user_email_change_code_sent'                 => '認証コードを送信しました。',
     'user_email_change_code_invalid'              => '認証コードが無効です。',
     'user_email_change_code_verified'             => '認証コードを確認しました。',
+    'user_email_updated'                          => 'メールアドレスを更新しました。',
 
     // --------------------------
     // バリデーションメッセージ
@@ -36,6 +37,7 @@ return [
     'user_email_not_found'                        => 'メールアドレスが見つかりません。',
     'user_password_confirmed'                     => 'パスワードと確認用項目が一致しません。',
     'user_id_exists'                              => '無効なユーザーIDです。',
+    'user_not_found'                              => 'ユーザーが見つかりません。',
     'name_required'                               => 'カテゴリ名は必須です。',
     'name_string'                                 => 'カテゴリ名は文字列でなければなりません。',
     'name_max_30'                                 => 'カテゴリ名は30字以内にしてください。',
