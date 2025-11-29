@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-class VerifyEmailChangeCodeRequest extends AbstractEmailCodeRequest
+class UpdateUserEmailRequest extends AbstractEmailCodeRequest
 {
     // 追加バリデーションがあればここに書く
 }
