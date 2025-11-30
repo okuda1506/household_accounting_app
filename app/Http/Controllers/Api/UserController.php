@@ -104,6 +104,9 @@ class UserController extends Controller
     /**
      * メールアドレス変更の認証コードを検証する
      *
+     * @param string $email
+     * @param string $code
+     *
      * @return null|JsonResponse
      */
     private function checkEmailChangeCode(string $email, string $code): ?JsonResponse
