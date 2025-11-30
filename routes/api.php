@@ -35,16 +35,20 @@ Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
-// ユーザー名更新
+
+// メールアドレス変更関連
 Route::put('/user/name', [UserController::class, 'updateName'])
     ->middleware('auth:sanctum')
     ->name('api.user.update_name');
 // 認証コード送信
-Route::middleware('auth:sanctum')->post('/user/email/request', [UserController::class, 'requestEmailChange']);
-// 認証コード検証
-Route::middleware('auth:sanctum')->post('/user/email/verify', [UserController::class, 'verifyEmailChangeCode']);
-// メールアドレス更新
-Route::middleware('auth:sanctum')->put('/user/email/update', [UserController::class, 'updateEmail']);
+Route::prefix('user/email')->middleware('auth:sanctum')->group(function () {
+    // 認証コード送信
+    Route::post('request', [UserController::class, 'requestEmailChange']);
+    // 認証コード検証
+    Route::post('verify', [UserController::class, 'verifyEmailChangeCode']);
+    // メールアドレス更新
+    Route::put('update', [UserController::class, 'updateEmail']);
+});
 
 Route::prefix('categories')
     ->middleware('auth:sanctum')

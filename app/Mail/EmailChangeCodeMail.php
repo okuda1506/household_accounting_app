@@ -13,7 +13,7 @@ class EmailChangeCodeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public int $code;
+    public string $code;
 
     /**
      * Create a new message instance.

@@ -38,13 +38,13 @@ class UserService
      * メールアドレス変更の認証コードを送信する
      *
      * @param int $userId
-     * @param string $name
-     * @return array{user: User}
+     * @param string $newEmail
+     * @return void
      * @throws \Exception
      */
     public function sendEmailChangeCode(int $userId, string $newEmail): void
     {
-        $code = (string)rand(100000, 999999); // 6桁
+        $code = (string)random_int(100000, 999999); // 6桁
 
         // 5分 TTL で Redis 保存
         Cache::put("email_change_code_{$userId}", [
@@ -70,7 +70,7 @@ class UserService
 
         if (!$data) return false; // コード期限切れ
 
-        return $data['email'] === $email && $data['code'] === $code;
+        return $data['email'] === $email && hash_equals((string)$data['code'], $code);
     }
 
     /**
