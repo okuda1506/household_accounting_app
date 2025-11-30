@@ -10,7 +10,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ProfileController;
-use App\Models\User;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,10 +32,23 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->midd
 Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
     return response()->json($request->user());
 });
-
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
+// メールアドレス変更関連
+Route::put('/user/name', [UserController::class, 'updateName'])
+    ->middleware('auth:sanctum')
+    ->name('api.user.update_name');
+// 認証コード送信
+Route::prefix('user/email')->middleware('auth:sanctum')->group(function () {
+    // 認証コード送信
+    Route::post('request', [UserController::class, 'requestEmailChange']);
+    // 認証コード検証
+    Route::post('verify', [UserController::class, 'verifyEmailChangeCode']);
+    // メールアドレス更新
+    Route::put('update', [UserController::class, 'updateEmail']);
+});
 
 Route::prefix('categories')
     ->middleware('auth:sanctum')
