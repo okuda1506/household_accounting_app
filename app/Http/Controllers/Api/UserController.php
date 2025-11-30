@@ -67,12 +67,8 @@ class UserController extends Controller
     public function verifyEmailChangeCode(VerifyEmailChangeCodeRequest $request): JsonResponse
     {
         try {
-            if (!$this->userService->verifyEmailChangeCode(
-                auth()->id(),
-                $request->email,
-                $request->code
-            )) {
-                return ApiResponse::error(null, [__('messages.user_email_change_code_invalid')], Response::HTTP_UNPROCESSABLE_ENTITY);
+            if ($error = $this->checkEmailChangeCode($request->email, $request->code)) {
+                return $error;
             }
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error($e);
@@ -90,12 +86,8 @@ class UserController extends Controller
     public function updateEmail(UpdateUserEmailRequest $request): JsonResponse
     {
         try {
-            if (!$this->userService->verifyEmailChangeCode(
-                auth()->id(),
-                $request->email,
-                $request->code
-            )) {
-                return ApiResponse::error(null, [__('messages.user_email_change_code_invalid')], Response::HTTP_UNPROCESSABLE_ENTITY);
+            if ($error = $this->checkEmailChangeCode($request->email, $request->code)) {
+                return $error;
             }
 
             $user = $this->userService->updateEmail(auth()->id(), $request->email);
@@ -107,5 +99,19 @@ class UserController extends Controller
         }
 
         return ApiResponse::success(new UserResource($user), __('messages.user_email_updated'));
+    }
+
+    /**
+     * メールアドレス変更の認証コードを検証する
+     *
+     * @return null|JsonResponse
+     */
+    private function checkEmailChangeCode(string $email, string $code): ?JsonResponse
+    {
+        if (!$this->userService->verifyEmailChangeCode(auth()->id(), $email, $code)) {
+            return ApiResponse::error(null, [__('messages.user_email_change_code_invalid')], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return null;
     }
 }
