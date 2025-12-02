@@ -11,38 +11,7 @@
 -   SPA 仕様により高速なデータ処理を実現
 -   無駄な機能が一切なくシンプルでモダンなUI設計
 
-## 技術スタック
-
-### フロントエンド
-
--   React
--   TypeScript
--   Vite
--   React Router
--   Tailwind CSS
--   React Toastify
-
-### バックエンド
-
--   Laravel
--   PHP 8+
--   Laravel Sanctum
--   Laravel Mail
--   Redis
-
-### インフラ / 開発環境
-
--   Docker / Docker Compose
--   MySQL
--   Redis
--   Node.js
-
-### その他
-
--   ESLint / Prettier（コード整形）
--   Git / GitHub
-
-## アーキテクチャ構成図
+## 技術スタック / アーキテクチャ
 <img src="storage/app/public/architecture_by_gemini.png" alt="アーキテクチャ構成図"/>
 
 ## 機能
@@ -76,38 +45,7 @@ npm install
 -   High-speed data processing achieved through SPA specifications
 -   Simple and modern UI design with no unnecessary features
 
-### Tech Stack
-
-#### Frontend
-
--   React
--   TypeScript
--   Vite
--   React Router
--   Tailwind CSS
--   React Toastify
-
-#### Backend
-
--   Laravel
--   PHP 8+
--   Laravel Sanctum
--   Laravel Mail
--   Redis
-
-#### Infrastructure / Development Environment
-
--   Docker / Docker Compose
--   MySQL
--   Redis
--   Node.js
-
-#### Others
-
--   ESLint / Prettier (Code formatting)
--   Git / GitHub
-
-### Architecture Diagram
+### Tech Stack / Architecture
 <img src="storage/app/public/architecture_by_gemini.png" alt="Architecture Diagram"/>
 
 ### Features
@@ -141,38 +79,7 @@ npm install
 -   SPA 사양으로 빠른 데이터 처리 실현
 -   불필요한 기능이 없는 심플하고 모던한 UI 설계
 
-### 기술 스택
-
-#### 프론트엔드
-
--   React
--   TypeScript
--   Vite
--   React Router
--   Tailwind CSS
--   React Toastify
-
-#### 백엔드
-
--   Laravel
--   PHP 8+
--   Laravel Sanctum
--   Laravel Mail
--   Redis
-
-#### 인프라 / 개발 환경
-
--   Docker / Docker Compose
--   MySQL
--   Redis
--   Node.js
-
-#### 기타
-
--   ESLint / Prettier (코드 포매팅)
--   Git / GitHub
-
-### 아키텍처 구성도
+### 기술 스택 / 아키텍처
 <img src="storage/app/public/architecture_by_gemini.png" alt="아키텍처 구성도"/>
 
 ### 주요 기능
