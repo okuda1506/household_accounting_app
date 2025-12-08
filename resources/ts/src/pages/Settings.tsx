@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
     User,
     Mail,
@@ -16,6 +17,9 @@ import {
     CardTitle,
 } from "../components/ui/card";
 import { NavigationModal } from "../components/NavigationModal";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import api from "../../lib/axios";
 
 const SettingItem = ({ icon: Icon, label, onClick, variant = "default" }) => {
     const textColor = variant === "danger" ? "text-red-400" : "text-white";
@@ -64,6 +68,12 @@ const ToggleItem = ({ icon: Icon, label, checked, onChange }) => {
 };
 
 export default function Settings() {
+    const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
+    const closeModal = () => {
+        setOpen(false);
+    };
+
     const handleClick = (item) => {
         console.log(`${item} clicked`);
         // ここで後からモーダルを開く処理を追加
@@ -72,6 +82,18 @@ export default function Settings() {
     const handleToggle = (value) => {
         console.log(`Dark mode toggled: ${value}`);
         // ここで後からダークモード切り替え処理を追加
+    };
+
+    const handleSignout = async () => {
+        closeModal();
+        try {
+            const response = await api.post("/logout");
+            localStorage.removeItem("access_token");
+            toast.success(response.data.message);
+            navigate("/login", { replace: true });
+        } catch (error) {
+            toast.error("サインアウトに失敗しました。");
+        }
     };
 
     return (
@@ -124,8 +146,8 @@ export default function Settings() {
                                 <div className="border-t border-gray-800 my-2" />
                                 <SettingItem
                                     icon={LogOut}
-                                    label="ログアウト"
-                                    onClick={() => handleClick("ログアウト")}
+                                    label="サインアウト"
+                                    onClick={handleSignout}
                                     variant="danger"
                                 />
                                 <SettingItem
