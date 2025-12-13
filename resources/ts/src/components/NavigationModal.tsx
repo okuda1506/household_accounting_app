@@ -47,7 +47,7 @@ export function NavigationModal() {
             </DialogTrigger>
             <DialogContent className="bg-gray-900 text-white">
                 <DialogHeader>
-                    <DialogTitle>Menu</DialogTitle>
+                    <DialogTitle>メニュー</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
                     <Link
@@ -55,28 +55,28 @@ export function NavigationModal() {
                         className="flex items-center justify-center rounded-md px-4 py-3 hover:bg-gray-800"
                         onClick={closeModal}
                     >
-                        <span>Dashboard</span>
+                        <span>ダッシュボード</span>
                     </Link>
                     <Link
                         to="/categories"
                         className="flex items-center justify-center rounded-md px-4 py-3 hover:bg-gray-800"
                         onClick={closeModal}
                     >
-                        <span>Categories</span>
+                        <span>カテゴリ</span>
                     </Link>
                     <Link
                         to="/transactions"
                         className="flex items-center justify-center rounded-md px-4 py-3 hover:bg-gray-800"
                         onClick={closeModal}
                     >
-                        <span>Transactions</span>
+                        <span>取引</span>
                     </Link>
                     <Link
                         to="/settings"
                         className="flex items-center justify-center rounded-md px-4 py-3 hover:bg-gray-800"
                         onClick={closeModal}
                     >
-                        <span>Settings</span>
+                        <span>設定</span>
                     </Link>
                 </div>
             </DialogContent>
