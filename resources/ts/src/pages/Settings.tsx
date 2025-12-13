@@ -125,9 +125,7 @@ export default function Settings() {
                                 <SettingItem
                                     icon={User}
                                     label="ユーザー名変更"
-                                    onClick={() =>
-                                        handleClick("ユーザー名変更")
-                                    }
+                                    onClick={() => navigate("/settings/name")}
                                 />
                                 <SettingItem
                                     icon={Mail}

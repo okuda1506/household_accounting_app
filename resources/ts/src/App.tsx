@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Categories from "./pages/Categories";
 import Transactions from "./pages/Transactions";
 import Settings from "./pages/Settings";
+import UpdateUserName from "./pages/UpdateUserName";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import ReactivateAccount from "./pages/ReactivateAccount";
@@ -70,6 +71,14 @@ function App() {
                             element={
                                 <PrivateRoute>
                                     <Settings />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/settings/name"
+                            element={
+                                <PrivateRoute>
+                                    <UpdateUserName />
                                 </PrivateRoute>
                             }
                         />
