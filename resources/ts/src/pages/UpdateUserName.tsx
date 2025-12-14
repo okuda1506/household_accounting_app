@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import api from "../../lib/axios";
 import { Card, CardContent } from "../components/ui/card";
 import { NavigationModal } from "../components/NavigationModal";
+import { X } from "lucide-react";
 
 const UpdateUserName = () => {
     const navigate = useNavigate();
@@ -95,16 +96,28 @@ const UpdateUserName = () => {
                                     >
                                         ユーザー名
                                     </label>
-                                    <input
-                                        id="name"
-                                        type="text"
-                                        required
-                                        value={name}
-                                        onChange={(e) =>
-                                            setName(e.target.value)
-                                        }
-                                        className="w-full px-3 py-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            id="name"
+                                            type="text"
+                                            required
+                                            value={name}
+                                            onChange={(e) =>
+                                                setName(e.target.value)
+                                            }
+                                            className="w-full rounded bg-gray-900 px-3 py-2 pr-10 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        />
+                                        {name && (
+                                            <button
+                                                type="button"
+                                                onClick={() => setName("")}
+                                                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white"
+                                                aria-label="Clear input"
+                                            >
+                                                <X className="h-5 w-5" />
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div className="pt-6 space-y-3">
