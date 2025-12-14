@@ -113,7 +113,6 @@ export default function Settings() {
 
             <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 sm:px-0 space-y-6">
-                    {/* アカウント設定 */}
                     <Card className="bg-black border-gray-800">
                         <CardHeader>
                             <CardTitle className="text-lg font-medium">
@@ -160,7 +159,6 @@ export default function Settings() {
                         </CardContent>
                     </Card>
 
-                    {/* アプリ設定 */}
                     <Card className="bg-black border-gray-800">
                         <CardHeader>
                             <CardTitle className="text-lg font-medium">
