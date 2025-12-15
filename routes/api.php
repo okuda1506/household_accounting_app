@@ -42,7 +42,6 @@ Route::put('/user/name', [UserController::class, 'updateName'])
     ->name('api.user.update_name');
 
 // メールアドレス変更関連
-// 認証コード送信
 Route::prefix('user/email')->middleware('auth:sanctum')->group(function () {
     // 認証コード送信
     Route::post('request', [UserController::class, 'requestEmailChange']);
