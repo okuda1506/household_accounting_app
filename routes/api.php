@@ -36,10 +36,12 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-// メールアドレス変更関連
+// ユーザー名変更
 Route::put('/user/name', [UserController::class, 'updateName'])
     ->middleware('auth:sanctum')
     ->name('api.user.update_name');
+
+// メールアドレス変更関連
 // 認証コード送信
 Route::prefix('user/email')->middleware('auth:sanctum')->group(function () {
     // 認証コード送信
