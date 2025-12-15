@@ -129,9 +129,7 @@ export default function Settings() {
                                 <SettingItem
                                     icon={Mail}
                                     label="メールアドレス変更"
-                                    onClick={() =>
-                                        handleClick("メールアドレス変更")
-                                    }
+                                    onClick={() => navigate("/settings/email/request")}
                                 />
                                 <SettingItem
                                     icon={Lock}

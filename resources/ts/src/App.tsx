@@ -6,6 +6,7 @@ import Categories from "./pages/Categories";
 import Transactions from "./pages/Transactions";
 import Settings from "./pages/Settings";
 import UpdateUserName from "./pages/UpdateUserName";
+import RequestEmailChange from "./pages/RequestEmailChange";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import ReactivateAccount from "./pages/ReactivateAccount";
@@ -79,6 +80,14 @@ function App() {
                             element={
                                 <PrivateRoute>
                                     <UpdateUserName />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/settings/email/request"
+                            element={
+                                <PrivateRoute>
+                                    <RequestEmailChange />
                                 </PrivateRoute>
                             }
                         />
