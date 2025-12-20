@@ -83,7 +83,7 @@ const UpdateUserName = () => {
                                         <p className="text-sm text-gray-400">
                                             現在のユーザー名
                                         </p>
-                                        <p className="text-white">
+                                        <p className="text-sm text-gray-400">
                                             {currentName}
                                         </p>
                                     </div>

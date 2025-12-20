@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
@@ -7,9 +7,23 @@ import { NavigationModal } from "../components/NavigationModal";
 
 const RequestEmailChange = () => {
     const navigate = useNavigate();
+    const [currentEmail, setCurrentEmail] = useState("");
     const [email, setEmail] = useState("");
     const [errors, setErrors] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchCurrentUser = async () => {
+            try {
+                const response = await api.get("/me");
+                setCurrentEmail(response.data.email);
+            } catch (error) {
+                toast.error("ユーザー情報の取得に失敗しました。");
+                navigate("/settings");
+            }
+        };
+        fetchCurrentUser();
+    }, [navigate]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -54,6 +68,17 @@ const RequestEmailChange = () => {
                                     {errors.map((e, i) => (
                                         <p key={i}>{e}</p>
                                     ))}
+                                </div>
+                            )}
+
+                            {currentEmail && (
+                                <div className="space-y-1">
+                                    <p className="text-sm text-gray-400">
+                                        現在のメールアドレス
+                                    </p>
+                                    <p className="text-sm text-gray-400">
+                                        {currentEmail}
+                                    </p>
                                 </div>
                             )}
 

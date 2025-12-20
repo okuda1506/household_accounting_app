@@ -69,7 +69,8 @@ const VerifyEmailChange = () => {
                             )}
 
                             <p className="text-sm text-gray-400">
-                                {email} に送信された認証コードを入力してください。
+                                {email}{" "}
+                                に送信された認証コードを入力してください。
                             </p>
 
                             <input
@@ -86,7 +87,7 @@ const VerifyEmailChange = () => {
                                 disabled={loading}
                                 className="w-full rounded bg-indigo-600 px-4 py-2 text-sm font-medium"
                             >
-                                {loading ? "変更中..." : "認証"}
+                                {loading ? "認証中..." : "認証"}
                             </button>
                         </form>
                     </CardContent>
