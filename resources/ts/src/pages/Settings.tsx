@@ -20,6 +20,7 @@ import { NavigationModal } from "../components/NavigationModal";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
+import DeleteAccountDialog from "../components/DeleteAccountDialog";
 
 const SettingItem = ({ icon: Icon, label, onClick, variant = "default" }) => {
     const textColor = variant === "danger" ? "text-red-400" : "text-white";
@@ -69,6 +70,7 @@ const ToggleItem = ({ icon: Icon, label, checked, onChange }) => {
 
 export default function Settings() {
     const [open, setOpen] = useState(false);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const navigate = useNavigate();
     const closeModal = () => {
         setOpen(false);
@@ -94,6 +96,10 @@ export default function Settings() {
         } catch (error) {
             toast.error("サインアウトに失敗しました。");
         }
+    };
+
+    const handleDeleteAccount = () => {
+        setDeleteDialogOpen(true);
     };
 
     return (
@@ -129,7 +135,9 @@ export default function Settings() {
                                 <SettingItem
                                     icon={Mail}
                                     label="メールアドレス変更"
-                                    onClick={() => navigate("/settings/email/request")}
+                                    onClick={() =>
+                                        navigate("/settings/email/request")
+                                    }
                                 />
                                 <SettingItem
                                     icon={Lock}
@@ -148,9 +156,7 @@ export default function Settings() {
                                 <SettingItem
                                     icon={Trash2}
                                     label="アカウント削除"
-                                    onClick={() =>
-                                        handleClick("アカウント削除")
-                                    }
+                                    onClick={handleDeleteAccount}
                                     variant="danger"
                                 />
                             </div>
@@ -181,6 +187,10 @@ export default function Settings() {
                     </Card>
                 </div>
             </main>
+            <DeleteAccountDialog
+                open={deleteDialogOpen}
+                onClose={() => setDeleteDialogOpen(false)}
+            />
         </div>
     );
 }

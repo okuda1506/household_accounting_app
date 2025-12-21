@@ -18,12 +18,12 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
-export const DeleteAccountDialog = ({
-    children,
-}: {
-    children: React.ReactNode;
-}) => {
-    const [isOpen, setIsOpen] = useState(false);
+export type DeleteAccountDialogProps = {
+    open: boolean;
+    onClose: () => void;
+};
+
+const DeleteAccountDialog = ({ open, onClose }: DeleteAccountDialogProps) => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -42,12 +42,12 @@ export const DeleteAccountDialog = ({
                 response.data.message || "アカウントを削除しました。"
             );
             localStorage.removeItem("access_token");
-            setIsOpen(false);
+            onClose();
             navigate("/login", { replace: true });
         } catch (err: any) {
             if (
                 err.response?.status === 422 &&
-                err.response.data.errors.password
+                err.response.data.errors?.password
             ) {
                 setError(err.response.data.errors.password[0]);
             } else {
@@ -61,18 +61,17 @@ export const DeleteAccountDialog = ({
         }
     };
 
-    const handleOpenChange = (open: boolean) => {
-        if (!open) {
+    const handleOpenChange = (nextOpen: boolean) => {
+        if (!nextOpen) {
             setPassword("");
             setError(null);
             setIsSubmitting(false);
+            onClose();
         }
-        setIsOpen(open);
     };
 
     return (
-        <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-            <DialogTrigger asChild>{children}</DialogTrigger>
+        <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent className="sm:max-w-[425px] bg-black border-gray-800 text-white">
                 <DialogHeader>
                     <DialogTitle>アカウントを削除</DialogTitle>
@@ -97,20 +96,18 @@ export const DeleteAccountDialog = ({
                     )}
                 </div>
                 <DialogFooter className="gap-2">
-                    <DialogClose asChild>
-                        <Button
-                            className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700"
-                            onMouseDown={(e) => e.preventDefault()}
-                        >
-                            キャンセル
-                        </Button>
-                    </DialogClose>
+                    <Button
+                        className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700"
+                        onClick={onClose}
+                        disabled={isSubmitting}
+                    >
+                        キャンセル
+                    </Button>
                     <Button
                         className="w-full"
                         variant="destructive"
                         onClick={handleDelete}
                         disabled={isSubmitting || !password}
-                        onMouseDown={(e) => e.preventDefault()}
                     >
                         {isSubmitting ? "削除中..." : "削除"}
                     </Button>
@@ -119,3 +116,5 @@ export const DeleteAccountDialog = ({
         </Dialog>
     );
 };
+
+export default DeleteAccountDialog;
