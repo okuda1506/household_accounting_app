@@ -10,6 +10,7 @@ import RequestEmailChange from "./pages/RequestEmailChange";
 import VerifyEmailChange from "./pages/VerifyEmailChange";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import UpdatePassword from "./pages/UpdatePassword";
 import ReactivateAccount from "./pages/ReactivateAccount";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { ToastContainer } from "react-toastify";
@@ -97,6 +98,14 @@ function App() {
                             element={
                                 <PrivateRoute>
                                     <VerifyEmailChange />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/settings/password"
+                            element={
+                                <PrivateRoute>
+                                    <UpdatePassword />
                                 </PrivateRoute>
                             }
                         />

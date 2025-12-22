@@ -17,7 +17,7 @@ import {
     CardTitle,
 } from "../components/ui/card";
 import { NavigationModal } from "../components/NavigationModal";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
 import DeleteAccountDialog from "../components/DeleteAccountDialog";
@@ -143,7 +143,7 @@ export default function Settings() {
                                     icon={Lock}
                                     label="パスワード再設定"
                                     onClick={() =>
-                                        handleClick("パスワード再設定")
+                                        navigate("/settings/password")
                                     }
                                 />
                                 <div className="border-t border-gray-800 my-2" />
