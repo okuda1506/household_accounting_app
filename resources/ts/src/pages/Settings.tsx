@@ -22,6 +22,47 @@ import { toast } from "react-toastify";
 import api from "../../lib/axios";
 import DeleteAccountDialog from "../components/DeleteAccountDialog";
 
+type SettingsTab = "account" | "app";
+
+const SettingsTabs = ({
+    activeTab,
+    onChange,
+}: {
+    activeTab: SettingsTab;
+    onChange: (tab: SettingsTab) => void;
+}) => {
+    return (
+        <div className="relative bg-gray-800 rounded-full p-1 w-full max-w-md mx-auto mb-6">
+            {/* スライド時のbg */}
+            <div
+                className={`absolute top-1 left-1 h-[calc(100%-8px)] w-1/2 rounded-full bg-indigo-700 transition-transform duration-300 ease-out ${
+                    activeTab === "app" ? "translate-x-full" : "translate-x-0"
+                }`}
+            />
+
+            {/* button */}
+            <div className="relative grid grid-cols-2">
+                <button
+                    onClick={() => onChange("account")}
+                    className={`px-6 py-2 text-sm font-medium rounded-full transition-colors ${
+                        activeTab === "account" ? "text-white" : "text-gray-400"
+                    }`}
+                >
+                    アカウント設定
+                </button>
+                <button
+                    onClick={() => onChange("app")}
+                    className={`px-6 py-2 text-sm font-medium rounded-full transition-colors ${
+                        activeTab === "app" ? "text-white" : "text-gray-400"
+                    }`}
+                >
+                    アプリ設定
+                </button>
+            </div>
+        </div>
+    );
+};
+
 const SettingItem = ({ icon: Icon, label, onClick, variant = "default" }) => {
     const textColor = variant === "danger" ? "text-red-400" : "text-white";
     const iconColor = variant === "danger" ? "text-red-400" : "text-gray-400";
@@ -71,6 +112,7 @@ const ToggleItem = ({ icon: Icon, label, checked, onChange }) => {
 export default function Settings() {
     const [open, setOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState<SettingsTab>("account");
     const navigate = useNavigate();
     const closeModal = () => {
         setOpen(false);
@@ -119,72 +161,84 @@ export default function Settings() {
 
             <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 sm:px-0 space-y-6">
-                    <Card className="bg-black border-gray-800">
-                        <CardHeader>
-                            <CardTitle className="text-lg font-medium">
-                                アカウント設定
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-1">
-                                <SettingItem
-                                    icon={User}
-                                    label="ユーザー名変更"
-                                    onClick={() => navigate("/settings/name")}
-                                />
-                                <SettingItem
-                                    icon={Mail}
-                                    label="メールアドレス変更"
-                                    onClick={() =>
-                                        navigate("/settings/email/request")
-                                    }
-                                />
-                                <SettingItem
-                                    icon={Lock}
-                                    label="パスワード再設定"
-                                    onClick={() =>
-                                        navigate("/settings/password")
-                                    }
-                                />
-                                <div className="border-t border-gray-800 my-2" />
-                                <SettingItem
-                                    icon={LogOut}
-                                    label="サインアウト"
-                                    onClick={handleSignout}
-                                    variant="danger"
-                                />
-                                <SettingItem
-                                    icon={Trash2}
-                                    label="アカウント削除"
-                                    onClick={handleDeleteAccount}
-                                    variant="danger"
-                                />
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <SettingsTabs
+                        activeTab={activeTab}
+                        onChange={setActiveTab}
+                    />
+                    {activeTab === "account" && (
+                        <Card className="bg-black border-gray-800">
+                            <CardHeader>
+                                <CardTitle className="text-lg font-medium">
+                                    アカウント設定
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-1">
+                                    <SettingItem
+                                        icon={User}
+                                        label="ユーザー名変更"
+                                        onClick={() =>
+                                            navigate("/settings/name")
+                                        }
+                                    />
+                                    <SettingItem
+                                        icon={Mail}
+                                        label="メールアドレス変更"
+                                        onClick={() =>
+                                            navigate("/settings/email/request")
+                                        }
+                                    />
+                                    <SettingItem
+                                        icon={Lock}
+                                        label="パスワード再設定"
+                                        onClick={() =>
+                                            navigate("/settings/password")
+                                        }
+                                    />
+                                    <div className="border-t border-gray-800 my-2" />
+                                    <SettingItem
+                                        icon={LogOut}
+                                        label="サインアウト"
+                                        onClick={handleSignout}
+                                        variant="danger"
+                                    />
+                                    <SettingItem
+                                        icon={Trash2}
+                                        label="アカウント削除"
+                                        onClick={handleDeleteAccount}
+                                        variant="danger"
+                                    />
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
 
-                    <Card className="bg-black border-gray-800">
-                        <CardHeader>
-                            <CardTitle className="text-lg font-medium">
-                                アプリ設定
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-1">
-                                <SettingItem
-                                    icon={Globe}
-                                    label="言語切り替え"
-                                    onClick={() => handleClick("言語切り替え")}
-                                />
-                                <ToggleItem
-                                    icon={Moon}
-                                    label="ダークモード"
-                                    checked={true}
-                                    onChange={handleToggle}
-                                />
-                            </div>
-                        </CardContent>
-                    </Card>
+                    {activeTab === "app" && (
+                        <Card className="bg-black border-gray-800">
+                            <CardHeader>
+                                <CardTitle className="text-lg font-medium">
+                                    アプリ設定
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-1">
+                                    <SettingItem
+                                        icon={Globe}
+                                        label="言語切り替え"
+                                        onClick={() =>
+                                            handleClick("言語切り替え")
+                                        }
+                                    />
+                                    <ToggleItem
+                                        icon={Moon}
+                                        label="ダークモード"
+                                        checked={true}
+                                        onChange={handleToggle}
+                                    />
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
             </main>
             <DeleteAccountDialog
