@@ -35,8 +35,8 @@ const SettingsTabs = ({
         <div className="relative bg-gray-800 rounded-full p-1 w-full max-w-md mx-auto mb-6">
             {/* スライド時のbg */}
             <div
-                className={`absolute top-1 left-1 h-[calc(100%-8px)] w-1/2 rounded-full bg-indigo-700 transition-transform duration-300 ease-out ${
-                    activeTab === "app" ? "translate-x-full" : "translate-x-0"
+                className={`absolute top-1 left-1 h-[calc(100%-8px)] w-[calc(50%-4px)] rounded-full bg-indigo-700 transition-transform duration-300 ease-out ${
+                    activeTab === "app" ? "translate-x-[calc(100%)]" : "translate-x-0"
                 }`}
             />
 
