@@ -15,7 +15,10 @@ const VerifyEmailChange = () => {
     const [errors, setErrors] = useState<string[]>([]);
 
     if (!email) {
-        navigate("/settings/email");
+        navigate("/settings/email/request");
+        toast.error(
+            "認証コードの送信に失敗しました。最初からやり直してください。"
+        );
         return null;
     }
 
@@ -25,7 +28,6 @@ const VerifyEmailChange = () => {
         setLoading(true);
 
         try {
-            await api.post("/user/email/verify", { email, code });
             await api.put("/user/email/update", { email, code });
 
             setTimeout(() => {
@@ -33,9 +35,11 @@ const VerifyEmailChange = () => {
                 navigate("/settings");
             }, 2000);
         } catch (error: any) {
-            const messages = error?.response?.data?.messages ?? [
-                "認証に失敗しました",
-            ];
+            const messages =
+                error?.response?.data?.messages ??
+                (error?.response?.data?.message
+                    ? [error.response.data.message]
+                    : ["認証コードの送信に失敗しました"]);
             setErrors(messages);
             setLoading(false);
         }

@@ -110,13 +110,9 @@ const ToggleItem = ({ icon: Icon, label, checked, onChange }) => {
 };
 
 export default function Settings() {
-    const [open, setOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [activeTab, setActiveTab] = useState<SettingsTab>("account");
     const navigate = useNavigate();
-    const closeModal = () => {
-        setOpen(false);
-    };
 
     const handleClick = (item) => {
         console.log(`${item} clicked`);
@@ -129,7 +125,6 @@ export default function Settings() {
     };
 
     const handleSignout = async () => {
-        closeModal();
         try {
             const response = await api.post("/logout");
             localStorage.removeItem("access_token");
