@@ -72,10 +72,10 @@ const DeleteAccountDialog = ({ open, onClose }: DeleteAccountDialogProps) => {
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className="sm:max-w-[425px] bg-black border-gray-800 text-white">
+            <DialogContent className="sm:max-w-[425px] bg-black border-gray-800 text-white rounded-lg">
                 <DialogHeader>
                     <DialogTitle>アカウントを削除</DialogTitle>
-                    <DialogDescription className="text-gray-400">
+                    <DialogDescription className="text-gray-400 !mt-5">
                         この操作は元に戻せません。続行するにはパスワードを入力してください。
                     </DialogDescription>
                 </DialogHeader>

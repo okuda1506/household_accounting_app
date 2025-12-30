@@ -2,7 +2,12 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
-import { Card, CardContent } from "../components/ui/card";
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from "../components/ui/card";
 import { NavigationModal } from "../components/NavigationModal";
 import { X } from "lucide-react";
 
@@ -56,7 +61,7 @@ const UpdateUserName = () => {
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="relative h-16 flex items-center">
                         <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
-                            ユーザー名変更
+                            設定
                         </span>
                         <div className="absolute right-0">
                             <NavigationModal />
@@ -68,6 +73,11 @@ const UpdateUserName = () => {
             <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 sm:px-0">
                     <Card className="bg-black border border-gray-800 max-w-md mx-auto">
+                        <CardHeader>
+                            <CardTitle className="text-lg font-medium">
+                                ユーザー名変更
+                            </CardTitle>
+                        </CardHeader>
                         <CardContent>
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 {errors.length > 0 && (

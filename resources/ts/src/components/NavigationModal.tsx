@@ -44,7 +44,7 @@ export function NavigationModal() {
                     <MenuIcon className="h-6 w-6" />
                 </Button>
             </DialogTrigger>
-            <DialogContent className="bg-gray-900 text-white">
+            <DialogContent className="bg-gray-900 text-white rounded-lg">
                 <DialogHeader>
                     <DialogTitle>メニュー</DialogTitle>
                 </DialogHeader>

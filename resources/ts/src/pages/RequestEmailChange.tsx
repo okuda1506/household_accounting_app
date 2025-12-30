@@ -2,7 +2,12 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
-import { Card, CardContent } from "../components/ui/card";
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from "../components/ui/card";
 import { NavigationModal } from "../components/NavigationModal";
 
 const RequestEmailChange = () => {
@@ -50,7 +55,7 @@ const RequestEmailChange = () => {
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="relative h-16 flex items-center">
                         <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
-                            メールアドレス変更
+                            設定
                         </span>
                         <div className="absolute right-0">
                             <NavigationModal />
@@ -59,61 +64,72 @@ const RequestEmailChange = () => {
                 </div>
             </nav>
 
-            <main className="max-w-5xl mx-auto py-6">
-                <Card className="bg-black border border-gray-800 max-w-md mx-auto">
-                    <CardContent>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            {errors.length > 0 && (
-                                <div className="bg-red-900/30 border border-red-500/50 text-red-400 text-sm p-3 rounded-md">
-                                    {errors.map((e, i) => (
-                                        <p key={i}>{e}</p>
-                                    ))}
+            <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
+                <div className="px-4 sm:px-0">
+                    <Card className="bg-black border border-gray-800 max-w-md mx-auto">
+                        <CardHeader>
+                            <CardTitle className="text-lg font-medium">
+                                メールアドレス変更
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                {errors.length > 0 && (
+                                    <div className="bg-red-900/30 border border-red-500/50 text-red-400 text-sm p-3 rounded-md">
+                                        {errors.map((e, i) => (
+                                            <p key={i}>{e}</p>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {currentEmail && (
+                                    <div className="space-y-1">
+                                        <p className="text-sm text-gray-400">
+                                            現在のメールアドレス
+                                        </p>
+                                        <p className="text-sm text-gray-400">
+                                            {currentEmail}
+                                        </p>
+                                    </div>
+                                )}
+
+                                <div>
+                                    <label className="block text-sm mb-1">
+                                        新しいメールアドレス
+                                    </label>
+                                    <input
+                                        type="email"
+                                        required
+                                        value={email}
+                                        onChange={(e) =>
+                                            setEmail(e.target.value)
+                                        }
+                                        className="w-full rounded bg-gray-900 px-3 py-2 border border-gray-700"
+                                    />
                                 </div>
-                            )}
 
-                            {currentEmail && (
-                                <div className="space-y-1">
-                                    <p className="text-sm text-gray-400">
-                                        現在のメールアドレス
-                                    </p>
-                                    <p className="text-sm text-gray-400">
-                                        {currentEmail}
-                                    </p>
+                                <div className="pt-6 space-y-3">
+                                    <button
+                                        type="submit"
+                                        disabled={loading}
+                                        className="w-full rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                                    >
+                                        {loading
+                                            ? "送信中..."
+                                            : "認証コードを送信"}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => navigate("/settings")}
+                                        className="w-full rounded bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
+                                    >
+                                        キャンセル
+                                    </button>
                                 </div>
-                            )}
-
-                            <div>
-                                <label className="block text-sm mb-1">
-                                    新しいメールアドレス
-                                </label>
-                                <input
-                                    type="email"
-                                    required
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full rounded bg-gray-900 px-3 py-2 border border-gray-700"
-                                />
-                            </div>
-
-                            <div className="pt-6 space-y-3">
-                                <button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="w-full rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
-                                >
-                                    {loading ? "送信中..." : "認証コードを送信"}
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => navigate("/settings")}
-                                    className="w-full rounded bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
-                                >
-                                    キャンセル
-                                </button>
-                            </div>
-                        </form>
-                    </CardContent>
-                </Card>
+                            </form>
+                        </CardContent>
+                    </Card>
+                </div>
             </main>
         </div>
     );
