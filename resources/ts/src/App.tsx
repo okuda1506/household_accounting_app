@@ -4,8 +4,13 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Categories from "./pages/Categories";
 import Transactions from "./pages/Transactions";
+import Settings from "./pages/Settings";
+import UpdateUserName from "./pages/UpdateUserName";
+import RequestEmailChange from "./pages/RequestEmailChange";
+import VerifyEmailChange from "./pages/VerifyEmailChange";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import UpdatePassword from "./pages/UpdatePassword";
 import ReactivateAccount from "./pages/ReactivateAccount";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { ToastContainer } from "react-toastify";
@@ -61,6 +66,46 @@ function App() {
                             element={
                                 <PrivateRoute>
                                     <Transactions />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/settings"
+                            element={
+                                <PrivateRoute>
+                                    <Settings />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/settings/name"
+                            element={
+                                <PrivateRoute>
+                                    <UpdateUserName />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/settings/email/request"
+                            element={
+                                <PrivateRoute>
+                                    <RequestEmailChange />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/settings/email/verify"
+                            element={
+                                <PrivateRoute>
+                                    <VerifyEmailChange />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/settings/password"
+                            element={
+                                <PrivateRoute>
+                                    <UpdatePassword />
                                 </PrivateRoute>
                             }
                         />
