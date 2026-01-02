@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateUserEmailRequest;
 use App\Http\Resources\UserResource;
 use App\Services\UserService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
@@ -20,6 +21,17 @@ class UserController extends Controller
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
+    }
+
+    /**
+     * 認証済みユーザー情報を取得する
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     */
+    public function show(Request $request)
+    {
+        return $request->user();
     }
 
     /**

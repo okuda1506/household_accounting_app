@@ -11,7 +11,6 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Api\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
@@ -31,9 +30,7 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->midd
 // ユーザー情報関連(設定画面のAPI)
 Route::middleware('auth:sanctum')->prefix('user')->name('api.user.')->group(function () {
     // ユーザー情報取得
-    Route::get('', function (Request $request) {
-        return $request->user();
-    })->name('show');
+    Route::get('', [UserController::class, 'show'])->name('show');
     // ユーザー名変更
     Route::put('name', [UserController::class, 'updateName'])->name('update_name');
     // パスワード変更（ログイン中）
