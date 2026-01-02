@@ -32,23 +32,23 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->midd
 Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
     return response()->json($request->user());
 });
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
 
-// ユーザー名変更
-Route::put('/user/name', [UserController::class, 'updateName'])
-    ->middleware('auth:sanctum')
-    ->name('api.user.update_name');
-
-// メールアドレス変更関連
-Route::prefix('user/email')->middleware('auth:sanctum')->group(function () {
-    // 認証コード送信
-    Route::post('request', [UserController::class, 'requestEmailChange']);
-    // 認証コード検証
-    Route::post('verify', [UserController::class, 'verifyEmailChangeCode']);
-    // メールアドレス更新
-    Route::put('update', [UserController::class, 'updateEmail']);
+// ユーザー情報関連(設定画面のAPI)
+Route::middleware('auth:sanctum')->prefix('user')->group(function () {
+    // ユーザー情報取得
+    Route::get('', function (Request $request) {
+        return $request->user();
+    });
+    // ユーザー名変更
+    Route::put('name', [UserController::class, 'updateName']);
+    // パスワード変更（ログイン中）
+    // Route::put('password', [UserPasswordController::class, 'update']);
+    // メールアドレス変更
+    Route::prefix('email')->group(function () {
+        Route::post('request', [UserController::class, 'requestEmailChange']);
+        Route::post('verify', [UserController::class, 'verifyEmailChangeCode']);
+        Route::put('update', [UserController::class, 'updateEmail']);
+    });
 });
 
 Route::prefix('categories')
