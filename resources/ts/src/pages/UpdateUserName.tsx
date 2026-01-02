@@ -21,7 +21,7 @@ const UpdateUserName = () => {
     useEffect(() => {
         const fetchCurrentUser = async () => {
             try {
-                const response = await api.get("/me");
+                const response = await api.get("/user");
                 setCurrentName(response.data.name);
                 setName(response.data.name);
             } catch (error) {

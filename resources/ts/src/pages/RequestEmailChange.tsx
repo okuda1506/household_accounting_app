@@ -20,7 +20,7 @@ const RequestEmailChange = () => {
     useEffect(() => {
         const fetchCurrentUser = async () => {
             try {
-                const response = await api.get("/me");
+                const response = await api.get("/user");
                 setCurrentEmail(response.data.email);
             } catch (error) {
                 toast.error("ユーザー情報の取得に失敗しました。");

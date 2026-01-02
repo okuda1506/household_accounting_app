@@ -16,22 +16,17 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
     ->middleware('guest:sanctum')
-    ->name('password.email');
+    ->name('api.password.email');
 Route::post('/reset-password', [NewPasswordController::class, 'store'])
     ->middleware('guest:sanctum')
-    ->name('password.store');
+    ->name('api.password.store');
 Route::post('/reactivate-account', [ReactivateAccountController::class, 'store'])
     ->middleware('guest:sanctum')
-    ->name('account.reactivate');
+    ->name('api.account.reactivate');
 
 Route::post('/register', [RegisteredUserController::class, 'store']);
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->middleware('auth:sanctum');
-
-// access_token用
-Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
-    return response()->json($request->user());
-});
 
 // ユーザー情報関連(設定画面のAPI)
 Route::middleware('auth:sanctum')->prefix('user')->group(function () {
