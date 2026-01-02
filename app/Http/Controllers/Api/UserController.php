@@ -27,9 +27,9 @@ class UserController extends Controller
      * 認証済みユーザー情報を取得する
      *
      * @param Request $request
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     * @return mixed|null
      */
-    public function show(Request $request)
+    public function show(Request $request): mixed
     {
         return $request->user();
     }
