@@ -16,7 +16,7 @@ export const PrivateRoute = ({ children }: { children: JSX.Element }) => {
             return;
         }
 
-        api.get("/me")
+        api.get("/user")
             .then(() => {
                 setIsAuthenticated(true);
             })
