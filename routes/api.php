@@ -34,7 +34,7 @@ Route::middleware('auth:sanctum')->prefix('user')->name('api.user.')->group(func
     // ユーザー名変更
     Route::put('name', [UserController::class, 'updateName'])->name('update_name');
     // パスワード変更（ログイン中）
-    // Route::put('password', [UserPasswordController::class, 'update']);
+    Route::put('password', [UserController::class, 'updatePassword'])->name('update_password');
     // メールアドレス変更
     Route::prefix('email')->name('email.')->group(function () {
         Route::post('request', [UserController::class, 'requestEmailChange'])->name('request');

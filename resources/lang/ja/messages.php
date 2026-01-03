@@ -22,6 +22,7 @@ return [
     'user_password_reset'                         => 'パスワードを更新しました。',
     'user_account_reactivated'                    => 'アカウントを再開しました。',
     'user_name_updated'                           => 'ユーザー名を更新しました。',
+    'user_password_updated'                       => 'パスワードを更新しました。',
     'user_email_change_code_sent'                 => '認証コードを送信しました。',
     'user_email_change_code_invalid'              => '認証コードが無効です。',
     'user_email_change_code_verified'             => '認証コードを確認しました。',
