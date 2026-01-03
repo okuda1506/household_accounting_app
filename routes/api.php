@@ -33,7 +33,7 @@ Route::middleware('auth:sanctum')->prefix('user')->name('api.user.')->group(func
     Route::get('', [UserController::class, 'show'])->name('show');
     // ユーザー名変更
     Route::put('name', [UserController::class, 'updateName'])->name('update_name');
-    // パスワード変更（ログイン中）
+    // ログインユーザーのパスワード変更
     Route::put('password', [UserController::class, 'updatePassword'])->name('update_password');
     // メールアドレス変更
     Route::prefix('email')->name('email.')->group(function () {
