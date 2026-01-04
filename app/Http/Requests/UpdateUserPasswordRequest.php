@@ -22,7 +22,7 @@ class UpdateUserPasswordRequest extends FormRequest
     {
         return [
             'current_password' => ['required', 'current_password'],
-            'password' => ['required', 'confirmed', 'min:8'], // todo: パスワードのmin桁数を検討
+            'password' => ['required', 'confirmed', 'min:8'],
         ];
     }
 }
