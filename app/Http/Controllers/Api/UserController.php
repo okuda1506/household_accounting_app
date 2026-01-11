@@ -7,8 +7,10 @@ use App\Http\Requests\UpdateUserNameRequest;
 use App\Http\Requests\RequestEmailChangeRequest;
 use App\Http\Requests\VerifyEmailChangeCodeRequest;
 use App\Http\Requests\UpdateUserEmailRequest;
+use App\Http\Requests\UpdateUserPasswordRequest;
 use App\Http\Resources\UserResource;
 use App\Services\UserService;
+use App\Exceptions\Domain\InvalidCurrentPasswordException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -128,5 +130,24 @@ class UserController extends Controller
         }
 
         return null;
+    }
+
+    /**
+     * パスワードを更新する
+     *
+     * @return JsonResponse
+     */
+    public function updatePassword(UpdateUserPasswordRequest $request): JsonResponse
+    {
+        try {
+            $this->userService->updatePassword(auth()->id(), $request->current_password, $request->new_password);
+        } catch (InvalidCurrentPasswordException $e) {
+            return ApiResponse::error(null, [__(__($e->messageKey()))], $e->status());
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error($e);
+            return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return ApiResponse::success(null, __('messages.user_password_updated'));
     }
 }

@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EmailChangeCodeMail;
+use App\Exceptions\Domain\InvalidCurrentPasswordException;
 
 /**
  * ユーザー関連のビジネスロジックを管理するサービスクラス
@@ -91,5 +93,26 @@ class UserService
         Cache::forget("email_change_code_{$userId}");
 
         return $user;
+    }
+
+    /**
+     * パスワードを更新する
+     *
+     * @param int $userId
+     * @param string $currentPassword
+     * @param string $newPassword
+     * @throws \Exception
+     */
+    public function updatePassword(int $userId, string $currentPassword, string $newPassword): void
+    {
+        $user = User::findOrFail($userId);
+
+        if (!Hash::check($currentPassword, $user->password)) {
+            throw new InvalidCurrentPasswordException();
+        }
+
+        $user->update([
+            'password' => Hash::make($newPassword),
+        ]);
     }
 }
