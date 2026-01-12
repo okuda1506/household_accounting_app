@@ -13,8 +13,8 @@
 
 ## 技術スタック / アーキテクチャ
 <img src="storage/app/public/architecture_by_gemini.png" alt="アーキテクチャ構成図"/>
-<br>
-アーキテクチャ設計の詳細については、[`docs/architecture.md`](docs/architecture.md) を参照
+
+アーキテクチャ設計の詳細については、[docs/architecture.md](docs/architecture.md) を参照
 
 ## 機能
 
@@ -49,8 +49,8 @@ npm install
 
 ### Tech Stack / Architecture
 <img src="storage/app/public/architecture_by_gemini.png" alt="Architecture Diagram"/>
-<br>
-For detailed architecture design, please refer to [`docs/architecture.md`](docs/architecture.md).
+
+For detailed architecture design, please refer to [docs/architecture.md](docs/architecture.md).
 
 ### Features
 
@@ -85,8 +85,8 @@ npm install
 
 ### 기술 스택 / 아키텍처
 <img src="storage/app/public/architecture_by_gemini.png" alt="아키텍처 구성도"/>
-<br>
-아키텍처 설계에 대한 자세한 내용은 [`docs/architecture.md`](docs/architecture.md)를 참고해 주세요.
+
+아키텍처 설계에 대한 자세한 내용은 [docs/architecture.md](docs/architecture.md)를 참고해 주세요.
 
 ### 주요 기능
 
