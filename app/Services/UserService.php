@@ -101,7 +101,7 @@ class UserService
      * @param int $userId
      * @param string $currentPassword
      * @param string $newPassword
-     * @throws \Exception
+     * @throws InvalidCurrentPasswordException | \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function updatePassword(int $userId, string $currentPassword, string $newPassword): void
     {

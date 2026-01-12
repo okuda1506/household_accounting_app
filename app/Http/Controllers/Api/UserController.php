@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -46,7 +47,7 @@ class UserController extends Controller
         try {
             $this->userService->updateUserName(auth()->id(),$request->input('name'));
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error($e);
+            Log::error($e);
             return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -66,7 +67,7 @@ class UserController extends Controller
                 $request->email
             );
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error($e);
+            Log::error($e);
             return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -85,7 +86,7 @@ class UserController extends Controller
                 return $error;
             }
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error($e);
+            Log::error($e);
             return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -108,7 +109,7 @@ class UserController extends Controller
         } catch (ModelNotFoundException $e) {
             return ApiResponse::error(null, [__('messages.user_not_found')], Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error($e);
+            Log::error($e);
             return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -142,9 +143,9 @@ class UserController extends Controller
         try {
             $this->userService->updatePassword(auth()->id(), $request->current_password, $request->new_password);
         } catch (InvalidCurrentPasswordException $e) {
-            return ApiResponse::error(null, [__(__($e->messageKey()))], $e->status());
+            return ApiResponse::error(null, [__($e->messageKey())], $e->status());
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error($e);
+            Log::error($e);
             return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
