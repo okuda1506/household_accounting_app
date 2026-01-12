@@ -29,7 +29,7 @@ class UserService
      */
     public function updateUserName(int $userId, string $name): array
     {
-        $user = User::findOrFail($userId);
+        $user = $this->findActiveUser($userId);
         $user->name = $name;
         $user->save();
 
@@ -85,7 +85,7 @@ class UserService
      */
     public function updateEmail(int $userId, string $email): User
     {
-        $user = User::findOrFail($userId);
+        $user = $this->findActiveUser($userId);
 
         $user->email = $email;
         $user->save();
@@ -105,7 +105,7 @@ class UserService
      */
     public function updatePassword(int $userId, string $currentPassword, string $newPassword): void
     {
-        $user = User::findOrFail($userId);
+        $user = $this->findActiveUser($userId);
 
         if (!Hash::check($currentPassword, $user->password)) {
             throw new InvalidCurrentPasswordException();
@@ -114,5 +114,19 @@ class UserService
         $user->update([
             'password' => Hash::make($newPassword),
         ]);
+    }
+
+    /**
+     * 有効なユーザーを取得する
+     *
+     * @param int $userId
+     * @return User
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    private function findActiveUser(int $userId): User
+    {
+        return User::where('id', $userId)
+            ->where('deleted', 0)
+            ->firstOrFail();
     }
 }

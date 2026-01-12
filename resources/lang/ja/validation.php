@@ -15,6 +15,7 @@ return [
     'unique' => ':attributeは既に使用されています。',
     'email' => '有効なメールアドレス形式を指定してください。',
     'confirmed' => ':attributeが確認用項目と一致しません。',
+    'required' => ':attributeは必須項目です。',
     'current_password' => 'パスワードを正しく入力してください。',
     'min' => [
         'string' => ':attributeは:min文字以上で入力してください。',
