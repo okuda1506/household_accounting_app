@@ -17,7 +17,7 @@
 | `new_password_confirmation` | ○  | 新しいパスワード（確認用） |
 
 ---
- 
+
 ### 2. バリデーション設計
 
 #### current_password
