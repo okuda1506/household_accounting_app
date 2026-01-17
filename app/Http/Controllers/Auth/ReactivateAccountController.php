@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Requests\Auth\ReactivateAccountRequest;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Services\AuthService;
@@ -24,10 +25,10 @@ class ReactivateAccountController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): JsonResponse
+    public function store(ReactivateAccountRequest $request): JsonResponse
     {
         try {
-            $result = $this->authService->reactivateAccount($request);
+            $result = $this->authService->reactivateAccount($request->validated());
         } catch (\Throwable $e) {
             if ($e instanceof \Illuminate\Validation\ValidationException) {
                 $errors = $e->validator->errors()->all();
