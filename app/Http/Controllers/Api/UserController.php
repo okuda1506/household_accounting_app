@@ -7,12 +7,15 @@ use App\Http\Requests\UpdateUserNameRequest;
 use App\Http\Requests\RequestEmailChangeRequest;
 use App\Http\Requests\VerifyEmailChangeCodeRequest;
 use App\Http\Requests\UpdateUserEmailRequest;
+use App\Http\Requests\UpdateUserPasswordRequest;
 use App\Http\Resources\UserResource;
 use App\Services\UserService;
+use App\Exceptions\Domain\InvalidCurrentPasswordException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -44,7 +47,7 @@ class UserController extends Controller
         try {
             $this->userService->updateUserName(auth()->id(),$request->input('name'));
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error($e);
+            Log::error($e);
             return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -64,7 +67,7 @@ class UserController extends Controller
                 $request->email
             );
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error($e);
+            Log::error($e);
             return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -83,7 +86,7 @@ class UserController extends Controller
                 return $error;
             }
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error($e);
+            Log::error($e);
             return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -106,7 +109,7 @@ class UserController extends Controller
         } catch (ModelNotFoundException $e) {
             return ApiResponse::error(null, [__('messages.user_not_found')], Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error($e);
+            Log::error($e);
             return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -128,5 +131,24 @@ class UserController extends Controller
         }
 
         return null;
+    }
+
+    /**
+     * パスワードを更新する
+     *
+     * @return JsonResponse
+     */
+    public function updatePassword(UpdateUserPasswordRequest $request): JsonResponse
+    {
+        try {
+            $this->userService->updatePassword(auth()->id(), $request->current_password, $request->new_password);
+        } catch (InvalidCurrentPasswordException $e) {
+            return ApiResponse::error(null, [__($e->messageKey())], $e->status());
+        } catch (\Exception $e) {
+            Log::error($e);
+            return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return ApiResponse::success(null, __('messages.user_password_updated'));
     }
 }

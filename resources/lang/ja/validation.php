@@ -14,10 +14,19 @@ return [
 
     'unique' => ':attributeは既に使用されています。',
     'email' => '有効なメールアドレス形式を指定してください。',
+    'password' => [
+        'letters' => ':attributeは少なくとも1つの文字が含まれていなければなりません。',
+        'mixed' => ':attributeは少なくとも大文字と小文字を1つずつ含める必要があります。',
+        'numbers' => ':attributeは少なくとも1つの数字が含まれていなければなりません。',
+    ],
     'confirmed' => ':attributeが確認用項目と一致しません。',
+    'required' => ':attributeは必須項目です。',
     'current_password' => 'パスワードを正しく入力してください。',
+    'min' => [
+        'string' => ':attributeは:min文字以上で入力してください。',
+    ],
     'max' => [
-        'string' => ':attributeは:max文字以内で指定してください。',
+        'string' => ':attributeは:max文字以内で入力してください。',
     ],
 
     /*
@@ -30,5 +39,8 @@ return [
         'name' => 'ユーザー名',
         'email' => 'メールアドレス',
         'password' => 'パスワード',
+        'current_password' => '現在のパスワード',
+        'new_password' => '新しいパスワード',
+        'new_password_confirmation' => '新しいパスワード（確認用）',
     ],
 ];

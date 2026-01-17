@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EmailChangeCodeMail;
+use App\Exceptions\Domain\InvalidCurrentPasswordException;
 
 /**
  * ユーザー関連のビジネスロジックを管理するサービスクラス
@@ -27,7 +29,7 @@ class UserService
      */
     public function updateUserName(int $userId, string $name): array
     {
-        $user = User::findOrFail($userId);
+        $user = $this->findActiveUser($userId);
         $user->name = $name;
         $user->save();
 
@@ -83,7 +85,7 @@ class UserService
      */
     public function updateEmail(int $userId, string $email): User
     {
-        $user = User::findOrFail($userId);
+        $user = $this->findActiveUser($userId);
 
         $user->email = $email;
         $user->save();
@@ -91,5 +93,40 @@ class UserService
         Cache::forget("email_change_code_{$userId}");
 
         return $user;
+    }
+
+    /**
+     * パスワードを更新する
+     *
+     * @param int $userId
+     * @param string $currentPassword
+     * @param string $newPassword
+     * @throws InvalidCurrentPasswordException | \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function updatePassword(int $userId, string $currentPassword, string $newPassword): void
+    {
+        $user = $this->findActiveUser($userId);
+
+        if (!Hash::check($currentPassword, $user->password)) {
+            throw new InvalidCurrentPasswordException();
+        }
+
+        $user->update([
+            'password' => Hash::make($newPassword),
+        ]);
+    }
+
+    /**
+     * 有効なユーザーを取得する
+     *
+     * @param int $userId
+     * @return User
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    private function findActiveUser(int $userId): User
+    {
+        return User::where('id', $userId)
+            ->where('deleted', 0)
+            ->firstOrFail();
     }
 }

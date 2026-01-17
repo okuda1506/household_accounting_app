@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ResetPasswordRequest;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
@@ -33,10 +34,10 @@ class NewPasswordController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): JsonResponse
+    public function store(ResetPasswordRequest $request): JsonResponse
     {
         try {
-            $result = $this->authService->resetPassword($request);
+            $result = $this->authService->resetPassword($request->validated());
         } catch (\Throwable $e) {
             if ($e instanceof \Illuminate\Validation\ValidationException) {
                 $errors = $e->validator->errors()->all();

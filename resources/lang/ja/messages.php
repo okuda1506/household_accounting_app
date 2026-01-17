@@ -22,6 +22,7 @@ return [
     'user_password_reset'                         => 'パスワードを更新しました。',
     'user_account_reactivated'                    => 'アカウントを再開しました。',
     'user_name_updated'                           => 'ユーザー名を更新しました。',
+    'user_password_updated'                       => 'パスワードを更新しました。',
     'user_email_change_code_sent'                 => '認証コードを送信しました。',
     'user_email_change_code_invalid'              => '認証コードが無効です。',
     'user_email_change_code_verified'             => '認証コードを確認しました。',
@@ -30,6 +31,7 @@ return [
     // --------------------------
     // バリデーションメッセージ
     // --------------------------
+    'unauthenticated'                             => '認証が必要です。',
     'user_id_required'                            => 'ユーザーIDは必須です。',
     'user_id_integer'                             => 'ユーザーIDは数値でなければなりません。',
     'user_email_invalid'                          => '無効なメールアドレスです。',
@@ -61,6 +63,7 @@ return [
     'payment_method_id_exists'                    => '支払方法を選択してください。',
     'memo_string'                                 => 'メモは文字列で入力してください。',
     'memo_max'                                    => 'メモは255文字以内で入力してください。',
+    'current_password_invalid'                    => '現在のパスワードが正しくありません。',
 
     // --------------------------
     // カスタムバリデーションメッセージ
