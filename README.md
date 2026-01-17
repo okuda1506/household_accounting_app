@@ -14,7 +14,7 @@
 ## 技術スタック / アーキテクチャ
 <img src="storage/app/public/architecture_by_gemini.png" alt="アーキテクチャ構成図"/>
 
-アーキテクチャ設計の詳細については、[docs/architecture.md](docs/architecture.md) を参照
+アーキテクチャ設計の詳細については、[docs/architecture.md](docs/architecture.md) を参照してください。
 
 ## 機能
 
