@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
 import {
@@ -19,12 +19,21 @@ const VerifyEmailChange = () => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState<string[]>([]);
 
+    useEffect(() => {
+        if (!email) {
+            toast.error(
+                "認証コードの送信に失敗しました。最初からやり直してください。"
+            );
+            navigate("/settings/email/request", { replace: true });
+        }
+    }, [email, navigate]);
+
     if (!email) {
-        navigate("/settings/email/request");
-        toast.error(
-            "認証コードの送信に失敗しました。最初からやり直してください。"
+        return (
+            <div className="min-h-screen bg-black text-white p-8">
+                Redirecting...
+            </div>
         );
-        return null;
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -53,7 +62,7 @@ const VerifyEmailChange = () => {
     return (
         <div className="min-h-screen bg-black text-white">
             <nav className="border-b border-gray-800">
-                <div className="max-w-5xl mx-auto px-4">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="relative h-16 flex items-center">
                         <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
                             設定
