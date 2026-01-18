@@ -4,7 +4,7 @@
   <img src="storage/app/public/app_screenshots_horizontal.png" alt="プロジェクトイメージ" width="800"/>
 </p>
 
-## 概要
+## 概要　　　
 
 -   モダンでシンプルな家計簿管理アプリ
 -   収入/支出カテゴリの追加・編集・月毎の収支管理が可能
