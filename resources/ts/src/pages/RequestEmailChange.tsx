@@ -52,7 +52,7 @@ const RequestEmailChange = () => {
     return (
         <div className="min-h-screen bg-black text-white">
             <nav className="border-b border-gray-800">
-                <div className="max-w-5xl mx-auto px-4">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="relative h-16 flex items-center">
                         <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
                             設定
