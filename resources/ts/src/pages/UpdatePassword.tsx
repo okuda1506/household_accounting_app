@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
+import api from "../../lib/axios";
 import {
     Card,
     CardContent,
@@ -14,29 +14,28 @@ const UpdatePassword = () => {
     const navigate = useNavigate();
 
     const [currentPassword, setCurrentPassword] = useState("");
-    const [password, setPassword] = useState("");
-    const [passwordConfirmation, setPasswordConfirmation] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [newPasswordConfirmation, setNewPasswordConfirmation] = useState("");
     const [errors, setErrors] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setErrors([]);
-
-        if (password !== passwordConfirmation) {
-            setErrors(["新しいパスワードが一致しません"]);
-            return;
-        }
+        setLoading(true);
 
         try {
-            setLoading(true);
-
-            // todo: API実装
-
+            await api.put("/user/password", {
+                current_password: currentPassword,
+                new_password: newPassword,
+                new_password_confirmation: newPasswordConfirmation,
+            });
             toast.success("パスワードを変更しました");
             navigate("/settings");
         } catch (error: any) {
-            setErrors(["パスワードの変更に失敗しました"]);
+            console.log(error);
+            setErrors(error.response.data.messages);
+            toast.error("パスワードの変更に失敗しました");
         } finally {
             setLoading(false);
         }
@@ -97,9 +96,9 @@ const UpdatePassword = () => {
                                     </label>
                                     <input
                                         type="password"
-                                        value={password}
+                                        value={newPassword}
                                         onChange={(e) =>
-                                            setPassword(e.target.value)
+                                            setNewPassword(e.target.value)
                                         }
                                         className="w-full rounded bg-gray-900 px-3 py-2 border border-gray-700"
                                     />
@@ -111,9 +110,9 @@ const UpdatePassword = () => {
                                     </label>
                                     <input
                                         type="password"
-                                        value={passwordConfirmation}
+                                        value={newPasswordConfirmation}
                                         onChange={(e) =>
-                                            setPasswordConfirmation(
+                                            setNewPasswordConfirmation(
                                                 e.target.value
                                             )
                                         }
