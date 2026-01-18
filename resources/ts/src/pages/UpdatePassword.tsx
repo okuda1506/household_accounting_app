@@ -33,8 +33,10 @@ const UpdatePassword = () => {
             toast.success("パスワードを変更しました");
             navigate("/settings");
         } catch (error: any) {
-            console.log(error);
-            setErrors(error.response.data.messages);
+            const messages = error?.response?.data?.messages ?? [
+                "パスワードの変更に失敗しました",
+            ];
+            setErrors(messages);
             toast.error("パスワードの変更に失敗しました");
         } finally {
             setLoading(false);
