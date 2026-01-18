@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
 import {
@@ -19,12 +19,21 @@ const VerifyEmailChange = () => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState<string[]>([]);
 
+    useEffect(() => {
+        if (!email) {
+            toast.error(
+                "認証コードの送信に失敗しました。最初からやり直してください。"
+            );
+            navigate("/settings/email/request", { replace: true });
+        }
+    }, [email, navigate]);
+
     if (!email) {
-        navigate("/settings/email/request");
-        toast.error(
-            "認証コードの送信に失敗しました。最初からやり直してください。"
+        return (
+            <div className="min-h-screen bg-black text-white p-8">
+                Redirecting...
+            </div>
         );
-        return null;
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
