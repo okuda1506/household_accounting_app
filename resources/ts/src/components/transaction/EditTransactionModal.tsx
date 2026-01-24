@@ -172,7 +172,7 @@ export function EditTransactionModal({
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="bg-gray-900 text-white">
+            <DialogContent className="bg-gray-900 text-white rounded-lg">
                 <DialogHeader>
                     <DialogTitle>取引編集</DialogTitle>
                 </DialogHeader>
