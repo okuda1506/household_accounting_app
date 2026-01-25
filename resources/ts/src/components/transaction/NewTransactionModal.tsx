@@ -159,7 +159,7 @@ export function NewTransactionModal({
                     ＋
                 </Button>
             </DialogTrigger>
-            <DialogContent className="bg-gray-900 text-white">
+            <DialogContent className="bg-gray-900 text-white rounded-lg">
                 <DialogHeader>
                     <DialogTitle>新規取引</DialogTitle>
                 </DialogHeader>

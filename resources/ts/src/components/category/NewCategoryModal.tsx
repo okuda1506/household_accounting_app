@@ -71,7 +71,7 @@ export function NewCategoryModal({ onSuccess }: Props) {
                     ＋
                 </Button>
             </DialogTrigger>
-            <DialogContent className="bg-gray-900 text-white">
+            <DialogContent className="bg-gray-900 text-white rounded-lg">
                 <DialogHeader>
                     <DialogTitle>カテゴリ登録</DialogTitle>
                 </DialogHeader>

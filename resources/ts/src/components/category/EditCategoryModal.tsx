@@ -70,7 +70,7 @@ export function EditCategoryModal({
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="bg-gray-900 text-white">
+            <DialogContent className="bg-gray-900 text-white rounded-lg">
                 <DialogHeader>
                     <DialogTitle>カテゴリ編集</DialogTitle>
                 </DialogHeader>
