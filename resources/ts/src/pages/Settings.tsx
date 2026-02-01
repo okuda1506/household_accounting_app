@@ -9,6 +9,7 @@ import {
     Moon,
     Sun,
     ChevronRight,
+    Wallet,
 } from "lucide-react";
 import {
     Card,
@@ -190,6 +191,13 @@ export default function Settings() {
                                         label="パスワード再設定"
                                         onClick={() =>
                                             navigate("/settings/password")
+                                        }
+                                    />
+                                    <SettingItem
+                                        icon={Wallet}
+                                        label="予算管理"
+                                        onClick={() =>
+                                            navigate("/settings/budget")
                                         }
                                     />
                                     <div className="border-t border-gray-800 my-2" />
