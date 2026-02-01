@@ -8,6 +8,7 @@ use App\Http\Requests\RequestEmailChangeRequest;
 use App\Http\Requests\VerifyEmailChangeCodeRequest;
 use App\Http\Requests\UpdateUserEmailRequest;
 use App\Http\Requests\UpdateUserPasswordRequest;
+use App\Http\Requests\UpdateBudgetRequest;
 use App\Http\Resources\UserResource;
 use App\Services\UserService;
 use App\Exceptions\Domain\InvalidCurrentPasswordException;
@@ -150,5 +151,22 @@ class UserController extends Controller
         }
 
         return ApiResponse::success(null, __('messages.user_password_updated'));
+    }
+
+    /**
+     * 予算を更新する
+     *
+     * @return JsonResponse
+     */
+    public function updateBudget(UpdateBudgetRequest $request): JsonResponse
+    {
+        try {
+            $this->userService->updateBudget(auth()->id(),$request->input('budget'));
+        } catch (\Exception $e) {
+            Log::error($e);
+            return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return ApiResponse::success(null, __('messages.user_budget_updated'));
     }
 }

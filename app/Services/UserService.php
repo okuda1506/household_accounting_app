@@ -117,6 +117,23 @@ class UserService
     }
 
     /**
+     * ユーザーの予算を更新する
+     *
+     * @param int $userId
+     * @param int $budget
+     * @return array{user: User}
+     * @throws \Exception
+     */
+    public function updateBudget(int $userId, int $budget): array
+    {
+        $user = $this->findActiveUser($userId);
+        $user->budget = $budget;
+        $user->save();
+
+        return ['user' => $user];
+    }
+
+    /**
      * 有効なユーザーを取得する
      *
      * @param int $userId

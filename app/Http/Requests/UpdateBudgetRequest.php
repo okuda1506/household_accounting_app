@@ -25,4 +25,14 @@ class UpdateBudgetRequest extends FormRequest
             'budget'  => ['required', 'numeric', 'min:0', 'max:999999999'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'budget.required' => '予算は必須です。',
+            'budget.numeric' => '予算は数値で入力してください。',
+            'budget.min' => '予算は0以上にしてください。',
+            'budget.max' => '予算は999999999以下にしてください。',
+        ];
+    }
 }
