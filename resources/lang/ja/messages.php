@@ -27,6 +27,7 @@ return [
     'user_email_change_code_invalid'              => '認証コードが無効です。',
     'user_email_change_code_verified'             => '認証コードを確認しました。',
     'user_email_updated'                          => 'メールアドレスを更新しました。',
+    'user_budget_updated'                         => '予算を更新しました。',
 
     // --------------------------
     // バリデーションメッセージ
