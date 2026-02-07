@@ -13,8 +13,8 @@ import { X } from "lucide-react";
 
 const UpdateBudget = () => {
     const navigate = useNavigate();
-    const [currentName, setCurrentName] = useState("");
-    const [name, setName] = useState("");
+    const [currentBudget, setCurrentBudget] = useState("");
+    const [budget, setBudget] = useState("");
     const [errors, setErrors] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
 
@@ -22,8 +22,8 @@ const UpdateBudget = () => {
         const fetchCurrentUser = async () => {
             try {
                 const response = await api.get("/user");
-                setCurrentName(response.data.name);
-                setName(response.data.name);
+                setCurrentBudget(response.data.budget);
+                setCurrentBudget(response.data.budget);
             } catch (error) {
                 toast.error("ユーザー情報の取得に失敗しました。");
                 navigate("/settings");
@@ -38,15 +38,15 @@ const UpdateBudget = () => {
         setLoading(true);
 
         try {
-            const response = await api.put("/user/name", {
-                name,
+            const response = await api.put("/user/budget", {
+                budget,
             });
 
-            toast.success(response.data.message ?? "ユーザー名を変更しました");
+            toast.success(response.data.message ?? "予算を更新しました");
             navigate("/settings");
         } catch (error: any) {
             const messages = error?.response?.data?.messages ?? [
-                "ユーザー名の変更に失敗しました",
+                "予算の更新に失敗しました",
             ];
             setErrors(messages);
             toast.error("更新に失敗しました");
@@ -75,7 +75,7 @@ const UpdateBudget = () => {
                     <Card className="bg-black border border-gray-800 max-w-md mx-auto">
                         <CardHeader>
                             <CardTitle className="text-lg font-medium">
-                                ユーザー名変更
+                                予算管理
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -88,39 +88,40 @@ const UpdateBudget = () => {
                                     </div>
                                 )}
 
-                                {currentName && (
+                                {currentBudget && (
                                     <div className="space-y-1">
                                         <p className="text-sm text-gray-400">
-                                            現在のユーザー名
+                                            現在の予算
                                         </p>
                                         <p className="text-sm text-gray-400">
-                                            {currentName}
+                                            ¥ {Number(currentBudget).toLocaleString("ja-JP")}
                                         </p>
                                     </div>
                                 )}
 
                                 <div>
                                     <label
-                                        htmlFor="name"
+                                        htmlFor="budget"
                                         className="block text-sm mb-1"
                                     >
-                                        ユーザー名
+                                        予算
                                     </label>
                                     <div className="relative">
                                         <input
-                                            id="name"
+                                            id="budget"
                                             type="text"
+                                            inputMode="numeric"
                                             required
-                                            value={name}
+                                            value={budget}
                                             onChange={(e) =>
-                                                setName(e.target.value)
+                                                setBudget(e.target.value.replace(/[^0-9]/g, ""))
                                             }
                                             className="w-full rounded bg-gray-900 px-3 py-2 pr-10 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                         />
-                                        {name && (
+                                        {budget && (
                                             <button
                                                 type="button"
-                                                onClick={() => setName("")}
+                                                onClick={() => setBudget("")}
                                                 className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white"
                                                 aria-label="Clear input"
                                             >
