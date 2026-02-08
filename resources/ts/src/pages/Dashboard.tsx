@@ -32,6 +32,7 @@ export default function Dashboard() {
     const [allPaymentMethods, setAllPaymentMethods] = useState<PaymentMethod[]>(
         []
     );
+    const [progress, setProgress] = useState(0);
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
@@ -63,6 +64,20 @@ export default function Dashboard() {
     useEffect(() => {
         fetchDashboardData();
     }, []);
+
+    // 予算管理プログレスバーのアニメーション効果
+    useEffect(() => {
+        if (summary && user && user.budget > 0) {
+            const calculatedProgress = Math.min(
+                (parseInt(summary.expense) / user.budget) * 100,
+                100
+            );
+            const timer = setTimeout(() => {
+                setProgress(calculatedProgress);
+            }, 200);
+            return () => clearTimeout(timer);
+        }
+    }, [summary, user]);
 
     return (
         <div className="min-h-screen bg-black text-white">
@@ -172,16 +187,7 @@ export default function Dashboard() {
                                                             ? "bg-gradient-to-r from-yellow-400 to-yellow-600"
                                                             : "bg-gradient-to-r from-blue-500 to-indigo-500"
                                                     }`}
-                                                    style={{
-                                                        width: `${Math.min(
-                                                            (parseInt(
-                                                                summary.expense
-                                                            ) /
-                                                                user.budget) *
-                                                                100,
-                                                            100
-                                                        )}%`,
-                                                    }}
+                                                    style={{width: `${progress}%`,}}
                                                 />
                                             </div>
                                             {parseInt(summary.expense) > user.budget && (
