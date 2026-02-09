@@ -2,5 +2,5 @@ export interface User {
     id: number;
     name: string;
     email: string;
-    budget: number;
+    budget: number | null;
 }

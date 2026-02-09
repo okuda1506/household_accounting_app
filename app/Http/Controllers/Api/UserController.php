@@ -161,7 +161,7 @@ class UserController extends Controller
     public function updateBudget(UpdateBudgetRequest $request): JsonResponse
     {
         try {
-            $this->userService->updateBudget(auth()->id(),$request->input('budget'));
+            $this->userService->updateBudget(auth()->id(), (int) $request->input('budget'));
         } catch (\Exception $e) {
             Log::error($e);
             return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);

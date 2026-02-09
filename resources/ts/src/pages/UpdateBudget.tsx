@@ -51,7 +51,7 @@ const UpdateBudget = () => {
             try {
                 const response = await api.get("/user");
                 const userBudget = response.data.budget;
-                setCurrentBudget(userBudget);
+                setCurrentBudget(userBudget?.toString() ?? "");
 
                 // 予算が0より大きければ有効状態とする
                 const enabled = Number(userBudget) > 0;
