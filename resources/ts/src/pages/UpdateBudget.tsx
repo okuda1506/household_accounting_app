@@ -75,7 +75,7 @@ const UpdateBudget = () => {
         try {
             // 予算有効時に0円以下または空の場合はエラーとする
             if (isBudgetEnabled && (budget === "" || Number(budget) <= 0)) {
-                setErrors(["予算を設定する場合は、1円以上の値を入力してください。"]);
+                setErrors(["1円以上の値を入力してください。"]);
                 setLoading(false);
                 return;
             }
