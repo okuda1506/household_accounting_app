@@ -21,6 +21,7 @@
 -   月ごとの収支サマリ表示
 -   カテゴリ管理（収入 / 支出）
 -   取引登録 / 編集 / 削除
+-   予算管理機能
 -   言語切替（英語 / 日本語 / 韓国語）
 -   ダークモード対応
 -   AI による支出管理アドバイス（※実装予定）
@@ -57,6 +58,7 @@ For detailed architecture design, please refer to [docs/architecture.md](docs/ar
 -   Monthly balance summary
 -   Category management (Income / Expense)
 -   Register, edit, and delete transactions
+-   Budget management
 -   Language switching (English / Japanese / Korean)
 -   Dark mode support
 -   AI-based expenditure management advice (*Planned implementation)
@@ -93,6 +95,7 @@ npm install
 -   월별 수지 요약 표시
 -   카테고리 관리 (수입 / 지출)
 -   거래 등록 / 편집 / 삭제
+-   예산 관리 기능
 -   언어 전환 (영어 / 일본어 / 한국어)
 -   다크 모드 지원
 -   AI를 활용한 지출 관리 조언 (※구현 예정)
