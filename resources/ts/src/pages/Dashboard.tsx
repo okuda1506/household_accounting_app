@@ -162,59 +162,56 @@ export default function Dashboard() {
                                         </div>
                                     </div>
                                     {/* 予算消化率プログレスバー */}
-                                    {user &&
-                                        user.budget !== null &&
-                                        user.budget > 0 && (
-                                            <div className="space-y-2 mt-6">
-                                                <div className="flex justify-between text-sm">
-                                                    <span className="text-gray-400">
-                                                        Budget Usage (Limit: ¥
-                                                        {user.budget.toLocaleString()}
-                                                        )
-                                                    </span>
-                                                    <span className="text-white font-medium">
-                                                        {Math.round(
-                                                            (parseInt(
-                                                                summary.expense
-                                                            ) /
-                                                                user.budget) *
+                                    {user && user.budget !== null &&
+                                        user.budget > 0 &&
+                                        (() => {
+                                            const expense = parseInt(
+                                                summary.expense
+                                            );
+                                            const budgetUsagePercentage =
+                                                (expense / user.budget) * 100;
+
+                                            return (
+                                                <div className="space-y-2 mt-6">
+                                                    <div className="flex justify-between text-sm">
+                                                        <span className="text-gray-400">
+                                                            Budget Usage (Limit:
+                                                            ¥
+                                                            {user.budget.toLocaleString()}
+                                                            )
+                                                        </span>
+                                                        <span className="text-white font-medium">
+                                                            {Math.round(
+                                                                budgetUsagePercentage
+                                                            )}
+                                                            %
+                                                        </span>
+                                                    </div>
+                                                    <div className="h-2 w-full bg-gray-800 rounded-full overflow-hidden">
+                                                        <div
+                                                            className={`h-full rounded-full transition-all duration-500 ease-out ${
+                                                                budgetUsagePercentage >=
                                                                 100
-                                                        )}
-                                                        %
-                                                    </span>
+                                                                    ? "bg-gradient-to-r from-red-500 to-red-700"
+                                                                    : budgetUsagePercentage > 70
+                                                                    ? "bg-gradient-to-r from-yellow-400 to-yellow-600"
+                                                                    : "bg-gradient-to-r from-blue-500 to-indigo-500"
+                                                            }`}
+                                                            style={{
+                                                                width: `${progress}%`,
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    {expense > user.budget && (
+                                                        <p className="text-xs text-red-500 mt-1 font-medium">
+                                                            ⚠️
+                                                            予算を超過しています
+                                                        </p>
+                                                    )}
                                                 </div>
-                                                <div className="h-2 w-full bg-gray-800 rounded-full overflow-hidden">
-                                                    <div
-                                                        className={`h-full rounded-full transition-all duration-500 ease-out ${
-                                                            (parseInt(
-                                                                summary.expense
-                                                            ) /
-                                                                user.budget) *
-                                                                100 >=
-                                                            100
-                                                                ? "bg-gradient-to-r from-red-500 to-red-700"
-                                                                : (parseInt(
-                                                                      summary.expense
-                                                                  ) /
-                                                                      user.budget) *
-                                                                      100 >
-                                                                  70
-                                                                ? "bg-gradient-to-r from-yellow-400 to-yellow-600"
-                                                                : "bg-gradient-to-r from-blue-500 to-indigo-500"
-                                                        }`}
-                                                        style={{
-                                                            width: `${progress}%`,
-                                                        }}
-                                                    />
-                                                </div>
-                                                {parseInt(summary.expense) >
-                                                    user.budget && (
-                                                    <p className="text-xs text-red-500 mt-1 font-medium">
-                                                        ⚠️ 予算を超過しています
-                                                    </p>
-                                                )}
-                                            </div>
-                                        )}
+                                            );
+                                        })()
+                                    }
                                 </>
                             )}
                         </CardContent>
