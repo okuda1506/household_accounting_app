@@ -41,6 +41,8 @@ Route::middleware('auth:sanctum')->prefix('user')->name('api.user.')->group(func
         Route::post('verify', [UserController::class, 'verifyEmailChangeCode'])->name('verify');
         Route::put('update', [UserController::class, 'updateEmail'])->name('update');
     });
+    // 予算設定
+    Route::put('budget', [UserController::class, 'updateBudget'])->name('update_budget');
 });
 
 Route::prefix('categories')

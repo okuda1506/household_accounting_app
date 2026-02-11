@@ -32,6 +32,7 @@ export default function Dashboard() {
     const [allPaymentMethods, setAllPaymentMethods] = useState<PaymentMethod[]>(
         []
     );
+    const [progress, setProgress] = useState(0);
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
@@ -63,6 +64,20 @@ export default function Dashboard() {
     useEffect(() => {
         fetchDashboardData();
     }, []);
+
+    // 予算管理プログレスバーのアニメーション効果
+    useEffect(() => {
+        if (summary && user && user.budget !== null && user.budget > 0) {
+            const calculatedProgress = Math.min(
+                (parseInt(summary.expense) / user.budget) * 100,
+                100
+            );
+            const timer = setTimeout(() => {
+                setProgress(calculatedProgress);
+            }, 200);
+            return () => clearTimeout(timer);
+        }
+    }, [summary, user]);
 
     return (
         <div className="min-h-screen bg-black text-white">
@@ -112,32 +127,92 @@ export default function Dashboard() {
                         </CardHeader>
                         <CardContent>
                             {summary && (
-                                <div className="flex justify-between items-center text-sm">
-                                    <div>
-                                        <p className="text-gray-400">Income</p>
-                                        <p className="text-xl font-semibold text-green-400">
-                                            ¥
-                                            {parseInt(
-                                                summary.income
-                                            ).toLocaleString()}
-                                        </p>
+                                <>
+                                    <div className="flex justify-between items-center text-sm">
+                                        <div>
+                                            <p className="text-gray-400">
+                                                Income
+                                            </p>
+                                            <p className="text-xl font-semibold text-green-400">
+                                                ¥
+                                                {parseInt(
+                                                    summary.income
+                                                ).toLocaleString()}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p className="text-gray-400">
+                                                Expense
+                                            </p>
+                                            <p className="text-xl font-semibold text-red-400">
+                                                ¥
+                                                {parseInt(
+                                                    summary.expense
+                                                ).toLocaleString()}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p className="text-gray-400">
+                                                Balance
+                                            </p>
+                                            <p className="text-xl font-semibold">
+                                                ¥
+                                                {summary.balance.toLocaleString()}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="text-gray-400">Expense</p>
-                                        <p className="text-xl font-semibold text-red-400">
-                                            ¥
-                                            {parseInt(
+                                    {/* 予算消化率プログレスバー */}
+                                    {user && user.budget !== null &&
+                                        user.budget > 0 &&
+                                        (() => {
+                                            const expense = parseInt(
                                                 summary.expense
-                                            ).toLocaleString()}
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <p className="text-gray-400">Balance</p>
-                                        <p className="text-xl font-semibold">
-                                            ¥{summary.balance.toLocaleString()}
-                                        </p>
-                                    </div>
-                                </div>
+                                            );
+                                            const budgetUsagePercentage =
+                                                (expense / user.budget) * 100;
+
+                                            return (
+                                                <div className="space-y-2 mt-6">
+                                                    <div className="flex justify-between text-sm">
+                                                        <span className="text-gray-400">
+                                                            Budget Usage (Limit:
+                                                            ¥
+                                                            {user.budget.toLocaleString()}
+                                                            )
+                                                        </span>
+                                                        <span className="text-white font-medium">
+                                                            {Math.round(
+                                                                budgetUsagePercentage
+                                                            )}
+                                                            %
+                                                        </span>
+                                                    </div>
+                                                    <div className="h-2 w-full bg-gray-800 rounded-full overflow-hidden">
+                                                        <div
+                                                            className={`h-full rounded-full transition-all duration-500 ease-out ${
+                                                                budgetUsagePercentage >=
+                                                                100
+                                                                    ? "bg-gradient-to-r from-red-500 to-red-700"
+                                                                    : budgetUsagePercentage > 70
+                                                                    ? "bg-gradient-to-r from-yellow-400 to-yellow-600"
+                                                                    : "bg-gradient-to-r from-blue-500 to-indigo-500"
+                                                            }`}
+                                                            style={{
+                                                                width: `${progress}%`,
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    {expense > user.budget && (
+                                                        <p className="text-xs text-red-500 mt-1 font-medium">
+                                                            ⚠️
+                                                            予算を超過しています
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            );
+                                        })()
+                                    }
+                                </>
                             )}
                         </CardContent>
                     </Card>

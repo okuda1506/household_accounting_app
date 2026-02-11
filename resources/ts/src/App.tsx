@@ -11,6 +11,7 @@ import VerifyEmailChange from "./pages/VerifyEmailChange";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import UpdatePassword from "./pages/UpdatePassword";
+import UpdateBudget from "./pages/UpdateBudget";
 import ReactivateAccount from "./pages/ReactivateAccount";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { ToastContainer } from "react-toastify";
@@ -106,6 +107,14 @@ function App() {
                             element={
                                 <PrivateRoute>
                                     <UpdatePassword />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/settings/budget"
+                            element={
+                                <PrivateRoute>
+                                    <UpdateBudget />
                                 </PrivateRoute>
                             }
                         />
