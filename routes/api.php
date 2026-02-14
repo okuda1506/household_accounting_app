@@ -43,6 +43,8 @@ Route::middleware('auth:sanctum')->prefix('user')->name('api.user.')->group(func
     });
     // 予算設定
     Route::put('budget', [UserController::class, 'updateBudget'])->name('update_budget');
+    // AIアドバイスモード設定
+    Route::put('ai-advice-mode', [UserController::class, 'updateAiAdviceMode'])->name('update_ai_advice_mode');
 });
 
 Route::prefix('categories')
