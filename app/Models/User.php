@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'budget',
         'deleted',
+        'ai_advice_mode',
     ];
 
     /**
@@ -45,6 +46,7 @@ class User extends Authenticatable
         'password' => 'hashed',
         'budget' => 'integer',
         'deleted' => 'boolean',
+        'ai_advice_mode' => 'boolean',
     ];
 
     /**
