@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     User,
     Mail,
@@ -10,6 +10,7 @@ import {
     Sun,
     ChevronRight,
     Wallet,
+    BotMessageSquare,
 } from "lucide-react";
 import {
     Card,
@@ -89,7 +90,7 @@ const SettingItem = ({ icon: Icon, label, onClick, variant = "default" }) => {
     );
 };
 
-const ToggleItem = ({ icon: Icon, label, checked, onChange }) => {
+const ToggleItem = ({ icon: Icon, label, checked, onChange, disabled }) => {
     return (
         <div className="flex items-center justify-between px-4 py-3">
             <div className="flex items-center gap-3">
@@ -97,6 +98,7 @@ const ToggleItem = ({ icon: Icon, label, checked, onChange }) => {
                 <span className="text-white text-sm font-medium">{label}</span>
             </div>
             <button
+                disabled={disabled}
                 onClick={() => onChange(!checked)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                     checked ? "bg-blue-600" : "bg-gray-700"
@@ -115,16 +117,52 @@ const ToggleItem = ({ icon: Icon, label, checked, onChange }) => {
 export default function Settings() {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [activeTab, setActiveTab] = useState<SettingsTab>("account");
+    const [isAiAdviceModeEnabled, setIsAiAdviceModeEnabled] = useState(false);
+    const [isAiUpdating, setIsAiUpdating] = useState(false);
+    const [isDarkModeUpdating, setIsDarkModeUpdating] = useState(false);
     const navigate = useNavigate();
 
+    // todo: 言語切り替えの処理を追加
     const handleClick = (item) => {
         console.log(`${item} clicked`);
         // ここで後からモーダルを開く処理を追加
     };
 
-    const handleToggle = (value) => {
+    const handleDarkModeChange = (value) => {
         console.log(`Dark mode toggled: ${value}`);
         // ここで後からダークモード切り替え処理を追加
+    };
+
+    useEffect(() => {
+        const fetchCurrentUser = async () => {
+            try {
+                const response = await api.get("/user");
+                const userAiAdviceMode = response.data.ai_advice_mode;
+                // AIアドバイスモードが有効かどうかを判定
+                setIsAiAdviceModeEnabled(userAiAdviceMode);
+            } catch (error) {
+                toast.error("ユーザー情報の取得に失敗しました。");
+                navigate("/settings");
+            }
+        };
+        fetchCurrentUser();
+    }, [navigate]);
+
+    // todo: ダークモード切り替え実装
+    // const handleDarkModeChange = (value) => {};
+
+    const handleAiAdviceModeChange = async (value: boolean) => {
+        try {
+            setIsAiUpdating(true);
+            await api.put("/user/ai-advice-mode", {
+                ai_advice_mode: value,
+            });
+            setIsAiAdviceModeEnabled(value);
+        } catch (error) {
+            toast.error("AIアドバイスモードの更新に失敗しました。");
+        } finally {
+            setIsAiUpdating(false);
+        }
     };
 
     const handleSignout = async () => {
@@ -238,7 +276,15 @@ export default function Settings() {
                                         icon={Moon}
                                         label="ダークモード"
                                         checked={true}
-                                        onChange={handleToggle}
+                                        onChange={handleDarkModeChange}
+                                        disabled={isDarkModeUpdating}
+                                    />
+                                    <ToggleItem
+                                        icon={BotMessageSquare}
+                                        label="AIアドバイスモード"
+                                        checked={isAiAdviceModeEnabled}
+                                        onChange={handleAiAdviceModeChange}
+                                        disabled={isAiUpdating}
                                     />
                                 </div>
                             </CardContent>
