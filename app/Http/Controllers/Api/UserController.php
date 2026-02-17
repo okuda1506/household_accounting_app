@@ -179,12 +179,14 @@ class UserController extends Controller
     public function updateAiAdviceMode(UpdateAiAdviceModeRequest $request): JsonResponse
     {
         try {
-            $this->userService->updateAiAdviceMode(auth()->id(), (bool) $request->input('ai_advice_mode'));
+            $user = $this->userService->updateAiAdviceMode(auth()->id(), (bool) $request->input('ai_advice_mode'));
         } catch (\Exception $e) {
             Log::error($e);
             return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return ApiResponse::success(null, __('messages.user_ai_advice_mode_updated'));
+        return ApiResponse::success([
+        'ai_advice_mode' => $user['ai_advice_mode'],
+    ], __('messages.user_ai_advice_mode_updated'));
     }
 }
