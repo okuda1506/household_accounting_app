@@ -72,11 +72,24 @@ export default function Dashboard() {
                 setTimeout(resolve, 5000)
             );
         } catch (error) {
+            console.error("AI analysis failed:", error);
             toast.error("AI分析に失敗しました");
         } finally {
             setIsAiAnalyzing(false);
         }
     };
+
+    const aiButtonContent = isAiAnalyzing ? (
+        <>
+            <Loader2 className="w-5 h-5 text-indigo-400 animate-spin" />
+            <span className="text-sm font-medium">分析中...</span>
+        </>
+    ) : (
+        <>
+            <BotMessageSquare className="w-5 h-5 text-indigo-400" />
+            <span className="text-sm font-medium">AIに分析させる</span>
+        </>
+    );
 
     useEffect(() => {
         fetchDashboardData();
@@ -237,21 +250,7 @@ export default function Dashboard() {
                                                 disabled={isAiAnalyzing}
                                                 className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-gradient-to-r from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 transition-all duration-200 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                                             >
-                                                {isAiAnalyzing ? (
-                                                    <>
-                                                        <Loader2 className="w-5 h-5 text-indigo-400 animate-spin" />
-                                                        <span className="text-sm font-medium">
-                                                            分析中...
-                                                        </span>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <BotMessageSquare className="w-5 h-5 text-indigo-400" />
-                                                        <span className="text-sm font-medium">
-                                                            AIに分析させる
-                                                        </span>
-                                                    </>
-                                                )}
+                                                {aiButtonContent}
                                             </button>
                                         </div>
                                     )}
