@@ -28,6 +28,7 @@ return [
     'user_email_change_code_verified'             => '認証コードを確認しました。',
     'user_email_updated'                          => 'メールアドレスを更新しました。',
     'user_budget_updated'                         => '予算を更新しました。',
+    'user_ai_advice_mode_updated'                 => 'AIアドバイスモードのフラグを更新しました。',
 
     // --------------------------
     // バリデーションメッセージ

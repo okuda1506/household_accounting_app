@@ -134,6 +134,24 @@ class UserService
     }
 
     /**
+     * ユーザーのAIアドバイスモードを更新する
+     *
+     * @param int $userId
+     * @param bool $aiAdviceMode
+     * @return User
+     * @throws \Exception
+     */
+    public function updateAiAdviceMode(int $userId, bool $aiAdviceMode): User
+    {
+        $user = $this->findActiveUser($userId);
+        $user->ai_advice_mode = $aiAdviceMode;
+        $user->save();
+
+        return $user;
+    }
+
+
+    /**
      * 有効なユーザーを取得する
      *
      * @param int $userId

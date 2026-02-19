@@ -23,7 +23,7 @@ class DashboardController extends Controller
     public function getDashboardData(): JsonResponse
     {
         try {
-            $user = auth()->user()->only(['id', 'name', 'email', 'budget']);
+            $user = auth()->user()->only(['id', 'name', 'email', 'ai_advice_mode', 'budget']);
 
             // フロントに表示する各項目のデータを取得
             $summary      = $this->dashboardService->getSummary($user['id']);

@@ -9,6 +9,7 @@ use App\Http\Requests\VerifyEmailChangeCodeRequest;
 use App\Http\Requests\UpdateUserEmailRequest;
 use App\Http\Requests\UpdateUserPasswordRequest;
 use App\Http\Requests\UpdateBudgetRequest;
+use App\Http\Requests\UpdateAiAdviceModeRequest;
 use App\Http\Resources\UserResource;
 use App\Services\UserService;
 use App\Exceptions\Domain\InvalidCurrentPasswordException;
@@ -168,5 +169,22 @@ class UserController extends Controller
         }
 
         return ApiResponse::success(null, __('messages.user_budget_updated'));
+    }
+
+    /**
+     * AIアドバイスモードを更新する
+     *
+     * @return JsonResponse
+     */
+    public function updateAiAdviceMode(UpdateAiAdviceModeRequest $request): JsonResponse
+    {
+        try {
+            $user = $this->userService->updateAiAdviceMode(auth()->id(), (bool) $request->input('ai_advice_mode'));
+        } catch (\Exception $e) {
+            Log::error($e);
+            return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return ApiResponse::success(['ai_advice_mode' => $user['ai_advice_mode'],], __('messages.user_ai_advice_mode_updated'));
     }
 }
