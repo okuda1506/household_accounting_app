@@ -185,8 +185,6 @@ class UserController extends Controller
             return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return ApiResponse::success([
-        'ai_advice_mode' => $user['ai_advice_mode'],
-    ], __('messages.user_ai_advice_mode_updated'));
+        return ApiResponse::success(['ai_advice_mode' => $user['ai_advice_mode'],], __('messages.user_ai_advice_mode_updated'));
     }
 }
