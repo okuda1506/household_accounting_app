@@ -3,4 +3,5 @@ export interface User {
     name: string;
     email: string;
     budget: number | null;
+    ai_advice_mode: boolean;
 }

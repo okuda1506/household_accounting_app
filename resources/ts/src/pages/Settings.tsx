@@ -159,7 +159,7 @@ export default function Settings() {
             });
             setIsAiAdviceModeEnabled(value);
         } catch (error) {
-            toast.error("AIアドバイスモードの更新に失敗しました。");
+            toast.error("AIアドバイスモードの更新に失敗しました");
         } finally {
             setIsAiUpdating(false);
         }
