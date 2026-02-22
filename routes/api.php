@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\PaymentMethodController;
 use App\Http\Controllers\Api\TransactionController;
+use App\Http\Controllers\Api\AIAdviceController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\ReactivateAccountController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
@@ -95,6 +96,15 @@ Route::prefix('dashboard')
     ->group(function () {
         // ダッシュボード情報
         Route::get('', 'getDashboardData')->name('getDashboardData');
+    });
+
+Route::prefix('ai-advice')
+    ->middleware('auth:sanctum')
+    ->controller(AIAdviceController::class)
+    ->name('api.ai_advice.')
+    ->group(function () {
+        // AIアドバイス取得
+        Route::get('', 'aiAdvice')->name('ai_advice');
     });
 
 // アカウント削除
