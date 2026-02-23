@@ -281,29 +281,25 @@ export default function Dashboard() {
                                         return (
                                             <li
                                                 key={transaction.id}
-                                                className="flex justify-between items-center text-sm"
+                                                className="flex justify-between items-start text-sm"
                                             >
-                                                <div>
-                                                    <p className="font-medium">
+                                                <div className="min-w-0 flex-1 pr-4">
+                                                    <p className="font-medium truncate">
                                                         {transaction.memo}
                                                     </p>
                                                     <p className="text-gray-400">
-                                                        {formatDate(
-                                                            transaction.transaction_date
-                                                        )}{" "}
+                                                        {formatDate(transaction.transaction_date)}{" "}
                                                     </p>
                                                 </div>
                                                 <p
-                                                    className={`font-medium ${
+                                                    className={`font-medium shrink-0 text-right ${
                                                         isIncome
                                                             ? "text-green-400"
                                                             : "text-red-400"
                                                     }`}
                                                 >
                                                     {isIncome ? "+" : "-"}¥
-                                                    {Math.abs(
-                                                        amount
-                                                    ).toLocaleString()}
+                                                    {Math.abs(amount).toLocaleString()}
                                                 </p>
                                             </li>
                                         );
