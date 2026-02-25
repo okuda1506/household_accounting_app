@@ -12,6 +12,8 @@
 
 ## 基本的な使い方
 
+※ SDK導入については[Laravel公式ドキュメント](https://laravel.com/docs/12.x/ai-sdk#agents)を参照
+
 Artisan コマンドを使用してエージェントを作成。
 
 ```sh
