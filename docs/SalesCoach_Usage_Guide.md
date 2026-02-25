@@ -3,7 +3,7 @@
 ## 概要
 
 - `SalesCoach` は Laravel AI SDK の `Promptable` トレイトを利用した Agent
-  クラス\
+  クラス
 - SalesCoach を使って簡単に AI（今回の例では
   Gemini）へプロンプトを送信できる\
   ※ Laravel 12.x, PHP8.4 以上で動作。
