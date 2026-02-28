@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\DashboardService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Ai\Agents\SalesCoach;
 
 class AIAdviceController extends Controller
 {
@@ -13,10 +14,11 @@ class AIAdviceController extends Controller
     {
         $user = $request->user();
 
-        // 分析用データ集計
-        // AI呼び出し
-
-        $analysisText = "AIからのアドバイス例: 収支のバランスを見直して、無駄な支出を減らすことを検討してみてください。";
+        // todo: 分析用データ集計
+        // todo: AI呼び出し
+        $salesCoach = new SalesCoach();
+        $response = $salesCoach->prompt('newjeansでおすすめの曲は？');
+        dump($response);exit;
 
         return response()->json([
             'analysis' => $analysisText
