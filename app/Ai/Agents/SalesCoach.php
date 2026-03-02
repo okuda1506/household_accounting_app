@@ -18,7 +18,13 @@ class SalesCoach implements Agent, Conversational, HasTools
      */
     public function instructions(): Stringable|string
     {
-        return 'のび太に話しかけるジャイアン風の回答をしてください。';
+        $path = resource_path('prompts/ai_coaching_system.md');
+
+        if (!file_exists($path)) {
+            throw new \RuntimeException('AIプロンプトファイルが存在しません');
+        }
+
+        return file_get_contents($path);
     }
 
     /**
