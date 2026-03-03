@@ -104,7 +104,7 @@ Route::prefix('ai-advice')
     ->name('api.ai_advice.')
     ->group(function () {
         // AIアドバイス取得
-        Route::get('', 'aiAdvice')->name('ai_advice');
+        Route::get('', 'index')->name(name: 'index');
     });
 
 // アカウント削除
