@@ -42,6 +42,7 @@ class AiInputBuilder
         return Transaction::query()
             ->where('user_id', $userId)
             ->where('transaction_type_id', TransactionType::EXPENSE)
+            ->where('deleted', false)
             ->whereDate('transaction_date', '>=', $startOfMonth)
             ->whereDate('transaction_date', '<=', $today)
             ->with('category')
