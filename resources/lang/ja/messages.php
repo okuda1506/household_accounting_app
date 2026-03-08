@@ -29,6 +29,8 @@ return [
     'user_email_updated'                          => 'メールアドレスを更新しました。',
     'user_budget_updated'                         => '予算を更新しました。',
     'user_ai_advice_mode_updated'                 => 'AIアドバイスモードのフラグを更新しました。',
+    'ai_advice_fetched'                           => 'AIアドバイスを取得しました。',
+    'ai_advice_fetch_failed'                      => 'AIアドバイスの取得に失敗しました。',
 
     // --------------------------
     // バリデーションメッセージ

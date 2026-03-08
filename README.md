@@ -24,7 +24,7 @@
 -   予算管理機能
 -   言語切替（英語 / 日本語 / 韓国語）
 -   ダークモード対応
--   AI による支出管理アドバイス（※実装予定）
+-   AI による支出管理アドバイス
 
 ## セットアップ
 
@@ -61,7 +61,7 @@ For detailed architecture design, please refer to [docs/architecture.md](docs/ar
 -   Budget management
 -   Language switching (English / Japanese / Korean)
 -   Dark mode support
--   AI-based expenditure management advice (*Planned implementation)
+-   AI-based expenditure management advice
 
 ### Setup
 
@@ -98,7 +98,7 @@ npm install
 -   예산 관리 기능
 -   언어 전환 (영어 / 일본어 / 한국어)
 -   다크 모드 지원
--   AI를 활용한 지출 관리 조언 (※구현 예정)
+-   AI를 활용한 지출 관리 조언
 
 ### 셋업
 

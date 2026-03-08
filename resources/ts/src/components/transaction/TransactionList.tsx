@@ -146,14 +146,14 @@ export function TransactionList({
                                         key={
                                             transaction.transaction_id ?? index
                                         }
-                                        className="hover:bg-gray-700 cursor-pointer rounded-md px-4 py-3 flex justify-between items-center text-sm"
+                                        className="hover:bg-gray-700 cursor-pointer rounded-md px-4 py-3 flex justify-between items-start text-sm"
                                         onClick={() => {
                                             setEditingTransaction(transaction);
                                             setEditModalOpen(true);
                                         }}
                                     >
-                                        <div>
-                                            <p className="font-medium">
+                                        <div className="min-w-0 flex-1 pr-4">
+                                            <p className="font-medium truncate">
                                                 {transaction.memo}
                                             </p>
                                             <p className="text-gray-400">
@@ -161,7 +161,7 @@ export function TransactionList({
                                             </p>
                                         </div>
                                         <p
-                                            className={`font-medium ${
+                                            className={`font-medium  shrink-0 text-right ${
                                                 isIncome
                                                     ? "text-green-400"
                                                     : "text-red-400"
@@ -169,7 +169,7 @@ export function TransactionList({
                                         >
                                             {isIncome ? "+" : "-"}¥
                                             {Math.abs(
-                                                transaction.amount
+                                                transaction.amount,
                                             ).toLocaleString()}
                                         </p>
                                     </li>
