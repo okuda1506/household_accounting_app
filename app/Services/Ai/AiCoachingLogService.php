@@ -6,14 +6,14 @@ use App\DTO\AiAdviceResponseDTO;
 
 class AiCoachingLogService
 {
-    public function save(int $userId, AiAdviceResponseDTO $dto): void
+    public function save(int $userId, AiAdviceResponseDTO $dto, array $inputData): void
     {
         AiCoachingLog::create([
             'user_id'                 => $userId,
-            'monthly_budget'          => $dto->monthlyBudget ?? 0, // todo: AIレスポンスにmonthlyBudgetを追加して、そこから値を保存するようにする
-            'current_total'           => $dto->currentTotal ?? 0, // todo: AIレスポンスにmonthlyBudgetを追加して、そこから値を保存するようにする
-            'projected_monthly_total' => $dto->projectedMonthlyTotal ?? 0, // todo: AIレスポンスにmonthlyBudgetを追加して、そこから値を保存するようにする
-            'remaining_days'          => $dto->remainingDays ?? 0, // todo: AIレスポンスにmonthlyBudgetを追加して、そこから値を保存するようにする
+            'monthly_budget'          => $inputData['monthly_budget'],
+            'current_total'           => $inputData['current_total'],
+            'projected_monthly_total' => $inputData['projected_monthly_total'],
+            'remaining_days'          => $inputData['remaining_days'],
             'risk_level'              => $dto->riskLevel->value(),
             'budget_gap'              => $dto->analysis->budgetGap,
             'daily_safe_limit'        => $dto->analysis->dailySafeLimit,
