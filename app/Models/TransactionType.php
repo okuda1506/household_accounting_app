@@ -10,6 +10,12 @@ class TransactionType extends Model
     use HasFactory;
 
     /**
+     * 取引種別
+     */
+    public const INCOME = 1; // 収入
+    public const EXPENSE = 2; // 支出
+
+    /**
      * 一括代入を許可する属性を指定する
      *
      * @var array<int, string>
