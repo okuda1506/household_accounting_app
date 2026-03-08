@@ -99,12 +99,12 @@ Route::prefix('dashboard')
     });
 
 Route::prefix('ai-advice')
-    ->middleware('auth:sanctum')
+    ->middleware(['auth:sanctum', 'throttle:3,1']) // 不正利用防止のため1分間に3回までのリクエストに制限
     ->controller(AIAdviceController::class)
     ->name('api.ai_advice.')
     ->group(function () {
         // AIアドバイス取得
-        Route::get('', 'index')->name(name: 'index');
+        Route::get('', 'index')->name('index');
     });
 
 // アカウント削除
