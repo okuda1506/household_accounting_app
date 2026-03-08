@@ -12,14 +12,19 @@ use App\Services\Ai\AiCoachingLogService;
 class AiAdviceService
 {
     private AiInputBuilder $aiInputBuilder;
+
     private AiCoachingLogService $aiCoachingLogService;
+
+    private SalesCoach $salesCoach;
 
     public function __construct(
         AiCoachingLogService $aiCoachingLogService,
-        AiInputBuilder $aiInputBuilder
+        AiInputBuilder $aiInputBuilder,
+        SalesCoach $salesCoach
     ){
         $this->aiInputBuilder = $aiInputBuilder;
         $this->aiCoachingLogService = $aiCoachingLogService;
+        $this->salesCoach = $salesCoach;
     }
 
     /**
@@ -35,8 +40,7 @@ class AiAdviceService
         $prompt = json_encode($inputData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
         // AI呼び出し
-        $salesCoach = new SalesCoach();
-        $response = $salesCoach->prompt($prompt);
+        $response = $this->salesCoach->prompt($prompt);
 
         $decoded = json_decode($response->text, true);
 
