@@ -22,6 +22,50 @@
 
 ---
 
+## 入力データ
+
+- AIには以下のJSONデータが入力として渡される
+- このデータを分析し、出力フォーマットに従ってアドバイスを生成すること
+
+入力データ構造：
+
+{
+  "monthly_budget": number,
+  "current_total": number,
+  "remaining_days": number,
+  "projected_monthly_total": number,
+  "category_summary": [
+    {
+      "category": string,
+      "total": number,
+      "count": number
+    }
+  ]
+}
+
+### monthly_budget
+- ユーザーが設定している月間予算
+
+### current_total
+- 今月これまでに使った累計支出額
+
+### remaining_days
+- 今月の残り日数
+
+### projected_monthly_total
+- 現在の支出ペースから計算した月末の予測支出額
+
+### category_summary
+- カテゴリごとの支出サマリー
+
+- category : カテゴリ名
+- total : そのカテゴリの累計支出
+- count : そのカテゴリの取引回数
+
+AIはこれらの情報を元に、支出パターンと予算超過リスクを分析する
+
+---
+
 ## 出力フォーマット
 
 {
@@ -45,7 +89,7 @@
 
 ## risk_level判定基準
 
-- 月末予測支出が予算以下 → safe
+- 月末予測支出(projected_monthly_total)が予算以下 → safe
 - やや超過見込み → warning
 - 大幅超過見込み → danger
 
@@ -54,11 +98,11 @@
 ## 生成ルール
 
 ### risk_level
-必ず safe / warning / danger のいずれか
+- 必ず safe / warning / danger のいずれか
 
 ### analysis.analysis_reason
-なぜその判定(risk_level)になったのかを具体的に説明する。
-抽象的な表現は禁止。
+- なぜその判定(risk_level)になったのかを具体的に説明する
+- 抽象的な表現は禁止
 
 ### pattern
 支出傾向を短い識別子で表す。
@@ -70,12 +114,12 @@
 - convenience_store_heavy
 
 ### main_issue_category の注意
-main_issue_category は、ユーザーが行動によって改善できるカテゴリを優先して選択する。
+main_issue_category は、ユーザーが行動によって改善できるカテゴリを優先して選択する
 
 以下の指針に従うこと：
 
 - 家賃・通信費・保険などの固定費は、可能な限り主問題カテゴリとして選ばない
-- 食費 (コンビニ・外食・カフェ・娯楽) など、日常行動で調整可能なカテゴリを優先する
+- コンビニ・外食・カフェ・娯楽など、日常行動で調整可能なカテゴリを優先する
 - 固定費が大きくても、それよりも行動で改善可能な支出カテゴリがある場合はそちらを選ぶ
 
 目的は、ユーザーが「今日から行動を変えられる支出」に焦点を当てることである
@@ -94,13 +138,17 @@ main_issue_category は、ユーザーが行動によって改善できるカテ
 「今日の夕食は800円以内に抑えましょう。スーパーのお弁当400円、お惣菜400円の組み合わせがおすすめです。」
 「値引き商品を優先することを心がけましょう。」
 
+### advice.daily_budget_target
+- 今日ユーザーが現実的に目指すべき1日の支出目標額を数値で返す
+- analysis.daily_safe_limit と同じ値でもよいが、より実行しやすい値に調整してもよい
+
 ### motivation
-前向きな一文。
-短く、行動を促す。
+- 前向きな一文
+- 短く、行動を促す
+- 40文字以内を目安にする
 
 ---
 
 ## 最終確認
-
-JSONのみを出力すること。
-余計な文章は絶対に出力しないこと。
+- JSONのみを出力すること
+- 余計な文章は絶対に出力しないこと
