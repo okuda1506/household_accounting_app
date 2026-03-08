@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { format } from "date-fns";
 import { TypeAnimation } from "react-type-animation";
 import {
@@ -42,6 +42,8 @@ export default function Dashboard() {
     const [aiAdvice, setAiAdvice] = useState<AiAdviceResult | null>(null);
     const [isAiAdviceVisible, setIsAiAdviceVisible] = useState<boolean>(false);
 
+    const aiAdviceRef = useRef<HTMLDivElement | null>(null);
+
     const formatDate = (dateString: string) => {
         return format(dateString, "M月d日");
     };
@@ -71,7 +73,7 @@ export default function Dashboard() {
             setIsAiAnalyzing(true);
             // const response = await api.post("/ai/advice");
             // 仮実装
-            await new Promise((resolve) => setTimeout(resolve, 5000));
+            await new Promise((resolve) => setTimeout(resolve, 4000));
             setAiAdvice({
                 risk_level: "danger",
                 analysis_reason:
@@ -79,7 +81,7 @@ export default function Dashboard() {
                 micro_action:
                     "今日の食費を1,500円以内に抑え、コンビニではなくスーパーを利用しましょう。",
                 motivation:
-                    "今日の上限を守ることが、月末の余裕につながります。",
+                    "今日の上限を守ることが、月末の余裕につながります！",
             });
             setIsAiAdviceVisible(true);
         } catch (error) {
@@ -119,6 +121,15 @@ export default function Dashboard() {
             return () => clearTimeout(timer);
         }
     }, [summary, user]);
+
+    useEffect(() => {
+        if (isAiAdviceVisible && aiAdviceRef.current) {
+            aiAdviceRef.current.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+            });
+        }
+    }, [isAiAdviceVisible]);
 
     return (
         <div className="min-h-screen bg-black text-white">
@@ -266,59 +277,70 @@ export default function Dashboard() {
                                             </button>
 
                                             {aiAdvice && isAiAdviceVisible && (
-                                                <div className="rounded-lg border border-gray-800 bg-gray-950 p-4 space-y-4">
-                                                    <div className="flex items-center justify-between">
-                                                        <h3 className="text-sm font-semibold text-white">
-                                                            AIアドバイス
-                                                        </h3>
-                                                        <span
-                                                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                                                                aiAdvice.risk_level ===
-                                                                "danger"
-                                                                    ? "bg-red-900/40 text-red-300"
-                                                                    : aiAdvice.risk_level ===
-                                                                        "warning"
-                                                                      ? "bg-yellow-900/40 text-yellow-300"
-                                                                      : "bg-blue-900/40 text-blue-300"
-                                                            }`}
-                                                        >
-                                                            {
-                                                                aiAdvice.risk_level
-                                                            }
-                                                        </span>
-                                                    </div>
+                                                <div ref={aiAdviceRef} className="animate-in fade-in slide-in-from-top-6 duration-1000 ease-out relative overflow-hidden rounded-2xl border border-indigo-900/30 bg-gradient-to-br from-black via-gray-950 to-indigo-950/20 p-5 shadow-[0_0_0_1px_rgba(79,70,229,0.06)]">
+                                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.10),transparent_40%)]" />
 
-                                                    <div className="space-y-2">
-                                                        <p className="text-xs text-gray-400">
-                                                            分析
-                                                        </p>
-                                                        <p className="text-sm text-gray-200 leading-relaxed">
-                                                            {
-                                                                aiAdvice.analysis_reason
-                                                            }
-                                                        </p>
-                                                    </div>
+                                                    <div className="relative space-y-5">
+                                                        <div className="flex items-start justify-between gap-3">
+                                                            <div className="space-y-1">
+                                                                <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-indigo-300/80">
+                                                                    AI Coaching
+                                                                </p>
+                                                                <h3 className="text-base font-semibold text-white">
+                                                                    今月のアドバイス
+                                                                </h3>
+                                                            </div>
+                                                            <span
+                                                                className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold backdrop-blur-sm ${
+                                                                    aiAdvice.risk_level ===
+                                                                    "danger"
+                                                                        ? "border-red-500/30 bg-red-500/10 text-red-300"
+                                                                        : aiAdvice.risk_level ===
+                                                                            "warning"
+                                                                          ? "border-yellow-500/30 bg-yellow-500/10 text-yellow-300"
+                                                                          : "border-blue-500/30 bg-blue-500/10 text-blue-300"
+                                                                }`}
+                                                            >
+                                                                {
+                                                                    aiAdvice.risk_level
+                                                                }
+                                                            </span>
+                                                        </div>
 
-                                                    <div className="space-y-2 rounded-md border border-indigo-900/50 bg-indigo-950/30 p-3">
-                                                        <p className="text-xs text-indigo-300 font-medium">
-                                                            今日のアクション
-                                                        </p>
-                                                        <p className="text-sm text-white leading-relaxed">
-                                                            {
-                                                                aiAdvice.micro_action
-                                                            }
-                                                        </p>
-                                                    </div>
+                                                        <div className="grid gap-4 md:grid-cols-[1.1fr_0.9fr]">
+                                                            <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
+                                                                <p className="mb-2 text-xs font-medium uppercase tracking-widest text-gray-400">
+                                                                    Analysis
+                                                                </p>
+                                                                <p className="text-sm leading-7 text-gray-100">
+                                                                    {
+                                                                        aiAdvice.analysis_reason
+                                                                    }
+                                                                </p>
+                                                            </div>
 
-                                                    <div className="space-y-2">
-                                                        <p className="text-xs text-gray-400">
-                                                            メッセージ
-                                                        </p>
-                                                        <p className="text-sm text-gray-200 leading-relaxed">
-                                                            {
-                                                                aiAdvice.motivation
-                                                            }
-                                                        </p>
+                                                            <div className="rounded-xl border border-indigo-500/20 bg-indigo-500/10 p-4 shadow-inner shadow-indigo-950/30">
+                                                                <p className="mb-2 text-xs font-medium uppercase tracking-widest text-indigo-300">
+                                                                    Action Today
+                                                                </p>
+                                                                <p className="text-sm font-medium leading-7 text-white">
+                                                                    {
+                                                                        aiAdvice.micro_action
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="rounded-xl border border-emerald-500/15 bg-emerald-500/5 px-4 py-3">
+                                                            <p className="mb-1 text-xs font-medium uppercase tracking-widest text-emerald-300/90">
+                                                                Message
+                                                            </p>
+                                                            <p className="text-sm leading-7 text-gray-100">
+                                                                {
+                                                                    aiAdvice.motivation
+                                                                }
+                                                            </p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             )}
