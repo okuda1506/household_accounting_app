@@ -22,6 +22,7 @@ import type {
 import { User } from "../types/user";
 import { Category } from "../types/categories";
 import { PaymentMethod } from "../types/paymentMethod";
+import { AiAdviceResult } from "../types/aiAdviceResult";
 import { toast } from "react-toastify";
 
 export default function Dashboard() {
@@ -31,13 +32,15 @@ export default function Dashboard() {
     const [user, setUser] = useState<User | null>(null);
     const [allCategories, setAllCategories] = useState<Category[]>([]);
     const [allPaymentMethods, setAllPaymentMethods] = useState<PaymentMethod[]>(
-        []
+        [],
     );
     const [progress, setProgress] = useState(0);
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
     const [isAiAnalyzing, setIsAiAnalyzing] = useState<boolean>(false);
+    const [aiAdvice, setAiAdvice] = useState<AiAdviceResult | null>(null);
+    const [isAiAdviceVisible, setIsAiAdviceVisible] = useState<boolean>(false);
 
     const formatDate = (dateString: string) => {
         return format(dateString, "M月d日");
@@ -68,9 +71,17 @@ export default function Dashboard() {
             setIsAiAnalyzing(true);
             // const response = await api.post("/ai/advice");
             // 仮実装
-            await new Promise((resolve) =>
-                setTimeout(resolve, 5000)
-            );
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+            setAiAdvice({
+                risk_level: "danger",
+                analysis_reason:
+                    "現在の支出ペースでは予算を超過する見込みです。特に食費の使い方を見直す必要があります。",
+                micro_action:
+                    "今日の食費を1,500円以内に抑え、コンビニではなくスーパーを利用しましょう。",
+                motivation:
+                    "今日の上限を守ることが、月末の余裕につながります。",
+            });
+            setIsAiAdviceVisible(true);
         } catch (error) {
             console.error("AI analysis failed:", error);
             toast.error("AI分析に失敗しました");
@@ -100,7 +111,7 @@ export default function Dashboard() {
         if (summary && user && user.budget !== null && user.budget > 0) {
             const calculatedProgress = Math.min(
                 (parseInt(summary.expense) / user.budget) * 100,
-                100
+                100,
             );
             const timer = setTimeout(() => {
                 setProgress(calculatedProgress);
@@ -149,7 +160,7 @@ export default function Dashboard() {
                     <Card className="bg-black border-gray-800">
                         <CardHeader>
                             <CardTitle className="text-lg font-medium">
-                                This Month’s Summary
+                                今月のサマリ
                             </CardTitle>
                             <p className="text-gray-400">
                                 {year}年 {month}月
@@ -161,29 +172,29 @@ export default function Dashboard() {
                                     <div className="flex justify-between items-center text-sm">
                                         <div>
                                             <p className="text-gray-400">
-                                                Income
+                                                収入
                                             </p>
                                             <p className="text-xl font-semibold text-green-400">
                                                 ¥
                                                 {parseInt(
-                                                    summary.income
+                                                    summary.income,
                                                 ).toLocaleString()}
                                             </p>
                                         </div>
                                         <div>
                                             <p className="text-gray-400">
-                                                Expense
+                                                支出
                                             </p>
                                             <p className="text-xl font-semibold text-red-400">
                                                 ¥
                                                 {parseInt(
-                                                    summary.expense
+                                                    summary.expense,
                                                 ).toLocaleString()}
                                             </p>
                                         </div>
                                         <div>
                                             <p className="text-gray-400">
-                                                Balance
+                                                収支
                                             </p>
                                             <p className="text-xl font-semibold">
                                                 ¥
@@ -197,7 +208,7 @@ export default function Dashboard() {
                                         user.budget > 0 &&
                                         (() => {
                                             const expense = parseInt(
-                                                summary.expense
+                                                summary.expense,
                                             );
                                             const budgetUsagePercentage =
                                                 (expense / user.budget) * 100;
@@ -206,14 +217,14 @@ export default function Dashboard() {
                                                 <div className="space-y-2 mt-6">
                                                     <div className="flex justify-between text-sm">
                                                         <span className="text-gray-400">
-                                                            Budget Usage (Limit:
+                                                            予算消化率（限度額:
                                                             ¥
                                                             {user.budget.toLocaleString()}
-                                                            )
+                                                            ）
                                                         </span>
                                                         <span className="text-white font-medium">
                                                             {Math.round(
-                                                                budgetUsagePercentage
+                                                                budgetUsagePercentage,
                                                             )}
                                                             %
                                                         </span>
@@ -224,9 +235,10 @@ export default function Dashboard() {
                                                                 budgetUsagePercentage >=
                                                                 100
                                                                     ? "bg-gradient-to-r from-red-500 to-red-700"
-                                                                    : budgetUsagePercentage > 70
-                                                                    ? "bg-gradient-to-r from-yellow-400 to-yellow-600"
-                                                                    : "bg-gradient-to-r from-blue-500 to-indigo-500"
+                                                                    : budgetUsagePercentage >
+                                                                        70
+                                                                      ? "bg-gradient-to-r from-yellow-400 to-yellow-600"
+                                                                      : "bg-gradient-to-r from-blue-500 to-indigo-500"
                                                             }`}
                                                             style={{
                                                                 width: `${progress}%`,
@@ -244,7 +256,7 @@ export default function Dashboard() {
                                         })()}
                                     {/* AI分析 */}
                                     {user?.ai_advice_mode && (
-                                        <div className="mt-6">
+                                        <div className="mt-6 space-y-4">
                                             <button
                                                 onClick={handleAiAdvice}
                                                 disabled={isAiAnalyzing}
@@ -252,6 +264,64 @@ export default function Dashboard() {
                                             >
                                                 {aiButtonContent}
                                             </button>
+
+                                            {aiAdvice && isAiAdviceVisible && (
+                                                <div className="rounded-lg border border-gray-800 bg-gray-950 p-4 space-y-4">
+                                                    <div className="flex items-center justify-between">
+                                                        <h3 className="text-sm font-semibold text-white">
+                                                            AIアドバイス
+                                                        </h3>
+                                                        <span
+                                                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                                                                aiAdvice.risk_level ===
+                                                                "danger"
+                                                                    ? "bg-red-900/40 text-red-300"
+                                                                    : aiAdvice.risk_level ===
+                                                                        "warning"
+                                                                      ? "bg-yellow-900/40 text-yellow-300"
+                                                                      : "bg-blue-900/40 text-blue-300"
+                                                            }`}
+                                                        >
+                                                            {
+                                                                aiAdvice.risk_level
+                                                            }
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="space-y-2">
+                                                        <p className="text-xs text-gray-400">
+                                                            分析
+                                                        </p>
+                                                        <p className="text-sm text-gray-200 leading-relaxed">
+                                                            {
+                                                                aiAdvice.analysis_reason
+                                                            }
+                                                        </p>
+                                                    </div>
+
+                                                    <div className="space-y-2 rounded-md border border-indigo-900/50 bg-indigo-950/30 p-3">
+                                                        <p className="text-xs text-indigo-300 font-medium">
+                                                            今日のアクション
+                                                        </p>
+                                                        <p className="text-sm text-white leading-relaxed">
+                                                            {
+                                                                aiAdvice.micro_action
+                                                            }
+                                                        </p>
+                                                    </div>
+
+                                                    <div className="space-y-2">
+                                                        <p className="text-xs text-gray-400">
+                                                            メッセージ
+                                                        </p>
+                                                        <p className="text-sm text-gray-200 leading-relaxed">
+                                                            {
+                                                                aiAdvice.motivation
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </>
@@ -264,7 +334,7 @@ export default function Dashboard() {
                     <Card className="bg-black border-gray-800">
                         <CardHeader>
                             <CardTitle className="text-lg font-medium">
-                                Recent Transactions
+                                最近の取引
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -272,7 +342,7 @@ export default function Dashboard() {
                                 <ul className="space-y-4">
                                     {transactions.map((transaction) => {
                                         const amount = parseFloat(
-                                            transaction.amount
+                                            transaction.amount,
                                         );
                                         const isIncome =
                                             transaction.transaction_type_id ===
@@ -288,7 +358,9 @@ export default function Dashboard() {
                                                         {transaction.memo}
                                                     </p>
                                                     <p className="text-gray-400">
-                                                        {formatDate(transaction.transaction_date)}{" "}
+                                                        {formatDate(
+                                                            transaction.transaction_date,
+                                                        )}{" "}
                                                     </p>
                                                 </div>
                                                 <p
@@ -299,7 +371,9 @@ export default function Dashboard() {
                                                     }`}
                                                 >
                                                     {isIncome ? "+" : "-"}¥
-                                                    {Math.abs(amount).toLocaleString()}
+                                                    {Math.abs(
+                                                        amount,
+                                                    ).toLocaleString()}
                                                 </p>
                                             </li>
                                         );
