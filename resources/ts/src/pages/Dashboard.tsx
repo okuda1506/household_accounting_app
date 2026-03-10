@@ -12,6 +12,7 @@ import { NewTransactionModal } from "../components/transaction/NewTransactionMod
 import { NavigationModal } from "../components/NavigationModal";
 import { BotMessageSquare, Loader2 } from "lucide-react";
 import api from "../../lib/axios";
+import { toast } from "react-toastify";
 
 import type {
     MonthlySummary,
@@ -19,11 +20,13 @@ import type {
     RecentTransaction,
     DashboardResponse,
 } from "../types/dashboard";
-import { User } from "../types/user";
-import { Category } from "../types/categories";
-import { PaymentMethod } from "../types/paymentMethod";
-import { AiAdviceResult } from "../types/aiAdviceResult";
-import { toast } from "react-toastify";
+import type { User } from "../types/user";
+import type { Category } from "../types/categories";
+import type { PaymentMethod } from "../types/paymentMethod";
+import type {
+    AiAdviceApiResponse,
+    AiAdviceResult,
+} from "../types/aiAdviceResult";
 
 export default function Dashboard() {
     const [summary, setSummary] = useState<MonthlySummary | null>(null);
@@ -70,18 +73,21 @@ export default function Dashboard() {
 
     const handleAiAdvice = async () => {
         try {
+            if (isAiAnalyzing) return; // 連打(AI APIコスト増加)防止
+
+            setAiAdvice(null);
+            setIsAiAdviceVisible(false);
+
             setIsAiAnalyzing(true);
-            // const response = await api.post("/ai/advice");
-            // 仮実装
-            await new Promise((resolve) => setTimeout(resolve, 4000));
+            const response = await api.get<AiAdviceApiResponse>("/ai-advice");
+            const adviceData = response.data.data;
+
             setAiAdvice({
-                risk_level: "danger",
-                analysis_reason:
-                    "現在の支出ペースでは予算を超過する見込みです。特に食費の使い方を見直す必要があります。",
-                micro_action:
-                    "今日の食費を1,500円以内に抑え、コンビニではなくスーパーを利用しましょう。",
-                motivation:
-                    "今日の上限を守ることが、月末の余裕につながります！",
+                risk_level: adviceData.risk_level,
+                analysis: adviceData.analysis,
+                pattern: adviceData.pattern,
+                advice: adviceData.advice,
+                motivation: adviceData.motivation,
             });
             setIsAiAdviceVisible(true);
         } catch (error) {
@@ -108,7 +114,7 @@ export default function Dashboard() {
         fetchDashboardData();
     }, []);
 
-    // 予算管理プログレスバーのアニメーション効果
+    // 予算管理プログレスバーのアニメーション
     useEffect(() => {
         if (summary && user && user.budget !== null && user.budget > 0) {
             const calculatedProgress = Math.min(
@@ -122,11 +128,12 @@ export default function Dashboard() {
         }
     }, [summary, user]);
 
+    // AIアドバイス結果表示のスクロールアニメーション
     useEffect(() => {
         if (isAiAdviceVisible && aiAdviceRef.current) {
             aiAdviceRef.current.scrollIntoView({
                 behavior: "smooth",
-                block: "start",
+                block: "center",
             });
         }
     }, [isAiAdviceVisible]);
@@ -277,7 +284,10 @@ export default function Dashboard() {
                                             </button>
 
                                             {aiAdvice && isAiAdviceVisible && (
-                                                <div ref={aiAdviceRef} className="animate-in fade-in slide-in-from-top-6 duration-1000 ease-out relative overflow-hidden rounded-2xl border border-indigo-900/30 bg-gradient-to-br from-black via-gray-950 to-indigo-950/20 p-5 shadow-[0_0_0_1px_rgba(79,70,229,0.06)]">
+                                                <div
+                                                    ref={aiAdviceRef}
+                                                    className="animate-in fade-in slide-in-from-top-6 duration-1000 ease-out relative overflow-hidden rounded-2xl border border-indigo-900/30 bg-gradient-to-br from-black via-gray-950 to-indigo-950/20 p-5 shadow-[0_0_0_1px_rgba(79,70,229,0.06),0_0_24px_rgba(99,102,241,0.12)]"
+                                                >
                                                     <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.10),transparent_40%)]" />
 
                                                     <div className="relative space-y-5">
@@ -314,7 +324,7 @@ export default function Dashboard() {
                                                                 </p>
                                                                 <p className="text-sm leading-7 text-gray-100">
                                                                     {
-                                                                        aiAdvice.analysis_reason
+                                                                        aiAdvice.analysis.analysis_reason
                                                                     }
                                                                 </p>
                                                             </div>
@@ -325,7 +335,7 @@ export default function Dashboard() {
                                                                 </p>
                                                                 <p className="text-sm font-medium leading-7 text-white">
                                                                     {
-                                                                        aiAdvice.micro_action
+                                                                        aiAdvice.advice.micro_action
                                                                     }
                                                                 </p>
                                                             </div>
