@@ -82,13 +82,7 @@ export default function Dashboard() {
             const response = await api.get<AiAdviceApiResponse>("/ai-advice");
             const adviceData = response.data.data;
 
-            setAiAdvice({
-                risk_level: adviceData.risk_level,
-                analysis: adviceData.analysis,
-                pattern: adviceData.pattern,
-                advice: adviceData.advice,
-                motivation: adviceData.motivation,
-            });
+            setAiAdvice(adviceData);
             setIsAiAdviceVisible(true);
         } catch (error) {
             console.error("AI advice failed:", error);
