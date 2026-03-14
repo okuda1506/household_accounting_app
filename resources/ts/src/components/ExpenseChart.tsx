@@ -37,7 +37,7 @@ export function ExpenseChart({ trend }: ExpenseChartProps) {
         <Card className="bg-black border-gray-800">
             <CardHeader>
                 <CardTitle className="text-lg font-medium">
-                    Monthly Expense Trend
+                    支出傾向
                 </CardTitle>
             </CardHeader>
             <CardContent>
@@ -66,7 +66,7 @@ export function ExpenseChart({ trend }: ExpenseChartProps) {
                                         <div className="bg-black border border-gray-800 p-2 rounded-md">
                                             <p className="text-white">
                                                 {`¥${Number(
-                                                    payload[0].value
+                                                    payload[0].value,
                                                 ).toLocaleString()}`}
                                             </p>
                                         </div>
