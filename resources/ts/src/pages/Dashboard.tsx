@@ -91,8 +91,8 @@ export default function Dashboard() {
             });
             setIsAiAdviceVisible(true);
         } catch (error) {
-            console.error("AI analysis failed:", error);
-            toast.error("AI分析に失敗しました");
+            console.error("AI advice failed:", error);
+            toast.error("AIアドバイス取得に失敗しました");
         } finally {
             setIsAiAnalyzing(false);
         }
@@ -101,12 +101,12 @@ export default function Dashboard() {
     const aiButtonContent = isAiAnalyzing ? (
         <>
             <Loader2 className="w-5 h-5 text-indigo-400 animate-spin" />
-            <span className="text-sm font-medium">分析中...</span>
+            <span className="text-sm font-medium">取得中...</span>
         </>
     ) : (
         <>
             <BotMessageSquare className="w-5 h-5 text-indigo-400" />
-            <span className="text-sm font-medium">AIに分析させる</span>
+            <span className="text-sm font-medium">AIアドバイスを受ける</span>
         </>
     );
 
@@ -272,7 +272,7 @@ export default function Dashboard() {
                                                 </div>
                                             );
                                         })()}
-                                    {/* AI分析 */}
+                                    {/* AIアドバイス */}
                                     {user?.ai_advice_mode && (
                                         <div className="mt-6 space-y-4">
                                             <button
@@ -297,7 +297,7 @@ export default function Dashboard() {
                                                                     AI Coaching
                                                                 </p>
                                                                 <h3 className="text-base font-semibold text-white">
-                                                                    今月のアドバイス
+                                                                    今日のアドバイス
                                                                 </h3>
                                                             </div>
                                                             <span
