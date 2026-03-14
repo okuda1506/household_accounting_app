@@ -104,6 +104,26 @@ export default function Dashboard() {
         </>
     );
 
+    const getRiskLevelClasses = (riskLevel: AiAdviceResult["risk_level"]) => {
+        const classMap = {
+            danger: "border-red-500/30 bg-red-500/10 text-red-300",
+            warning: "border-yellow-500/30 bg-yellow-500/10 text-yellow-300",
+            safe: "border-blue-500/30 bg-blue-500/10 text-blue-300",
+        };
+
+        return classMap[riskLevel] ?? classMap.safe;
+    }
+
+    const getRiskLevelLabel = (riskLevel: AiAdviceResult["risk_level"]) => {
+        const labelMap = {
+            danger: "警告",
+            warning: "要注意",
+            safe: "安全",
+        };
+
+        return labelMap[riskLevel] ?? "安全";
+    }
+
     useEffect(() => {
         fetchDashboardData();
     }, []);
@@ -295,19 +315,9 @@ export default function Dashboard() {
                                                                 </h3>
                                                             </div>
                                                             <span
-                                                                className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold backdrop-blur-sm ${
-                                                                    aiAdvice.risk_level ===
-                                                                    "danger"
-                                                                        ? "border-red-500/30 bg-red-500/10 text-red-300"
-                                                                        : aiAdvice.risk_level ===
-                                                                            "warning"
-                                                                          ? "border-yellow-500/30 bg-yellow-500/10 text-yellow-300"
-                                                                          : "border-blue-500/30 bg-blue-500/10 text-blue-300"
-                                                                }`}
+                                                                className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold backdrop-blur-sm ${getRiskLevelClasses(aiAdvice.risk_level)}`}
                                                             >
-                                                                {
-                                                                    aiAdvice.risk_level
-                                                                }
+                                                                {getRiskLevelLabel(aiAdvice.risk_level)}
                                                             </span>
                                                         </div>
 
