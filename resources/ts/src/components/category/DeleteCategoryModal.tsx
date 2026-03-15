@@ -72,21 +72,26 @@ export function DeleteCategoryModal({
                     <DialogTitle>カテゴリ削除</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <p className="text-sm text-gray-300 leading-6">
-                        「{category.name}」を削除します。
+                    <p className="text-sm text-gray-300 leading-6 text-center">
+                        <span className="font-semibold text-white">
+                            {category.name}
+                        </span>{" "}
+                        を削除します。
                         <br />
                         この操作は取り消せません。
                     </p>
 
                     {errorMessage && (
-                        <p className="text-sm text-red-400">{errorMessage}</p>
+                        <p className="text-sm text-red-400 text-center">
+                            {errorMessage}
+                        </p>
                     )}
 
                     <div className="flex flex-col gap-3">
                         <Button
                             type="button"
                             variant="outline"
-                            className="w-full bg-transparent border-gray-700 text-white hover:bg-gray-800"
+                            className="w-full bg-transparent border-gray-700 text-white hover:bg-gray-800 hover:text-white"
                             onClick={handleClose}
                             disabled={isDeleting}
                         >
