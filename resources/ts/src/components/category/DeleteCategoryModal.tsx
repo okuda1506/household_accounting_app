@@ -81,6 +81,10 @@ export function DeleteCategoryModal({
                         この操作は取り消せません。
                     </p>
 
+                    <p className="text-xs text-gray-500 text-center">
+                        ※ 取引に登録済みのカテゴリは削除できません
+                    </p>
+
                     {errorMessage && (
                         <p className="text-sm text-red-400 text-center">
                             {errorMessage}
