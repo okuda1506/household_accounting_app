@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Models\Category;
+use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
@@ -123,6 +124,17 @@ class CategoryService
     public function deleteCategory(string $categoryId, int $userId): void
     {
         $category = $this->findCategoryByIdAndUser($categoryId, $userId);
+
+        if (Transaction::where('user_id', $userId)
+            ->where('category_id', $categoryId)
+            ->where('deleted', false)
+            ->exists()
+        ) {
+            throw new \Exception(
+                __('messages.category_used_in_transaction', ['name' => $category->name]),
+                Response::HTTP_CONFLICT
+            );
+        }
 
         try {
             DB::beginTransaction();
