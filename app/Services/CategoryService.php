@@ -127,6 +127,7 @@ class CategoryService
 
         if (Transaction::where('user_id', $userId)
             ->where('category_id', $categoryId)
+            ->where('deleted', false)
             ->exists()
         ) {
             throw new \Exception(
