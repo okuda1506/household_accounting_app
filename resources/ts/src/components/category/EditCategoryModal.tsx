@@ -63,7 +63,7 @@ export function EditCategoryModal({
             if (Array.isArray(messageArray)) {
                 setErrorMessage(messageArray.join(" "));
             } else {
-                setErrorMessage("更新に失敗しました。");
+                setErrorMessage("更新に失敗しました");
             }
         }
     };
