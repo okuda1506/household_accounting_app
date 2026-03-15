@@ -16,19 +16,22 @@ import {
 } from "../components/ui/select";
 import { NewCategoryModal } from "../components/category/NewCategoryModal";
 import { EditCategoryModal } from "../components/category/EditCategoryModal";
+import { DeleteCategoryModal } from "../components/category/DeleteCategoryModal";
 import { NavigationModal } from "../components/NavigationModal";
 import api from "../../lib/axios";
-import { Category } from "../types/categories";
-import { toast } from "react-toastify";
+import type { Category } from "../types/categories";
 
 export default function Categories() {
     const [type, setType] = useState<"income" | "expense">("income");
     const [categories, setCategories] = useState<Category[]>([]);
 
     const [editingCategory, setEditingCategory] = useState<Category | null>(
-        null
+        null,
     );
     const [editModalOpen, setEditModalOpen] = useState(false);
+
+    const [deleteTarget, setDeleteTarget] = useState<Category | null>(null);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
     const fetchCategories = () => {
         api.get("/categories")
@@ -50,16 +53,6 @@ export default function Categories() {
             return cat.transaction_type_id === 2;
         })
         .sort((a, b) => a.sort_no - b.sort_no);
-
-    const handleDelete = async (id: string, name: string) => {
-        try {
-            await api.delete(`/categories/${id}`);
-            toast.success(`${name} を削除しました。`);
-            fetchCategories();
-        } catch (err) {
-            toast.error(`${name} の削除に失敗しました。`);
-        }
-    };
 
     return (
         <div className="min-h-screen bg-black text-white">
@@ -133,10 +126,8 @@ export default function Categories() {
                                                 size="icon"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    handleDelete(
-                                                        category.category_id,
-                                                        category.name
-                                                    );
+                                                    setDeleteTarget(category);
+                                                    setDeleteModalOpen(true);
                                                 }}
                                                 className="bg-transparent ml-2"
                                             >
@@ -155,6 +146,15 @@ export default function Categories() {
                         open={editModalOpen}
                         setOpen={setEditModalOpen}
                         category={editingCategory}
+                        onSuccess={fetchCategories}
+                    />
+                )}
+
+                {deleteTarget && (
+                    <DeleteCategoryModal
+                        open={deleteModalOpen}
+                        setOpen={setDeleteModalOpen}
+                        category={deleteTarget}
                         onSuccess={fetchCategories}
                     />
                 )}
