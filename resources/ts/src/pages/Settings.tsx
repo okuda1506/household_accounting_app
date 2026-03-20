@@ -90,19 +90,41 @@ const SettingItem = ({ icon: Icon, label, onClick, variant = "default" }) => {
     );
 };
 
-const ToggleItem = ({ icon: Icon, label, checked, onChange, disabled }) => {
+const ToggleItem = ({
+    icon: Icon,
+    label,
+    checked,
+    onChange,
+    disabled,
+    visuallyDisabled = false,
+}) => {
     return (
-        <div className="flex items-center justify-between px-4 py-3">
+        <div
+            className={`flex items-center justify-between px-4 py-3 transition-opacity ${
+                visuallyDisabled ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+        >
             <div className="flex items-center gap-3">
-                <Icon size={20} className="text-gray-400" />
-                <span className="text-white text-sm font-medium">{label}</span>
+                <Icon
+                    size={20}
+                    className={
+                        visuallyDisabled ? "text-gray-600" : "text-gray-400"
+                    }
+                />
+                <span
+                    className={`text-sm font-medium ${
+                        visuallyDisabled ? "text-gray-500" : "text-white"
+                    }`}
+                >
+                    {label}
+                </span>
             </div>
             <button
                 disabled={disabled}
                 onClick={() => onChange(!checked)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                     checked ? "bg-blue-600" : "bg-gray-700"
-                }`}
+                } ${disabled ? "cursor-not-allowed" : ""}`}
             >
                 <span
                     className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
@@ -120,6 +142,11 @@ export default function Settings() {
     const [isAiAdviceModeEnabled, setIsAiAdviceModeEnabled] = useState(false);
     const [isAiUpdating, setIsAiUpdating] = useState(false);
     const [isDarkModeUpdating, setIsDarkModeUpdating] = useState(false);
+    const [isBudgetEnabled, setIsBudgetEnabled] = useState(false);
+    // 操作制御（disabled）と視覚的な無効状態（visuallyDisabled）を分離
+    // 通信中は操作のみ無効化し、予算未設定時のみグレーアウトする
+    const isAiAdviceDisabled = isAiUpdating || !isBudgetEnabled;
+    const isAiAdviceVisuallyDisabled = !isBudgetEnabled;
     const navigate = useNavigate();
 
     // todo: 言語切り替えの処理を追加
@@ -137,7 +164,11 @@ export default function Settings() {
         const fetchCurrentUser = async () => {
             try {
                 const response = await api.get("/user");
+                const userBudget = response.data.budget;
                 const userAiAdviceMode = response.data.ai_advice_mode;
+
+                // 予算管理設定が有効かどうかを判定
+                setIsBudgetEnabled((userBudget ?? 0) > 0);
                 // AIアドバイスモードが有効かどうかを判定
                 setIsAiAdviceModeEnabled(userAiAdviceMode);
             } catch (error) {
@@ -279,13 +310,23 @@ export default function Settings() {
                                         onChange={handleDarkModeChange}
                                         disabled={isDarkModeUpdating}
                                     />
-                                    <ToggleItem
-                                        icon={BotMessageSquare}
-                                        label="AIアドバイスモード"
-                                        checked={isAiAdviceModeEnabled}
-                                        onChange={handleAiAdviceModeChange}
-                                        disabled={isAiUpdating}
-                                    />
+                                    <div>
+                                        <ToggleItem
+                                            icon={BotMessageSquare}
+                                            label="AIアドバイスモード"
+                                            checked={isAiAdviceModeEnabled}
+                                            onChange={handleAiAdviceModeChange}
+                                            disabled={isAiAdviceDisabled}
+                                            visuallyDisabled={
+                                                isAiAdviceVisuallyDisabled
+                                            }
+                                        />
+                                        {!isBudgetEnabled && (
+                                            <p className="px-4 pt-1 text-xs text-gray-500">
+                                                AIアドバイスモードを利用するには予算を設定してください。
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
