@@ -143,6 +143,7 @@ export default function Settings() {
     const [isAiUpdating, setIsAiUpdating] = useState(false);
     const [isDarkModeUpdating, setIsDarkModeUpdating] = useState(false);
     const [isBudgetEnabled, setIsBudgetEnabled] = useState(false);
+    // NOTE: 
     // 操作制御（disabled）と視覚的な無効状態（visuallyDisabled）を分離
     // 通信中は操作のみ無効化し、予算未設定時のみグレーアウトする
     const isAiAdviceDisabled = isAiUpdating || !isBudgetEnabled;
