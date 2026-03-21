@@ -98,4 +98,6 @@ return [
     'dashboard_get_failed'                        => 'ダッシュボード情報の取得に失敗しました。',
     'user_already_deleted'                        => 'このアカウントは既に退会済みです。ご利用の場合は再開手続きをしてください。',
     'signin_failed'                               => 'メールアドレスまたはパスワードが正しくありません。',
+    'ai_advice_requires_budget'                   => 'AIアドバイスを利用するには予算を設定してください。',
+    'ai_advice_mode_disabled'                     => 'AIアドバイスを利用するにはAIアドバイスモードを有効化してください。',
 ];

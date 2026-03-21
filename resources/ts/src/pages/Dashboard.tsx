@@ -112,7 +112,7 @@ export default function Dashboard() {
         };
 
         return classMap[riskLevel] ?? classMap.safe;
-    }
+    };
 
     const getRiskLevelLabel = (riskLevel: AiAdviceResult["risk_level"]) => {
         const labelMap = {
@@ -122,7 +122,9 @@ export default function Dashboard() {
         };
 
         return labelMap[riskLevel] ?? "安全";
-    }
+    };
+
+    const canUseAiAdvice = !!user && (user.budget ?? 0) > 0 && user.ai_advice_mode;
 
     useEffect(() => {
         fetchDashboardData();
@@ -244,6 +246,8 @@ export default function Dashboard() {
                                             );
                                             const budgetUsagePercentage =
                                                 (expense / user.budget) * 100;
+                                            const isOver =
+                                                budgetUsagePercentage > 100;
 
                                             return (
                                                 <div className="space-y-2 mt-6">
@@ -255,10 +259,18 @@ export default function Dashboard() {
                                                             ）
                                                         </span>
                                                         <span className="text-white font-medium">
-                                                            {Math.round(
-                                                                budgetUsagePercentage,
+                                                            {Math.min(
+                                                                100,
+                                                                Math.round(
+                                                                    budgetUsagePercentage,
+                                                                ),
                                                             )}
                                                             %
+                                                            {isOver && (
+                                                                <span className="text-red-400 ml-1">
+                                                                    (超過)
+                                                                </span>
+                                                            )}
                                                         </span>
                                                     </div>
                                                     <div className="h-2 w-full bg-gray-800 rounded-full overflow-hidden">
@@ -287,7 +299,7 @@ export default function Dashboard() {
                                             );
                                         })()}
                                     {/* AIアドバイス */}
-                                    {user?.ai_advice_mode && (
+                                    {canUseAiAdvice && (
                                         <div className="mt-6 space-y-4">
                                             <button
                                                 onClick={handleAiAdvice}
@@ -317,7 +329,9 @@ export default function Dashboard() {
                                                             <span
                                                                 className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold backdrop-blur-sm ${getRiskLevelClasses(aiAdvice.risk_level)}`}
                                                             >
-                                                                {getRiskLevelLabel(aiAdvice.risk_level)}
+                                                                {getRiskLevelLabel(
+                                                                    aiAdvice.risk_level,
+                                                                )}
                                                             </span>
                                                         </div>
 
@@ -328,7 +342,9 @@ export default function Dashboard() {
                                                                 </p>
                                                                 <p className="text-sm leading-7 text-gray-100">
                                                                     {
-                                                                        aiAdvice.analysis.analysis_reason
+                                                                        aiAdvice
+                                                                            .analysis
+                                                                            .analysis_reason
                                                                     }
                                                                 </p>
                                                             </div>
@@ -339,7 +355,9 @@ export default function Dashboard() {
                                                                 </p>
                                                                 <p className="text-sm font-medium leading-7 text-white">
                                                                     {
-                                                                        aiAdvice.advice.micro_action
+                                                                        aiAdvice
+                                                                            .advice
+                                                                            .micro_action
                                                                     }
                                                                 </p>
                                                             </div>

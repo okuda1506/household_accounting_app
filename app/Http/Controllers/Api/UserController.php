@@ -12,6 +12,7 @@ use App\Http\Requests\UpdateBudgetRequest;
 use App\Http\Requests\UpdateAiAdviceModeRequest;
 use App\Http\Resources\UserResource;
 use App\Services\UserService;
+use App\Services\Ai\AiGuardService;
 use App\Exceptions\Domain\InvalidCurrentPasswordException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -21,10 +22,15 @@ use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
+    private AiGuardService $aiGuardService;
+
     private UserService $userService;
 
-    public function __construct(UserService $userService)
-    {
+    public function __construct(
+        AiGuardService $aiGuardService,
+        UserService $userService
+    ){
+        $this->aiGuardService = $aiGuardService;
         $this->userService = $userService;
     }
 
@@ -179,12 +185,31 @@ class UserController extends Controller
     public function updateAiAdviceMode(UpdateAiAdviceModeRequest $request): JsonResponse
     {
         try {
-            $user = $this->userService->updateAiAdviceMode(auth()->id(), (bool) $request->input('ai_advice_mode'));
+            $user = auth()->user();
+            $nextValue = (bool) $request->input('ai_advice_mode');
+
+            if ($nextValue) {
+                $this->aiGuardService->assertAiAdviceCanBeEnabled($user);
+            }
+
+            $result = $this->userService->updateAiAdviceMode($user->id, $nextValue);
+            $aiAdviceMode = $result->ai_advice_mode;
         } catch (\Exception $e) {
             Log::error($e);
-            return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
+            $statusCode = $e->getCode();
+
+            return ApiResponse::error(
+                null,
+                [$e->getMessage()],
+                is_int($statusCode) && $statusCode >= 400
+                    ? $statusCode
+                    : Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
 
-        return ApiResponse::success(['ai_advice_mode' => $user['ai_advice_mode'],], __('messages.user_ai_advice_mode_updated'));
+        return ApiResponse::success(
+            ['ai_advice_mode' => $aiAdviceMode],
+            __('messages.user_ai_advice_mode_updated')
+        );
     }
 }
