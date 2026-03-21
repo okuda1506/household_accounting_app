@@ -6,7 +6,6 @@ use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Services\Ai\AiAdviceService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Resources\AiAdviceResource;
 use Illuminate\Support\Facades\Log;
@@ -24,7 +23,7 @@ class AIAdviceController extends Controller
      *
      * @return JsonResponse
      */
-    public function index(Request $request): JsonResponse
+    public function index(): JsonResponse
     {
         try {
             $dto = $this->aiAdviceService->getAdvice(auth()->id());
