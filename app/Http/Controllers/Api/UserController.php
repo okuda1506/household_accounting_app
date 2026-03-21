@@ -188,7 +188,7 @@ class UserController extends Controller
             $user = auth()->user();
             $nextValue = (bool) $request->input('ai_advice_mode');
 
-            if ($nextValue === true) {
+            if ($nextValue) {
                 $this->aiGuardService->assertAiAdviceCanBeEnabled($user);
             }
 
