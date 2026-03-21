@@ -124,7 +124,7 @@ export default function Dashboard() {
         return labelMap[riskLevel] ?? "安全";
     };
 
-    const canUseAiAdvice = user && (user.budget ?? 0) > 0 && user.ai_advice_mode;
+    const canUseAiAdvice = !!user && (user.budget ?? 0) > 0 && user.ai_advice_mode;
 
     useEffect(() => {
         fetchDashboardData();
@@ -246,6 +246,8 @@ export default function Dashboard() {
                                             );
                                             const budgetUsagePercentage =
                                                 (expense / user.budget) * 100;
+                                            const isOver =
+                                                budgetUsagePercentage > 100;
 
                                             return (
                                                 <div className="space-y-2 mt-6">
@@ -257,10 +259,18 @@ export default function Dashboard() {
                                                             ）
                                                         </span>
                                                         <span className="text-white font-medium">
-                                                            {Math.round(
-                                                                budgetUsagePercentage,
+                                                            {Math.min(
+                                                                100,
+                                                                Math.round(
+                                                                    budgetUsagePercentage,
+                                                                ),
                                                             )}
                                                             %
+                                                            {isOver && (
+                                                                <span className="text-red-400 ml-1">
+                                                                    (超過)
+                                                                </span>
+                                                            )}
                                                         </span>
                                                     </div>
                                                     <div className="h-2 w-full bg-gray-800 rounded-full overflow-hidden">
