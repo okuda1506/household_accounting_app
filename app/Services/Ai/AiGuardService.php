@@ -11,13 +11,13 @@ class AiGuardService
 {
     /**
      * AIアドバイスが利用可能か検証する
-     * 
+     *
      * 利用条件:
      * - 予算が設定されていること
      * - AIアドバイスモードが有効であること
      *
      * @param User $user
-     * @return　void
+     * @return void
      *
      * @throws \Exception
      */
@@ -34,7 +34,7 @@ class AiGuardService
     }
 
     /**
-     * AIアドバイスモードをオンにできるか検証する
+     * AIアドバイスモードをONにできるか検証する
      *
      * 利用条件:
      * - 予算が設定されていること

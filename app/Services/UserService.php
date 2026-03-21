@@ -119,6 +119,8 @@ class UserService
     /**
      * ユーザーの予算を更新する
      *
+     * 予算設定を無効化した場合はAIアドバイスモードも無効化する
+     *
      * @param int $userId
      * @param int $budget
      * @return array{user: User}
@@ -127,7 +129,13 @@ class UserService
     public function updateBudget(int $userId, int $budget): array
     {
         $user = $this->findActiveUser($userId);
+
         $user->budget = $budget;
+
+        if ($budget === 0) {
+            $user->ai_advice_mode = false;
+        }
+
         $user->save();
 
         return ['user' => $user];
