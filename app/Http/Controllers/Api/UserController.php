@@ -193,7 +193,7 @@ class UserController extends Controller
             }
 
             $result = $this->userService->updateAiAdviceMode($user->id, $nextValue);
-            $aiAdviceMode = $result['ai_advice_mode'];
+            $aiAdviceMode = $result->ai_advice_mode;
         } catch (\Exception $e) {
             Log::error($e);
             $statusCode = $e->getCode();
