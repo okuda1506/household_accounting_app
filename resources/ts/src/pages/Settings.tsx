@@ -67,14 +67,36 @@ const SettingsTabs = ({
     );
 };
 
-const SettingItem = ({ icon: Icon, label, onClick, variant = "default" }) => {
-    const textColor = variant === "danger" ? "text-red-400" : "text-white";
-    const iconColor = variant === "danger" ? "text-red-400" : "text-gray-400";
+const SettingItem = ({
+    icon: Icon,
+    label,
+    onClick,
+    variant = "default",
+    disabled = false,
+    visuallyDisabled = false,
+}) => {
+    const textColor =
+        variant === "danger"
+            ? "text-red-400"
+            : visuallyDisabled
+            ? "text-gray-500"
+            : "text-white";
+    const iconColor =
+        variant === "danger"
+            ? "text-red-400"
+            : visuallyDisabled
+            ? "text-gray-600"
+            : "text-gray-400";
 
     return (
         <button
             onClick={onClick}
-            className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-900 transition-colors rounded-lg group"
+            disabled={disabled}
+            className={`w-full flex items-center justify-between px-4 py-3 transition-colors rounded-lg group ${
+                visuallyDisabled
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-gray-900"
+            }`}
         >
             <div className="flex items-center gap-3">
                 <Icon size={20} className={iconColor} />
@@ -84,7 +106,11 @@ const SettingItem = ({ icon: Icon, label, onClick, variant = "default" }) => {
             </div>
             <ChevronRight
                 size={20}
-                className="text-gray-600 group-hover:text-gray-400 transition-colors"
+                className={`transition-colors ${
+                    visuallyDisabled
+                        ? "text-gray-700"
+                        : "text-gray-600 group-hover:text-gray-400"
+                }`}
             />
         </button>
     );
@@ -141,7 +167,6 @@ export default function Settings() {
     const [activeTab, setActiveTab] = useState<SettingsTab>("account");
     const [isAiAdviceModeEnabled, setIsAiAdviceModeEnabled] = useState(false);
     const [isAiUpdating, setIsAiUpdating] = useState(false);
-    const [isDarkModeUpdating, setIsDarkModeUpdating] = useState(false);
     const [isBudgetEnabled, setIsBudgetEnabled] = useState(false);
     // NOTE: 
     // 操作制御（disabled）と視覚的な無効状態（visuallyDisabled）を分離
@@ -151,15 +176,10 @@ export default function Settings() {
     const navigate = useNavigate();
 
     // todo: 言語切り替えの処理を追加
-    const handleClick = (item) => {
-        console.log(`${item} clicked`);
-        // ここで後からモーダルを開く処理を追加
-    };
-
-    const handleDarkModeChange = (value) => {
-        console.log(`Dark mode toggled: ${value}`);
-        // ここで後からダークモード切り替え処理を追加
-    };
+    // const handleClick = (item) => {
+    //     console.log(`${item} clicked`);
+    //     // ここで後からモーダルを開く処理を追加
+    // };
 
     useEffect(() => {
         const fetchCurrentUser = async () => {
@@ -179,9 +199,6 @@ export default function Settings() {
         };
         fetchCurrentUser();
     }, [navigate]);
-
-    // todo: ダークモード切り替え実装
-    // const handleDarkModeChange = (value) => {};
 
     const handleAiAdviceModeChange = async (value: boolean) => {
         try {
@@ -297,20 +314,6 @@ export default function Settings() {
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-1">
-                                    <SettingItem
-                                        icon={Globe}
-                                        label="言語切り替え"
-                                        onClick={() =>
-                                            handleClick("言語切り替え")
-                                        }
-                                    />
-                                    <ToggleItem
-                                        icon={Moon}
-                                        label="ダークモード"
-                                        checked={true}
-                                        onChange={handleDarkModeChange}
-                                        disabled={isDarkModeUpdating}
-                                    />
                                     <div>
                                         <ToggleItem
                                             icon={BotMessageSquare}
@@ -327,6 +330,31 @@ export default function Settings() {
                                                 AIアドバイスモードを利用するには予算を設定してください。
                                             </p>
                                         )}
+                                    </div>
+                                    <div>
+                                        <ToggleItem
+                                            icon={Moon}
+                                            label="ダークモード"
+                                            checked={false}
+                                            onChange={() => {}}
+                                            disabled={true}
+                                            visuallyDisabled={true}
+                                        />
+                                        <p className="px-4 pt-1 text-xs text-gray-500">
+                                            ※ ベータ版ではご利用いただけません。
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <SettingItem
+                                            icon={Globe}
+                                            label="言語切り替え"
+                                            onClick={() => {}}
+                                            disabled={true}
+                                            visuallyDisabled={true}
+                                        />
+                                        <p className="px-4 pt-1 text-xs text-gray-500">
+                                            ※ ベータ版ではご利用いただけません。
+                                        </p>
                                     </div>
                                 </div>
                             </CardContent>
