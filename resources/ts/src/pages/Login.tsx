@@ -46,7 +46,7 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
+        <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-black dark:text-white flex items-center justify-center px-4">
             <Card className="relative bg-black border border-gray-800 w-full max-w-md">
                 <CardHeader>
                     <CardTitle className="text-center text-lg font-semibold">
@@ -64,8 +64,8 @@ const Login = () => {
                         )}
                         {errors.some((error) =>
                             error.includes(
-                                "このアカウントは既に退会済みです。ご利用の場合は再開手続きをしてください。"
-                            )
+                                "このアカウントは既に退会済みです。ご利用の場合は再開手続きをしてください。",
+                            ),
                         ) && (
                             <div>
                                 <a

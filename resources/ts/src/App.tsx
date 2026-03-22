@@ -14,18 +14,20 @@ import UpdatePassword from "./pages/UpdatePassword";
 import UpdateBudget from "./pages/UpdateBudget";
 import ReactivateAccount from "./pages/ReactivateAccount";
 import { PrivateRoute } from "./components/PrivateRoute";
-import { ToastContainer } from "react-toastify";
-import { Slide } from "react-toastify";
+import { ToastContainer, Slide } from "react-toastify";
+import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import "react-toastify/dist/ReactToastify.css";
 
-function App() {
+function AppContent() {
+    const { theme } = useTheme();
+
     return (
         <div className="flex h-screen">
             <div className="flex-1 flex flex-col overflow-hidden">
-                <main className="flex-1 overflow-x-hidden overflow-y-auto bg-black">
+                <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-black">
                     <ToastContainer
                         position="top-center"
-                        theme="dark"
+                        theme={theme === "dark" ? "dark" : "light"}
                         autoClose={3000}
                         hideProgressBar={true}
                         transition={Slide}
@@ -122,6 +124,14 @@ function App() {
                 </main>
             </div>
         </div>
+    );
+}
+
+function App() {
+    return (
+        <ThemeProvider>
+            <AppContent />
+        </ThemeProvider>
     );
 }
 

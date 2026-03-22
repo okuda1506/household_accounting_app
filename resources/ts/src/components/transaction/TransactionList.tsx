@@ -68,7 +68,7 @@ export function TransactionList({
 
     return (
         <>
-            <Card className="bg-black border-gray-800">
+            <Card className=" bg-gray-50 text-gray-900 dark:bg-black dark:text-white border-gray-800">
                 <CardHeader>
                     <div className="flex items-center justify-between w-full">
                         <CardTitle className="text-lg font-medium">
@@ -157,7 +157,9 @@ export function TransactionList({
                                                 {transaction.memo}
                                             </p>
                                             <p className="text-gray-400">
-                                                {formatDate(transaction.date)}{" "}
+                                                {formatDate(
+                                                    transaction.date,
+                                                )}{" "}
                                             </p>
                                         </div>
                                         <p

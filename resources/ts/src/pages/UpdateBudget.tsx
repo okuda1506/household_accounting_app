@@ -101,7 +101,7 @@ const UpdateBudget = () => {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white">
+        <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-black dark:text-white">
             <nav className="border-b border-gray-800">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="relative h-16 flex items-center">
@@ -147,7 +147,7 @@ const UpdateBudget = () => {
                                         <p className="text-sm text-gray-400">
                                             ¥{" "}
                                             {Number(
-                                                currentBudget
+                                                currentBudget,
                                             ).toLocaleString("ja-JP")}
                                         </p>
                                     </div>
@@ -172,8 +172,8 @@ const UpdateBudget = () => {
                                                     setBudget(
                                                         e.target.value.replace(
                                                             /[^0-9]/g,
-                                                            ""
-                                                        )
+                                                            "",
+                                                        ),
                                                     )
                                                 }
                                                 className="w-full rounded bg-gray-900 px-3 py-2 pr-10 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"

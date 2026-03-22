@@ -44,7 +44,7 @@ const UpdatePassword = () => {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white">
+        <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-black dark:text-white">
             {/* Header */}
             <nav className="border-b border-gray-800">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -115,7 +115,7 @@ const UpdatePassword = () => {
                                         value={newPasswordConfirmation}
                                         onChange={(e) =>
                                             setNewPasswordConfirmation(
-                                                e.target.value
+                                                e.target.value,
                                             )
                                         }
                                         className="w-full rounded bg-gray-900 px-3 py-2 border border-gray-700"

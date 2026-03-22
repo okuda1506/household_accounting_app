@@ -23,6 +23,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
 import DeleteAccountDialog from "../components/DeleteAccountDialog";
+import { useTheme } from "../contexts/ThemeContext";
 
 type SettingsTab = "account" | "app";
 
@@ -149,6 +150,7 @@ export default function Settings() {
     const isAiAdviceDisabled = isAiUpdating || !isBudgetEnabled;
     const isAiAdviceVisuallyDisabled = !isBudgetEnabled;
     const navigate = useNavigate();
+    const { theme, setTheme } = useTheme();
 
     // todo: 言語切り替えの処理を追加
     const handleClick = (item) => {
@@ -156,9 +158,8 @@ export default function Settings() {
         // ここで後からモーダルを開く処理を追加
     };
 
-    const handleDarkModeChange = (value) => {
-        console.log(`Dark mode toggled: ${value}`);
-        // ここで後からダークモード切り替え処理を追加
+    const handleDarkModeChange = (value: boolean) => {
+        setTheme(value ? "dark" : "light");
     };
 
     useEffect(() => {
@@ -179,9 +180,6 @@ export default function Settings() {
         };
         fetchCurrentUser();
     }, [navigate]);
-
-    // todo: ダークモード切り替え実装
-    // const handleDarkModeChange = (value) => {};
 
     const handleAiAdviceModeChange = async (value: boolean) => {
         try {
@@ -213,7 +211,7 @@ export default function Settings() {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white">
+        <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-black dark:text-white">
             <nav className="border-b border-gray-800">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="relative h-16 flex items-center">
@@ -307,7 +305,7 @@ export default function Settings() {
                                     <ToggleItem
                                         icon={Moon}
                                         label="ダークモード"
-                                        checked={true}
+                                        checked={theme === "dark"}
                                         onChange={handleDarkModeChange}
                                         disabled={isDarkModeUpdating}
                                     />

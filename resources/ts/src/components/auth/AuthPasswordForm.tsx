@@ -69,7 +69,7 @@ const AuthPasswordForm = ({
 
     if (isInvalidLink) {
         return (
-            <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
+            <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-black dark:text-white flex items-center justify-center px-4">
                 <Card className="relative bg-black border border-gray-800 w-full max-w-md">
                     <CardHeader>
                         <CardTitle className="text-center text-lg font-semibold text-red-400">
@@ -87,7 +87,7 @@ const AuthPasswordForm = ({
     }
 
     return (
-        <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
+        <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-black dark:text-white flex items-center justify-center px-4">
             <Card className="relative bg-black border border-gray-800 w-full max-w-md">
                 <CardHeader>
                     <CardTitle className="text-center text-lg font-semibold">
