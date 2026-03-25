@@ -2,6 +2,9 @@ import { useEffect, useState, useRef } from "react";
 import { format } from "date-fns";
 import { TypeAnimation } from "react-type-animation";
 import {
+    Button,
+} from "../components/ui/button";
+import {
     Card,
     CardContent,
     CardHeader,
@@ -106,9 +109,9 @@ export default function Dashboard() {
 
     const getRiskLevelClasses = (riskLevel: AiAdviceResult["risk_level"]) => {
         const classMap = {
-            danger: "border-red-500/30 bg-red-500/10 text-red-300",
-            warning: "border-yellow-500/30 bg-yellow-500/10 text-yellow-300",
-            safe: "border-blue-500/30 bg-blue-500/10 text-blue-300",
+            danger: "border-red-200 bg-red-50 text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300",
+            warning: "border-amber-200 bg-amber-50 text-amber-700 dark:border-yellow-500/30 dark:bg-yellow-500/10 dark:text-yellow-300",
+            safe: "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300",
         };
 
         return classMap[riskLevel] ?? classMap.safe;
@@ -155,8 +158,8 @@ export default function Dashboard() {
     }, [isAiAdviceVisible]);
 
     return (
-        <div className="min-h-screen bg-black text-white">
-            <nav className="border-b border-gray-800">
+        <div className="min-h-screen bg-background text-foreground">
+            <nav className="border-b border-border">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="relative h-16 flex items-center">
                         <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
@@ -191,12 +194,12 @@ export default function Dashboard() {
                             <h1 className="text-2xl h-8">{"\u00A0"}</h1>
                         )}
                     </div>
-                    <Card className="bg-black border-gray-800">
+                    <Card className="border-border shadow-sm">
                         <CardHeader>
                             <CardTitle className="text-lg font-medium">
                                 今月のサマリ
                             </CardTitle>
-                            <p className="text-gray-400">
+                            <p className="text-muted-foreground">
                                 {year}年 {month}月
                             </p>
                         </CardHeader>
@@ -205,7 +208,7 @@ export default function Dashboard() {
                                 <>
                                     <div className="flex justify-between items-center text-sm">
                                         <div>
-                                            <p className="text-gray-400">
+                                            <p className="text-muted-foreground">
                                                 収入
                                             </p>
                                             <p className="text-xl font-semibold text-green-400">
@@ -216,7 +219,7 @@ export default function Dashboard() {
                                             </p>
                                         </div>
                                         <div>
-                                            <p className="text-gray-400">
+                                            <p className="text-muted-foreground">
                                                 支出
                                             </p>
                                             <p className="text-xl font-semibold text-red-400">
@@ -227,7 +230,7 @@ export default function Dashboard() {
                                             </p>
                                         </div>
                                         <div>
-                                            <p className="text-gray-400">
+                                            <p className="text-muted-foreground">
                                                 収支
                                             </p>
                                             <p className="text-xl font-semibold">
@@ -252,13 +255,13 @@ export default function Dashboard() {
                                             return (
                                                 <div className="space-y-2 mt-6">
                                                     <div className="flex justify-between text-sm">
-                                                        <span className="text-gray-400">
+                                                        <span className="text-muted-foreground">
                                                             予算消化率（限度額:
                                                             ¥
                                                             {user.budget.toLocaleString()}
                                                             ）
                                                         </span>
-                                                        <span className="text-white font-medium">
+                                                        <span className="font-medium text-foreground">
                                                             {Math.min(
                                                                 100,
                                                                 Math.round(
@@ -273,7 +276,7 @@ export default function Dashboard() {
                                                             )}
                                                         </span>
                                                     </div>
-                                                    <div className="h-2 w-full bg-gray-800 rounded-full overflow-hidden">
+                                                    <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
                                                         <div
                                                             className={`h-full rounded-full transition-all duration-500 ease-out ${
                                                                 budgetUsagePercentage >=
@@ -301,28 +304,30 @@ export default function Dashboard() {
                                     {/* AIアドバイス */}
                                     {canUseAiAdvice && (
                                         <div className="mt-6 space-y-4">
-                                            <button
+                                            <Button
+                                                type="button"
+                                                variant="utility"
                                                 onClick={handleAiAdvice}
                                                 disabled={isAiAnalyzing}
-                                                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-gradient-to-r from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 transition-all duration-200 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                                                className="h-auto w-full justify-center bg-accent px-4 py-3 hover:bg-accent/80"
                                             >
                                                 {aiButtonContent}
-                                            </button>
+                                            </Button>
 
                                             {aiAdvice && isAiAdviceVisible && (
                                                 <div
                                                     ref={aiAdviceRef}
-                                                    className="animate-in fade-in slide-in-from-top-6 duration-1000 ease-out relative overflow-hidden rounded-2xl border border-indigo-900/30 bg-gradient-to-br from-black via-gray-950 to-indigo-950/20 p-5 shadow-[0_0_0_1px_rgba(79,70,229,0.06),0_0_24px_rgba(99,102,241,0.12)]"
+                                                    className="animate-in fade-in slide-in-from-top-6 relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm duration-1000 ease-out"
                                                 >
-                                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.10),transparent_40%)]" />
+                                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.08),transparent_40%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.10),transparent_40%)]" />
 
                                                     <div className="relative space-y-5">
                                                         <div className="flex items-start justify-between gap-3">
                                                             <div className="space-y-1">
-                                                                <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-indigo-300/80">
+                                                                <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-300/80">
                                                                     AI Coaching
                                                                 </p>
-                                                                <h3 className="text-base font-semibold text-white">
+                                                                <h3 className="text-base font-semibold text-foreground">
                                                                     今日のアドバイス
                                                                 </h3>
                                                             </div>
@@ -336,11 +341,11 @@ export default function Dashboard() {
                                                         </div>
 
                                                         <div className="grid gap-4 md:grid-cols-[1.1fr_0.9fr]">
-                                                            <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
-                                                                <p className="mb-2 text-xs font-medium uppercase tracking-widest text-gray-400">
+                                                            <div className="rounded-xl border border-border bg-muted/40 p-4">
+                                                                <p className="mb-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
                                                                     Analysis
                                                                 </p>
-                                                                <p className="text-sm leading-7 text-gray-100">
+                                                                <p className="text-sm leading-7 text-foreground">
                                                                     {
                                                                         aiAdvice
                                                                             .analysis
@@ -349,11 +354,11 @@ export default function Dashboard() {
                                                                 </p>
                                                             </div>
 
-                                                            <div className="rounded-xl border border-indigo-500/20 bg-indigo-500/10 p-4 shadow-inner shadow-indigo-950/30">
-                                                                <p className="mb-2 text-xs font-medium uppercase tracking-widest text-indigo-300">
+                                                            <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:shadow-inner dark:shadow-indigo-950/30">
+                                                                <p className="mb-2 text-xs font-medium uppercase tracking-widest text-indigo-600 dark:text-indigo-300">
                                                                     Action Today
                                                                 </p>
-                                                                <p className="text-sm font-medium leading-7 text-white">
+                                                                <p className="text-sm font-medium leading-7 text-foreground">
                                                                     {
                                                                         aiAdvice
                                                                             .advice
@@ -363,11 +368,11 @@ export default function Dashboard() {
                                                             </div>
                                                         </div>
 
-                                                        <div className="rounded-xl border border-emerald-500/15 bg-emerald-500/5 px-4 py-3">
-                                                            <p className="mb-1 text-xs font-medium uppercase tracking-widest text-emerald-300/90">
+                                                        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 dark:border-emerald-500/15 dark:bg-emerald-500/5">
+                                                            <p className="mb-1 text-xs font-medium uppercase tracking-widest text-emerald-700 dark:text-emerald-300/90">
                                                                 Message
                                                             </p>
-                                                            <p className="text-sm leading-7 text-gray-100">
+                                                            <p className="text-sm leading-7 text-foreground">
                                                                 {
                                                                     aiAdvice.motivation
                                                                 }
@@ -385,7 +390,7 @@ export default function Dashboard() {
 
                     {trend && <ExpenseChart trend={trend} />}
 
-                    <Card className="bg-black border-gray-800">
+                    <Card className="border-border shadow-sm">
                         <CardHeader>
                             <CardTitle className="text-lg font-medium">
                                 最近の取引
@@ -411,7 +416,7 @@ export default function Dashboard() {
                                                     <p className="font-medium truncate">
                                                         {transaction.memo}
                                                     </p>
-                                                    <p className="text-gray-400">
+                                                    <p className="text-muted-foreground">
                                                         {formatDate(
                                                             transaction.transaction_date,
                                                         )}{" "}
@@ -434,7 +439,7 @@ export default function Dashboard() {
                                     })}
                                 </ul>
                             ) : (
-                                <p className="text-gray-400 text-center py-4">
+                                <p className="text-center py-4 text-muted-foreground">
                                     最近の取引はありません。
                                 </p>
                             )}

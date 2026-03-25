@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
@@ -68,7 +68,7 @@ export function TransactionList({
 
     return (
         <>
-            <Card className="bg-black border-gray-800">
+            <Card className="border-border shadow-sm">
                 <CardHeader>
                     <div className="flex items-center justify-between w-full">
                         <CardTitle className="text-lg font-medium">
@@ -81,10 +81,10 @@ export function TransactionList({
                                 }
                                 value={String(selectedYear)}
                             >
-                                <SelectTrigger className="w-[100px] text-white">
+                                <SelectTrigger className="w-[100px]">
                                     <SelectValue placeholder="年" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-black text-white">
+                                <SelectContent>
                                     {years.map((year) => (
                                         <SelectItem
                                             key={year}
@@ -101,10 +101,10 @@ export function TransactionList({
                                 }
                                 value={String(selectedMonth)}
                             >
-                                <SelectTrigger className="w-[100px] text-white">
+                                <SelectTrigger className="w-[100px]">
                                     <SelectValue placeholder="月" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-black text-white">
+                                <SelectContent>
                                     {[...Array(12)].map((_, i) => (
                                         <SelectItem
                                             key={i + 1}
@@ -121,13 +121,13 @@ export function TransactionList({
 
                 <CardContent>
                     <div className="flex justify-between items-center pb-10">
-                        <p className="text-white text-lg">
+                        <p className="text-lg">
                             収入：
                             <span className="text-green-400 font-medium ml-2">
                                 ¥{totalIncome.toLocaleString()}
                             </span>
                         </p>
-                        <p className="text-white text-lg">
+                        <p className="text-lg">
                             支出：
                             <span className="text-red-400 font-medium ml-2">
                                 ¥{Math.abs(totalExpense).toLocaleString()}
@@ -146,7 +146,7 @@ export function TransactionList({
                                         key={
                                             transaction.transaction_id ?? index
                                         }
-                                        className="hover:bg-gray-700 cursor-pointer rounded-md px-4 py-3 flex justify-between items-start text-sm"
+                                        className="cursor-pointer rounded-md px-4 py-3 text-sm transition-colors hover:bg-accent flex justify-between items-start"
                                         onClick={() => {
                                             setEditingTransaction(transaction);
                                             setEditModalOpen(true);
@@ -156,7 +156,7 @@ export function TransactionList({
                                             <p className="font-medium truncate">
                                                 {transaction.memo}
                                             </p>
-                                            <p className="text-gray-400">
+                                            <p className="text-muted-foreground">
                                                 {formatDate(transaction.date)}{" "}
                                             </p>
                                         </div>
@@ -177,7 +177,7 @@ export function TransactionList({
                             })}
                         </ul>
                     ) : (
-                        <p className="text-gray-400 text-center py-4">
+                        <p className="text-muted-foreground text-center py-4">
                             取引がありません
                         </p>
                     )}

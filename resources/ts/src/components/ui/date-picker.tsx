@@ -21,9 +21,9 @@ export function DatePicker({ date, setDate, className }: DatePickerProps) {
         <Popover modal={true} open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button
-                    variant={"outline"}
+                    variant="utility"
                     className={cn(
-                        "w-full justify-start text-left font-normal bg-gray-800 border-gray-700 hover:bg-gray-700",
+                        "w-full justify-start text-left font-normal",
                         !date && "text-muted-foreground",
                         className
                     )}
@@ -34,7 +34,7 @@ export function DatePicker({ date, setDate, className }: DatePickerProps) {
                         : "日付を選択"}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 bg-gray-800 border-gray-700">
+            <PopoverContent className="w-auto p-0">
                 <Calendar
                     mode="single"
                     selected={date}
@@ -45,7 +45,6 @@ export function DatePicker({ date, setDate, className }: DatePickerProps) {
                         setOpen(false);
                     }}
                     initialFocus
-                    className="text-white"
                 />
             </PopoverContent>
         </Popover>

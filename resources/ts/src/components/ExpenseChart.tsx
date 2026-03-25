@@ -34,7 +34,7 @@ export function ExpenseChart({ trend }: ExpenseChartProps) {
     }));
 
     return (
-        <Card className="bg-black border-gray-800">
+        <Card className="border-border shadow-sm">
             <CardHeader>
                 <CardTitle className="text-lg font-medium">
                     支出傾向
@@ -45,13 +45,13 @@ export function ExpenseChart({ trend }: ExpenseChartProps) {
                     <LineChart data={chartData}>
                         <XAxis
                             dataKey="name"
-                            stroke="#888888"
+                            stroke="hsl(var(--muted-foreground))"
                             fontSize={12}
                             tickLine={false}
                             axisLine={false}
                         />
                         <YAxis
-                            stroke="#888888"
+                            stroke="hsl(var(--muted-foreground))"
                             fontSize={12}
                             tickLine={false}
                             axisLine={false}
@@ -63,8 +63,8 @@ export function ExpenseChart({ trend }: ExpenseChartProps) {
                             content={({ active, payload }) => {
                                 if (active && payload && payload.length) {
                                     return (
-                                        <div className="bg-black border border-gray-800 p-2 rounded-md">
-                                            <p className="text-white">
+                                        <div className="rounded-md border border-border bg-popover p-2 text-popover-foreground shadow-md">
+                                            <p>
                                                 {`¥${Number(
                                                     payload[0].value,
                                                 ).toLocaleString()}`}
@@ -78,7 +78,7 @@ export function ExpenseChart({ trend }: ExpenseChartProps) {
                         <Line
                             type="monotone"
                             dataKey="expense"
-                            stroke="#ffffff"
+                            stroke="hsl(var(--foreground))"
                             strokeWidth={2}
                             dot={false}
                         />

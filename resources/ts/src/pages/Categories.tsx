@@ -55,8 +55,8 @@ export default function Categories() {
         .sort((a, b) => a.sort_no - b.sort_no);
 
     return (
-        <div className="min-h-screen bg-black text-white">
-            <nav className="border-b border-gray-800">
+        <div className="min-h-screen bg-background text-foreground">
+            <nav className="border-b border-border">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="relative h-16 flex items-center">
                         <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
@@ -75,7 +75,7 @@ export default function Categories() {
                         <NewCategoryModal onSuccess={fetchCategories} />
                     </div>
 
-                    <Card className="bg-black border-gray-800">
+                    <Card className="border-border shadow-sm">
                         <CardHeader>
                             <div className="flex items-center justify-between w-full">
                                 <CardTitle className="text-lg font-medium">
@@ -87,10 +87,10 @@ export default function Categories() {
                                         setType(val as "income" | "expense")
                                     }
                                 >
-                                    <SelectTrigger className="bg-gray-800 border-gray-700 w-[80px]">
+                                    <SelectTrigger className="w-[80px]">
                                         <SelectValue placeholder="選択してください" />
                                     </SelectTrigger>
-                                    <SelectContent className="bg-gray-800">
+                                    <SelectContent>
                                         <SelectItem value="income">
                                             収入
                                         </SelectItem>
@@ -104,7 +104,7 @@ export default function Categories() {
 
                         <CardContent>
                             {filteredCategories.length === 0 ? (
-                                <p className="text-sm text-gray-400">
+                                <p className="text-sm text-muted-foreground">
                                     カテゴリを登録してください。
                                 </p>
                             ) : (
@@ -112,7 +112,7 @@ export default function Categories() {
                                     {filteredCategories.map((category) => (
                                         <li
                                             key={category.category_id}
-                                            className="hover:bg-gray-700 rounded-md px-4 py-3 flex justify-between items-center"
+                                            className="flex items-center justify-between rounded-md px-4 py-3 transition-colors hover:bg-accent"
                                             onClick={() => {
                                                 setEditingCategory(category);
                                                 setEditModalOpen(true);
@@ -122,16 +122,16 @@ export default function Categories() {
                                                 {category.name}
                                             </p>
                                             <Button
-                                                variant="destructive"
+                                                variant="utility"
                                                 size="icon"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     setDeleteTarget(category);
                                                     setDeleteModalOpen(true);
                                                 }}
-                                                className="bg-transparent ml-2"
+                                                className="ml-2 border-transparent bg-transparent text-muted-foreground shadow-none hover:bg-accent hover:text-red-500"
                                             >
-                                                <Trash2 className="w-4 h-4 text-gray-500 hover:text-red-500" />
+                                                <Trash2 className="w-4 h-4" />
                                             </Button>
                                         </li>
                                     ))}

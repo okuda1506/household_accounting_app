@@ -6,13 +6,11 @@ import { toast } from "react-toastify";
 import api from "../../lib/axios";
 import {
     Dialog,
-    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "../components/ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -72,15 +70,15 @@ const DeleteAccountDialog = ({ open, onClose }: DeleteAccountDialogProps) => {
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className="sm:max-w-[425px] bg-black border-gray-800 text-white rounded-lg">
+            <DialogContent className="sm:max-w-[425px] rounded-lg">
                 <DialogHeader>
                     <DialogTitle>アカウントを削除</DialogTitle>
-                    <DialogDescription className="text-gray-400 !mt-5">
+                    <DialogDescription className="!mt-5 text-muted-foreground">
                         この操作は元に戻せません。続行するにはパスワードを入力してください。
                     </DialogDescription>
                 </DialogHeader>
                 <div className="py-4 space-y-2">
-                    <Label htmlFor="password-confirm" className="text-white">
+                    <Label htmlFor="password-confirm">
                         パスワード
                     </Label>
                     <Input
@@ -88,7 +86,7 @@ const DeleteAccountDialog = ({ open, onClose }: DeleteAccountDialogProps) => {
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="bg-gray-900 border-gray-700 focus:ring-indigo-500"
+                        className="focus-visible:ring-indigo-500"
                         autoComplete="current-password"
                     />
                     {error && (
@@ -97,7 +95,8 @@ const DeleteAccountDialog = ({ open, onClose }: DeleteAccountDialogProps) => {
                 </div>
                 <DialogFooter className="gap-2">
                     <Button
-                        className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700"
+                        className="w-full"
+                        variant="secondary"
                         onClick={onClose}
                         disabled={isSubmitting}
                     >

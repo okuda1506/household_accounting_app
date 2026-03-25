@@ -70,7 +70,7 @@ export function EditCategoryModal({
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="bg-gray-900 text-white rounded-lg">
+            <DialogContent className="rounded-lg">
                 <DialogHeader>
                     <DialogTitle>カテゴリ編集</DialogTitle>
                 </DialogHeader>
@@ -78,10 +78,10 @@ export function EditCategoryModal({
                     <div>
                         <Label htmlFor="type">取引タイプ</Label>
                         <Select value={transactionType} disabled>
-                            <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                            <SelectTrigger>
                                 <SelectValue />
                             </SelectTrigger>
-                            <SelectContent className="bg-gray-800 text-white">
+                            <SelectContent>
                                 <SelectItem value="income">収入</SelectItem>
                                 <SelectItem value="expense">支出</SelectItem>
                             </SelectContent>
@@ -94,7 +94,7 @@ export function EditCategoryModal({
                             id="name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="bg-gray-800 border-gray-700"
+                            className="focus-visible:ring-indigo-500"
                         />
                     </div>
 

@@ -30,11 +30,11 @@ function Calendar({
                 months: `relative flex ${defaultClassNames.month}`,
                 month_caption: `relative mx-10 flex h-7 items-center justify-center ${defaultClassNames.month_caption}`,
                 weekdays: cn(
-                    "flex flex-row border-b border-gray-700 pb-2",
+                    "flex flex-row border-b border-border pb-2",
                     classNames?.weekdays
                 ),
                 weekday: cn(
-                    "w-8 text-sm font-normal text-white",
+                    "w-8 text-sm font-normal text-muted-foreground",
                     classNames?.weekday
                 ),
                 month: cn("w-full", classNames?.month),
@@ -44,12 +44,12 @@ function Calendar({
                     classNames?.caption_label
                 ),
                 button_next: cn(
-                    buttonVariants({ variant: "outline" }),
+                    buttonVariants({ variant: "utility" }),
                     "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 absolute right-1 [&_svg]:fill-foreground",
                     classNames?.button_next
                 ),
                 button_previous: cn(
-                    buttonVariants({ variant: "outline" }),
+                    buttonVariants({ variant: "utility" }),
                     "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 absolute left-1 [&_svg]:fill-foreground",
                     classNames?.button_previous
                 ),
