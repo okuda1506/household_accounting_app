@@ -1,6 +1,6 @@
 import { NewTransactionModal } from "../components/transaction/NewTransactionModal";
 import { useEffect, useState } from "react";
-import { NavigationModal } from "../components/NavigationModal";
+import { NavigationMenuAnchor } from "../components/NavigationModal";
 import { TransactionList } from "../components/transaction/TransactionList";
 import api from "../../lib/axios";
 import { Transaction } from "../types/transactions";
@@ -71,9 +71,7 @@ export default function Transactions() {
                         <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
                             取引一覧
                         </span>
-                        <div className="absolute right-0">
-                            <NavigationModal />
-                        </div>
+                        <NavigationMenuAnchor />
                     </div>
                 </div>
             </nav>

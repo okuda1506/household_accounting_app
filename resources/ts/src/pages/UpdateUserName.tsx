@@ -11,7 +11,7 @@ import {
     CardHeader,
     CardTitle,
 } from "../components/ui/card";
-import { NavigationModal } from "../components/NavigationModal";
+import { NavigationMenuAnchor } from "../components/NavigationModal";
 import { X } from "lucide-react";
 
 const UpdateUserName = () => {
@@ -66,9 +66,7 @@ const UpdateUserName = () => {
                         <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
                             設定
                         </span>
-                        <div className="absolute right-0">
-                            <NavigationModal />
-                        </div>
+                        <NavigationMenuAnchor />
                     </div>
                 </div>
             </nav>

@@ -86,6 +86,7 @@ const DESKTOP_MENU_WIDTH = 352;
 const DESKTOP_MENU_FALLBACK_HEIGHT = 420;
 const VIEWPORT_PADDING = 16;
 const DESKTOP_MENU_TOP_OFFSET = 88;
+const NAVIGATION_MENU_ANCHOR_ID = "navigation-menu-anchor";
 
 function clampDesktopPosition(
     position: DesktopMenuPosition,
@@ -127,6 +128,10 @@ function getDefaultDesktopPosition(): DesktopMenuPosition {
     );
 }
 
+export function NavigationMenuAnchor() {
+    return <div id={NAVIGATION_MENU_ANCHOR_ID} className="absolute right-0" />;
+}
+
 export function NavigationModal() {
     const [open, setOpen] = useState(false);
     const [isDesktop, setIsDesktop] = useState(false);
@@ -135,6 +140,7 @@ export function NavigationModal() {
         useState<DesktopMenuPosition | null>(null);
     const [hasLoadedDesktopPosition, setHasLoadedDesktopPosition] =
         useState(false);
+    const [triggerAnchor, setTriggerAnchor] = useState<HTMLElement | null>(null);
     const location = useLocation();
     const triggerRef = useRef<HTMLButtonElement | null>(null);
     const desktopPanelRef = useRef<HTMLDivElement | null>(null);
@@ -176,6 +182,39 @@ export function NavigationModal() {
 
         previousDesktopModeRef.current = isDesktop;
     }, [isDesktop]);
+
+    useEffect(() => {
+        if (!isMounted) {
+            return;
+        }
+
+        const syncAnchor = () => {
+            const nextAnchor = document.getElementById(NAVIGATION_MENU_ANCHOR_ID);
+
+            setTriggerAnchor((currentAnchor) =>
+                currentAnchor === nextAnchor ? currentAnchor : nextAnchor
+            );
+
+            if (!nextAnchor) {
+                setOpen(false);
+            }
+        };
+
+        syncAnchor();
+
+        const observer = new MutationObserver(() => {
+            syncAnchor();
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+        });
+
+        return () => {
+            observer.disconnect();
+        };
+    }, [isMounted]);
 
     useEffect(() => {
         if (!isMounted) {
@@ -438,6 +477,17 @@ export function NavigationModal() {
         </Button>
     );
 
+    const mobileTrigger =
+        !isDesktop && triggerAnchor
+            ? createPortal(
+                  <DialogTrigger asChild>{triggerButton}</DialogTrigger>,
+                  triggerAnchor
+              )
+            : null;
+
+    const desktopTrigger =
+        isDesktop && triggerAnchor ? createPortal(triggerButton, triggerAnchor) : null;
+
     const desktopMenu =
         isMounted &&
         isDesktop &&
@@ -508,7 +558,7 @@ export function NavigationModal() {
     if (isDesktop) {
         return (
             <>
-                {triggerButton}
+                {desktopTrigger}
                 {desktopMenu}
             </>
         );
@@ -516,7 +566,7 @@ export function NavigationModal() {
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>{triggerButton}</DialogTrigger>
+            {mobileTrigger}
             <DialogContent className="left-auto right-4 top-20 w-[calc(100%-2rem)] max-w-sm translate-x-0 translate-y-0 gap-0 overflow-hidden rounded-[28px] border-border/70 bg-background/95 p-0 shadow-[0_24px_80px_-32px_rgba(15,23,42,0.55)] backdrop-blur-xl sm:right-6 sm:top-24">
                 <DialogHeader className="border-b border-border/60 px-6 pb-4 pt-6 text-left">
                     <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">

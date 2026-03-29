@@ -18,6 +18,7 @@ import { ToastContainer } from "react-toastify";
 import { Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "./contexts/ThemeContext";
+import { NavigationModal } from "./components/NavigationModal";
 
 function App() {
     const { isDarkMode } = useTheme();
@@ -34,6 +35,7 @@ function App() {
                         transition={Slide}
                         closeButton={false}
                     />
+                    <NavigationModal />
                     <Routes>
                         <Route path="/register" element={<Register />} />
                         <Route path="/login" element={<Login />} />

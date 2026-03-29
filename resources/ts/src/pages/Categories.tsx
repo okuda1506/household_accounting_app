@@ -17,7 +17,7 @@ import {
 import { NewCategoryModal } from "../components/category/NewCategoryModal";
 import { EditCategoryModal } from "../components/category/EditCategoryModal";
 import { DeleteCategoryModal } from "../components/category/DeleteCategoryModal";
-import { NavigationModal } from "../components/NavigationModal";
+import { NavigationMenuAnchor } from "../components/NavigationModal";
 import api from "../../lib/axios";
 import type { Category } from "../types/categories";
 
@@ -62,9 +62,7 @@ export default function Categories() {
                         <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
                             カテゴリ
                         </span>
-                        <div className="absolute right-0">
-                            <NavigationModal />
-                        </div>
+                        <NavigationMenuAnchor />
                     </div>
                 </div>
             </nav>
