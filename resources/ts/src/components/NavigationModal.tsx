@@ -264,7 +264,8 @@ export function NavigationModal() {
             } else {
                 setDesktopPosition(getDefaultDesktopPosition());
             }
-        } catch {
+        } catch (error) {
+            console.error("Failed to parse desktop position from localStorage:", error);
             setDesktopPosition(getDefaultDesktopPosition());
         }
 
