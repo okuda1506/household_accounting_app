@@ -368,6 +368,10 @@ export function NavigationModal() {
             return;
         }
 
+        if (event.button !== 0) {
+            return;
+        }
+
         const target = event.target as HTMLElement;
 
         if (target.closest("[data-drag-ignore='true']")) {
@@ -393,6 +397,16 @@ export function NavigationModal() {
         }
 
         if (dragStateRef.current.pointerId !== event.pointerId) {
+            return;
+        }
+
+        if ((event.buttons & 1) !== 1) {
+            dragStateRef.current = null;
+
+            if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+                event.currentTarget.releasePointerCapture(event.pointerId);
+            }
+
             return;
         }
 
@@ -423,6 +437,10 @@ export function NavigationModal() {
         if (event.currentTarget.hasPointerCapture(event.pointerId)) {
             event.currentTarget.releasePointerCapture(event.pointerId);
         }
+    };
+
+    const handleDesktopHeaderLostPointerCapture = () => {
+        dragStateRef.current = null;
     };
 
     const navigationLinks = (
@@ -536,6 +554,7 @@ export function NavigationModal() {
                         onPointerMove={handleDesktopHeaderPointerMove}
                         onPointerUp={handleDesktopHeaderPointerUp}
                         onPointerCancel={handleDesktopHeaderPointerUp}
+                        onLostPointerCapture={handleDesktopHeaderLostPointerCapture}
                     >
                         <div className="min-w-0 flex-1 cursor-grab select-none touch-none active:cursor-grabbing">
                             <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
@@ -551,12 +570,16 @@ export function NavigationModal() {
                             >
                                 すばやく移動
                             </h2>
-                            <p
+                            <div
                                 id={descriptionId}
-                                className="mt-1 text-sm leading-6 text-muted-foreground"
+                                className="mt-2 space-y-2 text-xs leading-5 text-muted-foreground"
                             >
-                                主要な画面へショートカットできます。
-                            </p>
+                                <p>主要な画面へすばやく移動できます。</p>
+                                <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-foreground/[0.03] px-3 py-1 text-[11px] leading-none">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-primary/60" />
+                                    <span>ドラッグ位置は次回も保持されます</span>
+                                </div>
+                            </div>
                         </div>
                         <button
                             type="button"
@@ -569,9 +592,6 @@ export function NavigationModal() {
                         </button>
                     </div>
                     {navigationLinks}
-                    <div className="border-t border-border/60 px-6 py-4 text-xs text-muted-foreground">
-                        ドラッグした位置は次回も保持されます。
-                    </div>
                 </div>,
                 document.body,
             )
