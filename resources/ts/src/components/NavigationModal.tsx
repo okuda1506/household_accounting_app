@@ -25,49 +25,34 @@ import {
     Settings2,
     Tags,
     X,
-    type LucideIcon,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "../../lib/utils";
-
-type NavigationItem = {
-    to: string;
-    label: string;
-    description: string;
-    icon: LucideIcon;
-    isActive: (pathname: string) => boolean;
-};
-
-type DesktopMenuPosition = {
-    x: number;
-    y: number;
-};
-
-type DragState = {
-    pointerId: number;
-    offsetX: number;
-    offsetY: number;
-};
+import type {
+    DesktopMenuPosition,
+    DragState,
+    NavigationItem,
+} from "../types/navigation";
 
 const navigationItems: NavigationItem[] = [
     {
         to: "/",
         label: "ダッシュボード",
-        description: "収支概要と今月の流れを確認",
+        description: "今月の収支と動きを確認",
         icon: LayoutDashboard,
         isActive: (pathname) => pathname === "/",
     },
     {
         to: "/categories",
         label: "カテゴリ",
-        description: "費目の追加と整理をまとめて管理",
+        description: "費目の追加と整理を管理",
         icon: Tags,
         isActive: (pathname) => pathname.startsWith("/categories"),
     },
     {
         to: "/transactions",
         label: "取引",
-        description: "入出金の一覧と記録をすばやく操作",
+        description: "入出金の記録と一覧を確認",
         icon: ReceiptText,
         isActive: (pathname) => pathname.startsWith("/transactions"),
     },
@@ -149,6 +134,7 @@ export function NavigationModal() {
     const location = useLocation();
     const triggerRef = useRef<HTMLButtonElement | null>(null);
     const desktopPanelRef = useRef<HTMLDivElement | null>(null);
+    const desktopPositionRef = useRef<DesktopMenuPosition | null>(null);
     const dragStateRef = useRef<DragState | null>(null);
     const previousDesktopModeRef = useRef<boolean | null>(null);
     const titleId = useId();
@@ -156,6 +142,16 @@ export function NavigationModal() {
 
     const closeModal = () => {
         setOpen(false);
+    };
+
+    const applyDesktopPanelPosition = (position: DesktopMenuPosition) => {
+        desktopPositionRef.current = position;
+
+        if (!desktopPanelRef.current) {
+            return;
+        }
+
+        desktopPanelRef.current.style.transform = `translate3d(${position.x}px, ${position.y}px, 0)`;
     };
 
     useEffect(() => {
@@ -289,6 +285,14 @@ export function NavigationModal() {
     }, [desktopPosition, hasLoadedDesktopPosition, isDesktop, isMounted]);
 
     useEffect(() => {
+        if (!desktopPosition) {
+            return;
+        }
+
+        applyDesktopPanelPosition(desktopPosition);
+    }, [desktopPosition]);
+
+    useEffect(() => {
         if (!isDesktop || !hasLoadedDesktopPosition) {
             return;
         }
@@ -410,7 +414,7 @@ export function NavigationModal() {
             return;
         }
 
-        setDesktopPosition(
+        applyDesktopPanelPosition(
             clampDesktopPosition(
                 {
                     x: event.clientX - dragStateRef.current.offsetX,
@@ -433,6 +437,21 @@ export function NavigationModal() {
         }
 
         dragStateRef.current = null;
+
+        const nextPosition = desktopPositionRef.current;
+
+        if (nextPosition) {
+            setDesktopPosition((currentPosition) => {
+                if (
+                    currentPosition?.x === nextPosition.x &&
+                    currentPosition?.y === nextPosition.y
+                ) {
+                    return currentPosition;
+                }
+
+                return nextPosition;
+            });
+        }
 
         if (event.currentTarget.hasPointerCapture(event.pointerId)) {
             event.currentTarget.releasePointerCapture(event.pointerId);
@@ -482,7 +501,7 @@ export function NavigationModal() {
                                         </span>
                                     )}
                                 </div>
-                                <p className="mt-1 text-sm leading-5 text-muted-foreground">
+                                <p className="mt-1 truncate text-xs leading-4 text-muted-foreground">
                                     {description}
                                 </p>
                             </div>
@@ -542,10 +561,9 @@ export function NavigationModal() {
                     aria-labelledby={titleId}
                     aria-describedby={descriptionId}
                     tabIndex={-1}
-                    className="fixed z-[60] w-[22rem] max-w-[calc(100vw-2rem)] overflow-hidden rounded-[28px] border border-border/70 bg-background/95 shadow-[0_24px_80px_-32px_rgba(15,23,42,0.55)] backdrop-blur-xl outline-none animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200"
+                    className="fixed left-0 top-0 z-[60] w-[22rem] max-w-[calc(100vw-2rem)] overflow-hidden rounded-[28px] border border-border/70 bg-background/95 shadow-[0_24px_80px_-32px_rgba(15,23,42,0.55)] backdrop-blur-xl outline-none will-change-transform animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200"
                     style={{
-                        left: desktopPosition.x,
-                        top: desktopPosition.y,
+                        transform: `translate3d(${desktopPosition.x}px, ${desktopPosition.y}px, 0)`,
                     }}
                 >
                     <div
@@ -558,7 +576,7 @@ export function NavigationModal() {
                     >
                         <div className="min-w-0 flex-1 cursor-grab select-none touch-none active:cursor-grabbing">
                             <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
-                                <span>Menu</span>
+                                <span>Navigation</span>
                                 <span className="h-1 w-1 rounded-full bg-border" />
                                 <span className="text-[10px] tracking-[0.18em]">
                                     Drag
@@ -568,13 +586,13 @@ export function NavigationModal() {
                                 id={titleId}
                                 className="mt-3 text-[1.35rem] font-semibold tracking-tight text-foreground"
                             >
-                                すばやく移動
+                                ナビゲーション
                             </h2>
                             <div
                                 id={descriptionId}
                                 className="mt-2 space-y-2 text-xs leading-5 text-muted-foreground"
                             >
-                                <p>主要な画面へすばやく移動できます。</p>
+                                <p>主要な画面へ移動できます。</p>
                                 <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-foreground/[0.03] px-3 py-1 text-[11px] leading-none">
                                     <span className="h-1.5 w-1.5 rounded-full bg-primary/60" />
                                     <span>ドラッグ位置は次回も保持されます</span>
@@ -613,13 +631,13 @@ export function NavigationModal() {
             <DialogContent className="w-[calc(100%-2rem)] max-w-sm gap-0 overflow-hidden rounded-[28px] border-border/70 bg-background/95 p-0 shadow-[0_24px_80px_-32px_rgba(15,23,42,0.55)] backdrop-blur-xl">
                 <DialogHeader className="border-b border-border/60 px-6 pb-4 pt-6 text-left">
                     <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
-                        Menu
+                        Navigation
                     </span>
                     <DialogTitle className="pr-10 text-[1.35rem] font-semibold tracking-tight">
-                        すばやく移動
+                        ナビゲーション
                     </DialogTitle>
                     <DialogDescription className="pr-10 text-sm leading-6">
-                        主要な画面へショートカットできます。
+                        主要な画面へ移動できます。
                     </DialogDescription>
                 </DialogHeader>
                 {navigationLinks}
