@@ -117,8 +117,8 @@ const Login = () => {
                             />
                         </div>
 
-                        {/* Remember Me */}
-                        <div className="flex items-center">
+                        {/* Remember Me 一旦不要とする */}
+                        {/* <div className="flex items-center">
                             <input
                                 id="remember_me"
                                 type="checkbox"
@@ -132,7 +132,7 @@ const Login = () => {
                             >
                                 サインイン状態を保持
                             </label>
-                        </div>
+                        </div> */}
 
                         {/* Submit */}
                         <div className="space-y-4 pt-6">
