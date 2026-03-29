@@ -90,7 +90,7 @@ const NAVIGATION_MENU_ANCHOR_ID = "navigation-menu-anchor";
 
 function clampDesktopPosition(
     position: DesktopMenuPosition,
-    panel: HTMLDivElement | null
+    panel: HTMLDivElement | null,
 ): DesktopMenuPosition {
     if (typeof window === "undefined") {
         return position;
@@ -102,14 +102,17 @@ function clampDesktopPosition(
     return {
         x: Math.min(
             Math.max(position.x, VIEWPORT_PADDING),
-            Math.max(VIEWPORT_PADDING, window.innerWidth - panelWidth - VIEWPORT_PADDING)
+            Math.max(
+                VIEWPORT_PADDING,
+                window.innerWidth - panelWidth - VIEWPORT_PADDING,
+            ),
         ),
         y: Math.min(
             Math.max(position.y, VIEWPORT_PADDING),
             Math.max(
                 VIEWPORT_PADDING,
-                window.innerHeight - panelHeight - VIEWPORT_PADDING
-            )
+                window.innerHeight - panelHeight - VIEWPORT_PADDING,
+            ),
         ),
     };
 }
@@ -124,7 +127,7 @@ function getDefaultDesktopPosition(): DesktopMenuPosition {
             x: window.innerWidth - DESKTOP_MENU_WIDTH - 24,
             y: DESKTOP_MENU_TOP_OFFSET,
         },
-        null
+        null,
     );
 }
 
@@ -140,7 +143,9 @@ export function NavigationModal() {
         useState<DesktopMenuPosition | null>(null);
     const [hasLoadedDesktopPosition, setHasLoadedDesktopPosition] =
         useState(false);
-    const [triggerAnchor, setTriggerAnchor] = useState<HTMLElement | null>(null);
+    const [triggerAnchor, setTriggerAnchor] = useState<HTMLElement | null>(
+        null,
+    );
     const location = useLocation();
     const triggerRef = useRef<HTMLButtonElement | null>(null);
     const desktopPanelRef = useRef<HTMLDivElement | null>(null);
@@ -189,10 +194,12 @@ export function NavigationModal() {
         }
 
         const syncAnchor = () => {
-            const nextAnchor = document.getElementById(NAVIGATION_MENU_ANCHOR_ID);
+            const nextAnchor = document.getElementById(
+                NAVIGATION_MENU_ANCHOR_ID,
+            );
 
             setTriggerAnchor((currentAnchor) =>
-                currentAnchor === nextAnchor ? currentAnchor : nextAnchor
+                currentAnchor === nextAnchor ? currentAnchor : nextAnchor,
             );
 
             if (!nextAnchor) {
@@ -227,7 +234,7 @@ export function NavigationModal() {
         }
 
         const savedPosition = window.localStorage.getItem(
-            DESKTOP_MENU_STORAGE_KEY
+            DESKTOP_MENU_STORAGE_KEY,
         );
 
         if (!savedPosition) {
@@ -237,7 +244,9 @@ export function NavigationModal() {
         }
 
         try {
-            const parsedPosition = JSON.parse(savedPosition) as Partial<DesktopMenuPosition>;
+            const parsedPosition = JSON.parse(
+                savedPosition,
+            ) as Partial<DesktopMenuPosition>;
 
             if (
                 typeof parsedPosition.x === "number" &&
@@ -249,8 +258,8 @@ export function NavigationModal() {
                             x: parsedPosition.x,
                             y: parsedPosition.y,
                         },
-                        desktopPanelRef.current
-                    )
+                        desktopPanelRef.current,
+                    ),
                 );
             } else {
                 setDesktopPosition(getDefaultDesktopPosition());
@@ -263,13 +272,18 @@ export function NavigationModal() {
     }, [isDesktop, isMounted]);
 
     useEffect(() => {
-        if (!isMounted || !isDesktop || !hasLoadedDesktopPosition || !desktopPosition) {
+        if (
+            !isMounted ||
+            !isDesktop ||
+            !hasLoadedDesktopPosition ||
+            !desktopPosition
+        ) {
             return;
         }
 
         window.localStorage.setItem(
             DESKTOP_MENU_STORAGE_KEY,
-            JSON.stringify(desktopPosition)
+            JSON.stringify(desktopPosition),
         );
     }, [desktopPosition, hasLoadedDesktopPosition, isDesktop, isMounted]);
 
@@ -281,8 +295,11 @@ export function NavigationModal() {
         const handleResize = () => {
             setDesktopPosition((currentPosition) =>
                 currentPosition
-                    ? clampDesktopPosition(currentPosition, desktopPanelRef.current)
-                    : getDefaultDesktopPosition()
+                    ? clampDesktopPosition(
+                        currentPosition,
+                        desktopPanelRef.current,
+                    )
+                    : getDefaultDesktopPosition(),
             );
         };
 
@@ -305,7 +322,7 @@ export function NavigationModal() {
 
             const clampedPosition = clampDesktopPosition(
                 currentPosition,
-                desktopPanelRef.current
+                desktopPanelRef.current,
             );
 
             if (
@@ -344,7 +361,7 @@ export function NavigationModal() {
     };
 
     const handleDesktopHeaderPointerDown = (
-        event: ReactPointerEvent<HTMLDivElement>
+        event: ReactPointerEvent<HTMLDivElement>,
     ) => {
         if (!desktopPanelRef.current) {
             return;
@@ -368,7 +385,7 @@ export function NavigationModal() {
     };
 
     const handleDesktopHeaderPointerMove = (
-        event: ReactPointerEvent<HTMLDivElement>
+        event: ReactPointerEvent<HTMLDivElement>,
     ) => {
         if (!dragStateRef.current) {
             return;
@@ -384,13 +401,13 @@ export function NavigationModal() {
                     x: event.clientX - dragStateRef.current.offsetX,
                     y: event.clientY - dragStateRef.current.offsetY,
                 },
-                desktopPanelRef.current
-            )
+                desktopPanelRef.current,
+            ),
         );
     };
 
     const handleDesktopHeaderPointerUp = (
-        event: ReactPointerEvent<HTMLDivElement>
+        event: ReactPointerEvent<HTMLDivElement>,
     ) => {
         if (!dragStateRef.current) {
             return;
@@ -409,57 +426,59 @@ export function NavigationModal() {
 
     const navigationLinks = (
         <div className="space-y-2 p-3">
-            {navigationItems.map(({ to, label, description, icon: Icon, isActive }) => {
-                const active = isActive(location.pathname);
+            {navigationItems.map(
+                ({ to, label, description, icon: Icon, isActive }) => {
+                    const active = isActive(location.pathname);
 
-                return (
-                    <Link
-                        key={to}
-                        to={to}
-                        className={cn(
-                            "group flex items-center gap-4 rounded-[22px] border px-4 py-4 transition-all duration-200",
-                            active
-                                ? "border-border/80 bg-accent shadow-sm"
-                                : "border-transparent hover:border-border/70 hover:bg-accent/70"
-                        )}
-                        onClick={isDesktop ? undefined : closeModal}
-                    >
-                        <div
+                    return (
+                        <Link
+                            key={to}
+                            to={to}
                             className={cn(
-                                "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl transition-colors",
+                                "group flex items-center gap-4 rounded-[22px] border px-4 py-4 transition-all duration-200",
                                 active
-                                    ? "bg-primary/12 text-primary"
-                                    : "bg-foreground/[0.05] text-muted-foreground group-hover:bg-foreground/[0.08] group-hover:text-foreground dark:bg-background/80"
+                                    ? "border-border/80 bg-accent shadow-sm"
+                                    : "border-transparent hover:border-border/70 hover:bg-accent/70",
                             )}
+                            onClick={isDesktop ? undefined : closeModal}
                         >
-                            <Icon className="h-5 w-5" />
-                        </div>
-                        <div className="min-w-0 flex-1 text-left">
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium text-foreground">
-                                    {label}
-                                </span>
-                                {active && (
-                                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">
-                                        現在地
-                                    </span>
+                            <div
+                                className={cn(
+                                    "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl transition-colors",
+                                    active
+                                        ? "bg-primary/12 text-primary"
+                                        : "bg-foreground/[0.05] text-muted-foreground group-hover:bg-foreground/[0.08] group-hover:text-foreground dark:bg-background/80",
                                 )}
+                            >
+                                <Icon className="h-5 w-5" />
                             </div>
-                            <p className="mt-1 text-sm leading-5 text-muted-foreground">
-                                {description}
-                            </p>
-                        </div>
-                        <ChevronRight
-                            className={cn(
-                                "h-4 w-4 shrink-0 transition-all duration-200",
-                                active
-                                    ? "text-primary"
-                                    : "text-muted-foreground group-hover:translate-x-0.5 group-hover:text-foreground"
-                            )}
-                        />
-                    </Link>
-                );
-            })}
+                            <div className="min-w-0 flex-1 text-left">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm font-medium text-foreground">
+                                        {label}
+                                    </span>
+                                    {active && (
+                                        <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">
+                                            現在地
+                                        </span>
+                                    )}
+                                </div>
+                                <p className="mt-1 text-sm leading-5 text-muted-foreground">
+                                    {description}
+                                </p>
+                            </div>
+                            <ChevronRight
+                                className={cn(
+                                    "h-4 w-4 shrink-0 transition-all duration-200",
+                                    active
+                                        ? "text-primary"
+                                        : "text-muted-foreground group-hover:translate-x-0.5 group-hover:text-foreground",
+                                )}
+                            />
+                        </Link>
+                    );
+                },
+            )}
         </div>
     );
 
@@ -469,7 +488,7 @@ export function NavigationModal() {
             variant="utility"
             className={cn(
                 "h-10 w-10 rounded-full border-border/80 bg-background/70 px-0 shadow-none backdrop-blur-sm",
-                open && isDesktop && "bg-accent"
+                open && isDesktop && "bg-accent",
             )}
             onClick={isDesktop ? handleDesktopTriggerClick : undefined}
         >
@@ -480,80 +499,83 @@ export function NavigationModal() {
     const mobileTrigger =
         !isDesktop && triggerAnchor
             ? createPortal(
-                  <DialogTrigger asChild>{triggerButton}</DialogTrigger>,
-                  triggerAnchor
-              )
+                <DialogTrigger asChild>{triggerButton}</DialogTrigger>,
+                triggerAnchor,
+            )
             : null;
 
     const desktopTrigger =
-        isDesktop && triggerAnchor ? createPortal(triggerButton, triggerAnchor) : null;
+        isDesktop && triggerAnchor
+            ? createPortal(triggerButton, triggerAnchor)
+            : null;
 
     const desktopMenu =
         isMounted &&
-        isDesktop &&
-        open &&
-        desktopPosition &&
-        hasLoadedDesktopPosition
+            isDesktop &&
+            open &&
+            desktopPosition &&
+            hasLoadedDesktopPosition
             ? createPortal(
-                  <div
-                      ref={desktopPanelRef}
-                      role="dialog"
-                      aria-modal="false"
-                      aria-labelledby={titleId}
-                      aria-describedby={descriptionId}
-                      tabIndex={-1}
-                      className="fixed z-[60] w-[22rem] max-w-[calc(100vw-2rem)] overflow-hidden rounded-[28px] border border-border/70 bg-background/95 shadow-[0_24px_80px_-32px_rgba(15,23,42,0.55)] backdrop-blur-xl outline-none animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200"
-                      style={{
-                          left: desktopPosition.x,
-                          top: desktopPosition.y,
-                      }}
-                  >
-                      <div
-                          className="flex items-start gap-4 border-b border-border/60 px-6 pb-4 pt-5"
-                          onPointerDown={handleDesktopHeaderPointerDown}
-                          onPointerMove={handleDesktopHeaderPointerMove}
-                          onPointerUp={handleDesktopHeaderPointerUp}
-                          onPointerCancel={handleDesktopHeaderPointerUp}
-                      >
-                          <div className="min-w-0 flex-1 cursor-grab select-none touch-none active:cursor-grabbing">
-                              <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
-                                  <span>Menu</span>
-                                  <span className="h-1 w-1 rounded-full bg-border" />
-                                  <span className="text-[10px] tracking-[0.18em]">
-                                      Drag
-                                  </span>
-                              </div>
-                              <h2
-                                  id={titleId}
-                                  className="mt-3 text-[1.35rem] font-semibold tracking-tight text-foreground"
-                              >
-                                  すばやく移動
-                              </h2>
-                              <p
-                                  id={descriptionId}
-                                  className="mt-1 text-sm leading-6 text-muted-foreground"
-                              >
-                                  主要な画面へショートカットできます。
-                              </p>
-                          </div>
-                          <button
-                              type="button"
-                              data-drag-ignore="true"
-                              className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                              onClick={closeModal}
-                          >
-                              <X className="h-4 w-4" />
-                              <span className="sr-only">Close menu</span>
-                          </button>
-                      </div>
-                      {navigationLinks}
-                      <div className="border-t border-border/60 px-6 py-4 text-xs text-muted-foreground">
-                          ドラッグした位置は次回も保持されます。
-                      </div>
-                  </div>,
-                  document.body
-              )
-            : null;
+                <div
+                    ref={desktopPanelRef}
+                    role="dialog"
+                    aria-modal="false"
+                    aria-labelledby={titleId}
+                    aria-describedby={descriptionId}
+                    tabIndex={-1}
+                    className="fixed z-[60] w-[22rem] max-w-[calc(100vw-2rem)] overflow-hidden rounded-[28px] border border-border/70 bg-background/95 shadow-[0_24px_80px_-32px_rgba(15,23,42,0.55)] backdrop-blur-xl outline-none animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200"
+                    style={{
+                        left: desktopPosition.x,
+                        top: desktopPosition.y,
+                    }}
+                >
+                    <div
+                        className="flex items-start gap-4 border-b border-border/60 px-6 pb-4 pt-5"
+                        onPointerDown={handleDesktopHeaderPointerDown}
+                        onPointerMove={handleDesktopHeaderPointerMove}
+                        onPointerUp={handleDesktopHeaderPointerUp}
+                        onPointerCancel={handleDesktopHeaderPointerUp}
+                    >
+                        <div className="min-w-0 flex-1 cursor-grab select-none touch-none active:cursor-grabbing">
+                            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                                <span>Menu</span>
+                                <span className="h-1 w-1 rounded-full bg-border" />
+                                <span className="text-[10px] tracking-[0.18em]">
+                                    Drag
+                                </span>
+                            </div>
+                            <h2
+                                id={titleId}
+                                className="mt-3 text-[1.35rem] font-semibold tracking-tight text-foreground"
+                            >
+                                すばやく移動
+                            </h2>
+                            <p
+                                id={descriptionId}
+                                className="mt-1 text-sm leading-6 text-muted-foreground"
+                            >
+                                主要な画面へショートカットできます。
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            data-drag-ignore="true"
+                            className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                            onClick={closeModal}
+                        >
+                            <X className="h-4 w-4" />
+                            <span className="sr-only">Close menu</span>
+                        </button>
+                    </div>
+                    {navigationLinks}
+                    <div className="border-t border-border/60 px-6 py-4 text-xs text-muted-foreground">
+                        ドラッグした位置は次回も保持されます。
+                    </div>
+                </div>,
+                document.body,
+            )
+            : null
+        ;
 
     if (isDesktop) {
         return (
@@ -567,7 +589,7 @@ export function NavigationModal() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             {mobileTrigger}
-            <DialogContent className="left-auto right-4 top-20 w-[calc(100%-2rem)] max-w-sm translate-x-0 translate-y-0 gap-0 overflow-hidden rounded-[28px] border-border/70 bg-background/95 p-0 shadow-[0_24px_80px_-32px_rgba(15,23,42,0.55)] backdrop-blur-xl sm:right-6 sm:top-24">
+            <DialogContent className="w-[calc(100%-2rem)] max-w-sm gap-0 overflow-hidden rounded-[28px] border-border/70 bg-background/95 p-0 shadow-[0_24px_80px_-32px_rgba(15,23,42,0.55)] backdrop-blur-xl">
                 <DialogHeader className="border-b border-border/60 px-6 pb-4 pt-6 text-left">
                     <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
                         Menu
