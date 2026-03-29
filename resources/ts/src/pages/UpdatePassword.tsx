@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
 import {
+    Button,
+} from "../components/ui/button";
+import {
     Card,
     CardContent,
     CardHeader,
@@ -44,9 +47,9 @@ const UpdatePassword = () => {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white">
+        <div className="min-h-screen bg-background text-foreground">
             {/* Header */}
-            <nav className="border-b border-gray-800">
+            <nav className="border-b border-border">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="relative h-16 flex items-center">
                         <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
@@ -62,7 +65,7 @@ const UpdatePassword = () => {
             {/* Main */}
             <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 sm:px-0">
-                    <Card className="bg-black border border-gray-800 max-w-md mx-auto">
+                    <Card className="mx-auto max-w-md border-border shadow-sm">
                         <CardHeader>
                             <CardTitle className="text-lg font-medium">
                                 パスワード再設定
@@ -88,7 +91,7 @@ const UpdatePassword = () => {
                                         onChange={(e) =>
                                             setCurrentPassword(e.target.value)
                                         }
-                                        className="w-full rounded bg-gray-900 px-3 py-2 border border-gray-700"
+                                        className="w-full rounded border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                     />
                                 </div>
 
@@ -102,7 +105,7 @@ const UpdatePassword = () => {
                                         onChange={(e) =>
                                             setNewPassword(e.target.value)
                                         }
-                                        className="w-full rounded bg-gray-900 px-3 py-2 border border-gray-700"
+                                        className="w-full rounded border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                     />
                                 </div>
 
@@ -118,28 +121,29 @@ const UpdatePassword = () => {
                                                 e.target.value
                                             )
                                         }
-                                        className="w-full rounded bg-gray-900 px-3 py-2 border border-gray-700"
+                                        className="w-full rounded border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                     />
                                 </div>
 
                                 <div className="pt-6 space-y-3">
-                                    <button
+                                    <Button
                                         type="submit"
                                         disabled={loading}
-                                        className="w-full rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                                        className="w-full"
                                     >
                                         {loading
                                             ? "更新中..."
                                             : "パスワードを変更"}
-                                    </button>
+                                    </Button>
 
-                                    <button
+                                    <Button
                                         type="button"
+                                        variant="secondary"
                                         onClick={() => navigate("/settings")}
-                                        className="w-full rounded bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
+                                        className="w-full"
                                     >
                                         キャンセル
-                                    </button>
+                                    </Button>
                                 </div>
                             </form>
                         </CardContent>

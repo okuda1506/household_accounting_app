@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
 import {
+    Button,
+} from "../components/ui/button";
+import {
     Card,
     CardContent,
     CardHeader,
@@ -56,8 +59,8 @@ const UpdateUserName = () => {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white">
-            <nav className="border-b border-gray-800">
+        <div className="min-h-screen bg-background text-foreground">
+            <nav className="border-b border-border">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="relative h-16 flex items-center">
                         <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
@@ -72,7 +75,7 @@ const UpdateUserName = () => {
 
             <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 sm:px-0">
-                    <Card className="bg-black border border-gray-800 max-w-md mx-auto">
+                    <Card className="mx-auto max-w-md border-border shadow-sm">
                         <CardHeader>
                             <CardTitle className="text-lg font-medium">
                                 ユーザー名変更
@@ -90,10 +93,10 @@ const UpdateUserName = () => {
 
                                 {currentName && (
                                     <div className="space-y-1">
-                                        <p className="text-sm text-gray-400">
+                                        <p className="text-sm text-muted-foreground">
                                             現在のユーザー名
                                         </p>
-                                        <p className="text-sm text-gray-400">
+                                        <p className="text-sm text-muted-foreground">
                                             {currentName}
                                         </p>
                                     </div>
@@ -115,13 +118,13 @@ const UpdateUserName = () => {
                                             onChange={(e) =>
                                                 setName(e.target.value)
                                             }
-                                            className="w-full rounded bg-gray-900 px-3 py-2 pr-10 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            className="w-full rounded border border-input bg-background px-3 py-2 pr-10 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                         />
                                         {name && (
                                             <button
                                                 type="button"
                                                 onClick={() => setName("")}
-                                                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white"
+                                                className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground"
                                                 aria-label="Clear input"
                                             >
                                                 <X className="h-5 w-5" />
@@ -131,20 +134,21 @@ const UpdateUserName = () => {
                                 </div>
 
                                 <div className="pt-6 space-y-3">
-                                    <button
+                                    <Button
                                         type="submit"
                                         disabled={loading}
-                                        className="w-full rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                                        className="w-full"
                                     >
                                         {loading ? "変更中..." : "変更する"}
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
                                         type="button"
+                                        variant="secondary"
                                         onClick={() => navigate("/settings")}
-                                        className="w-full rounded bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
+                                        className="w-full"
                                     >
                                         キャンセル
-                                    </button>
+                                    </Button>
                                 </div>
                             </form>
                         </CardContent>

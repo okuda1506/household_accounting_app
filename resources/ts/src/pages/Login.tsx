@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
 import {
+    Button,
+} from "../components/ui/button";
+import {
     Card,
     CardContent,
     CardHeader,
@@ -46,8 +49,8 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
-            <Card className="relative bg-black border border-gray-800 w-full max-w-md">
+        <div className="min-h-screen bg-background text-foreground flex items-center justify-center px-4">
+            <Card className="relative w-full max-w-md border-border shadow-sm">
                 <CardHeader>
                     <CardTitle className="text-center text-lg font-semibold">
                         サインイン
@@ -80,7 +83,7 @@ const Login = () => {
                         <div>
                             <label
                                 htmlFor="email"
-                                className="block text-sm text-white mb-1"
+                                className="mb-1 block text-sm text-foreground"
                             >
                                 メールアドレス
                             </label>
@@ -91,7 +94,7 @@ const Login = () => {
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full px-3 py-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="w-full rounded border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
                         </div>
 
@@ -99,7 +102,7 @@ const Login = () => {
                         <div>
                             <label
                                 htmlFor="password"
-                                className="block text-sm text-white mb-1"
+                                className="mb-1 block text-sm text-foreground"
                             >
                                 パスワード
                             </label>
@@ -110,7 +113,7 @@ const Login = () => {
                                 required
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full px-3 py-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="w-full rounded border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
                         </div>
 
@@ -125,7 +128,7 @@ const Login = () => {
                             />
                             <label
                                 htmlFor="remember_me"
-                                className="ml-2 text-sm text-white"
+                                className="ml-2 text-sm text-foreground"
                             >
                                 サインイン状態を保持
                             </label>
@@ -133,21 +136,18 @@ const Login = () => {
 
                         {/* Submit */}
                         <div className="space-y-4 pt-6">
-                            <button
-                                type="submit"
-                                className="w-full rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                            >
+                            <Button type="submit" className="w-full">
                                 サインイン
-                            </button>
+                            </Button>
                             <a
                                 href="/forgot-password"
-                                className="block text-sm text-gray-400 underline hover:text-gray-200"
+                                className="block text-sm text-muted-foreground underline hover:text-foreground"
                             >
                                 パスワードをお忘れの場合
                             </a>
                             <Link
                                 to="/register"
-                                className="block text-sm text-gray-400 underline hover:text-gray-200"
+                                className="block text-sm text-muted-foreground underline hover:text-foreground"
                             >
                                 サインアップはこちら
                             </Link>

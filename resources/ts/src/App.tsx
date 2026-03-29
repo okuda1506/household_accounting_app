@@ -17,15 +17,18 @@ import { PrivateRoute } from "./components/PrivateRoute";
 import { ToastContainer } from "react-toastify";
 import { Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useTheme } from "./contexts/ThemeContext";
 
 function App() {
+    const { isDarkMode } = useTheme();
+
     return (
         <div className="flex h-screen">
             <div className="flex-1 flex flex-col overflow-hidden">
-                <main className="flex-1 overflow-x-hidden overflow-y-auto bg-black">
+                <main className="flex-1 overflow-x-hidden overflow-y-auto bg-background text-foreground">
                     <ToastContainer
                         position="top-center"
-                        theme="dark"
+                        theme={isDarkMode ? "dark" : "light"}
                         autoClose={3000}
                         hideProgressBar={true}
                         transition={Slide}

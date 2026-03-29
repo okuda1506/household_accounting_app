@@ -3,6 +3,9 @@ import { toast } from "react-toastify";
 import api from "../../lib/axios";
 import { Loader2, AlertTriangle } from "lucide-react";
 import {
+    Button,
+} from "../components/ui/button";
+import {
     Card,
     CardContent,
     CardHeader,
@@ -30,15 +33,15 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
-            <Card className="relative bg-black border border-gray-800 w-full max-w-md">
+        <div className="min-h-screen bg-background text-foreground flex items-center justify-center px-4">
+            <Card className="relative w-full max-w-md border-border shadow-sm">
                 <CardHeader>
                     <CardTitle className="text-center text-lg font-semibold">
                         パスワードリセット
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="mb-4 text-sm text-gray-400">
+                    <div className="mb-4 text-sm text-muted-foreground">
                         ご登録のメールアドレスを入力してください。パスワードリセット、またはアカウント再開用のリンクをメールでお送りします。
                     </div>
 
@@ -59,7 +62,7 @@ const ForgotPassword = () => {
                         <div>
                             <label
                                 htmlFor="email"
-                                className="block text-sm text-white mb-1"
+                                className="mb-1 block text-sm text-foreground"
                             >
                                 メールアドレス
                             </label>
@@ -70,19 +73,15 @@ const ForgotPassword = () => {
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full px-3 py-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="w-full rounded border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
                         </div>
 
                         <div className="pt-2">
-                            <button
+                            <Button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className={`flex items-center justify-center w-full rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
-                                    isSubmitting
-                                        ? "opacity-50 cursor-not-allowed"
-                                        : "hover:bg-indigo-700"
-                                }`}
+                                className="w-full"
                             >
                                 {isSubmitting ? (
                                     <>
@@ -92,7 +91,7 @@ const ForgotPassword = () => {
                                 ) : (
                                     "送信"
                                 )}
-                            </button>
+                            </Button>
                         </div>
                     </form>
                 </CardContent>

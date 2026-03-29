@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
 import {
+    Button,
+} from "../components/ui/button";
+import {
     Card,
     CardContent,
     CardHeader,
@@ -21,12 +24,12 @@ const ToggleSwitch = ({
     label: string;
 }) => (
     <div className="flex items-center justify-between py-2">
-        <span className="text-sm font-medium text-gray-300">{label}</span>
+        <span className="text-sm font-medium text-foreground">{label}</span>
         <button
             type="button"
             onClick={() => onChange(!checked)}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                checked ? "bg-blue-600" : "bg-gray-700"
+                checked ? "bg-blue-600" : "bg-muted"
             }`}
         >
             <span
@@ -101,8 +104,8 @@ const UpdateBudget = () => {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white">
-            <nav className="border-b border-gray-800">
+        <div className="min-h-screen bg-background text-foreground">
+            <nav className="border-b border-border">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="relative h-16 flex items-center">
                         <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
@@ -117,7 +120,7 @@ const UpdateBudget = () => {
 
             <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 sm:px-0">
-                    <Card className="bg-black border border-gray-800 max-w-md mx-auto">
+                    <Card className="mx-auto max-w-md border-border shadow-sm">
                         <CardHeader>
                             <CardTitle className="text-lg font-medium">
                                 予算管理
@@ -141,10 +144,10 @@ const UpdateBudget = () => {
 
                                 {isBudgetEnabled && currentBudget !== "" && (
                                     <div className="space-y-1">
-                                        <p className="text-sm text-gray-400">
+                                        <p className="text-sm text-muted-foreground">
                                             現在の予算
                                         </p>
-                                        <p className="text-sm text-gray-400">
+                                        <p className="text-sm text-muted-foreground">
                                             ¥{" "}
                                             {Number(
                                                 currentBudget
@@ -176,7 +179,7 @@ const UpdateBudget = () => {
                                                         )
                                                     )
                                                 }
-                                                className="w-full rounded bg-gray-900 px-3 py-2 pr-10 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                className="w-full rounded border border-input bg-background px-3 py-2 pr-10 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                                 placeholder="100000"
                                             />
                                             {budget && (
@@ -185,7 +188,7 @@ const UpdateBudget = () => {
                                                     onClick={() =>
                                                         setBudget("")
                                                     }
-                                                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white"
+                                                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground"
                                                     aria-label="Clear input"
                                                 >
                                                     <X className="h-5 w-5" />
@@ -196,20 +199,21 @@ const UpdateBudget = () => {
                                 )}
 
                                 <div className="pt-6 space-y-3">
-                                    <button
+                                    <Button
                                         type="submit"
                                         disabled={loading}
-                                        className="w-full rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                                        className="w-full"
                                     >
                                         {loading ? "変更中..." : "変更する"}
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
                                         type="button"
+                                        variant="secondary"
                                         onClick={() => navigate("/settings")}
-                                        className="w-full rounded bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
+                                        className="w-full"
                                     >
                                         キャンセル
-                                    </button>
+                                    </Button>
                                 </div>
                             </form>
                         </CardContent>

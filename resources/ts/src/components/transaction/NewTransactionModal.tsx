@@ -152,14 +152,14 @@ export function NewTransactionModal({
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button
-                    variant="outline"
-                    className="bg-transparent text-white border-gray-700 hover:bg-gray-800"
+                    variant="utility"
                     size="circle"
+                    className="bg-background/60"
                 >
                     ＋
                 </Button>
             </DialogTrigger>
-            <DialogContent className="bg-gray-900 text-white rounded-lg">
+            <DialogContent className="rounded-lg">
                 <DialogHeader>
                     <DialogTitle>新規取引</DialogTitle>
                 </DialogHeader>
@@ -191,15 +191,15 @@ export function NewTransactionModal({
                             }
                         >
                             <SelectTrigger
-                                className={`bg-gray-800 border-gray-700 text-white ${
+                                className={
                                     errors.transaction_type_id
                                         ? "border-red-500"
                                         : ""
-                                }`}
+                                }
                             >
                                 <SelectValue placeholder="選択してください" />
                             </SelectTrigger>
-                            <SelectContent className="bg-gray-800 text-white">
+                            <SelectContent>
                                 <SelectItem value="income">収入</SelectItem>
                                 <SelectItem value="expense">支出</SelectItem>
                             </SelectContent>
@@ -215,13 +215,13 @@ export function NewTransactionModal({
                         </div>
                         <Select value={category} onValueChange={setCategory}>
                             <SelectTrigger
-                                className={`bg-gray-800 border-gray-700 text-white ${
+                                className={`${
                                     errors.category_id ? "border-red-500" : ""
                                 }`}
                             >
                                 <SelectValue placeholder="選択してください" />
                             </SelectTrigger>
-                            <SelectContent className="bg-gray-800 text-white">
+                            <SelectContent>
                                 {filteredCategories.map((cat) => (
                                     <SelectItem
                                         key={cat.category_id}
@@ -244,7 +244,7 @@ export function NewTransactionModal({
                         <Input
                             id="amount"
                             type="number"
-                            className={`bg-gray-800 border-gray-700 ${
+                            className={`focus-visible:ring-indigo-500 ${
                                 errors.amount ? "border-red-500" : ""
                             }`}
                             value={amount}
@@ -264,7 +264,7 @@ export function NewTransactionModal({
                             onValueChange={setPaymentMethod}
                         >
                             <SelectTrigger
-                                className={`bg-gray-800 border-gray-700 text-white ${
+                                className={`${
                                     errors.payment_method_id
                                         ? "border-red-500"
                                         : ""
@@ -272,7 +272,7 @@ export function NewTransactionModal({
                             >
                                 <SelectValue placeholder="選択してください" />
                             </SelectTrigger>
-                            <SelectContent className="bg-gray-800 text-white">
+                            <SelectContent>
                                 {filteredPaymentMethods.map((pay) => (
                                     <SelectItem
                                         key={pay.payment_method_id}
@@ -294,7 +294,7 @@ export function NewTransactionModal({
                         </div>
                         <Input
                             id="description"
-                            className={`bg-gray-800 border-gray-700 ${
+                            className={`focus-visible:ring-indigo-500 ${
                                 errors.memo ? "border-red-500" : ""
                             }`}
                             value={description}

@@ -67,13 +67,13 @@ export function DeleteCategoryModal({
                 setOpen(nextOpen);
             }}
         >
-            <DialogContent className="bg-gray-900 text-white rounded-lg">
+            <DialogContent className="rounded-lg">
                 <DialogHeader>
                     <DialogTitle>カテゴリ削除</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <p className="text-sm text-gray-300 leading-6 text-center">
-                        <span className="font-semibold text-white">
+                    <p className="text-center text-sm leading-6 text-muted-foreground">
+                        <span className="font-semibold text-foreground">
                             {category.name}
                         </span>{" "}
                         を削除します。
@@ -81,7 +81,7 @@ export function DeleteCategoryModal({
                         この操作は取り消せません。
                     </p>
 
-                    <p className="text-xs text-gray-500 text-center">
+                    <p className="text-center text-xs text-muted-foreground">
                         ※ 取引に登録済みのカテゴリは削除できません
                     </p>
 
@@ -94,8 +94,8 @@ export function DeleteCategoryModal({
                     <div className="flex flex-col gap-3">
                         <Button
                             type="button"
-                            variant="outline"
-                            className="w-full bg-transparent border-gray-700 text-white hover:bg-gray-800 hover:text-white"
+                            variant="secondary"
+                            className="w-full"
                             onClick={handleClose}
                             disabled={isDeleting}
                         >
@@ -103,7 +103,8 @@ export function DeleteCategoryModal({
                         </Button>
                         <Button
                             type="submit"
-                            className="w-full bg-red-600 hover:bg-red-700 text-white"
+                            className="w-full"
+                            variant="destructive"
                             disabled={isDeleting}
                         >
                             {isDeleting ? "削除中..." : "削除する"}

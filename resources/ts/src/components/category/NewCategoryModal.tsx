@@ -64,14 +64,14 @@ export function NewCategoryModal({ onSuccess }: Props) {
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button
-                    variant="outline"
-                    className="text-white border-gray-700 hover:bg-gray-800"
+                    variant="utility"
                     size="circle"
+                    className="bg-background/60"
                 >
                     ＋
                 </Button>
             </DialogTrigger>
-            <DialogContent className="bg-gray-900 text-white rounded-lg">
+            <DialogContent className="rounded-lg">
                 <DialogHeader>
                     <DialogTitle>カテゴリ登録</DialogTitle>
                 </DialogHeader>
@@ -84,10 +84,10 @@ export function NewCategoryModal({ onSuccess }: Props) {
                                 setType(val as "income" | "expense")
                             }
                         >
-                            <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                            <SelectTrigger>
                                 <SelectValue placeholder="選択してください" />
                             </SelectTrigger>
-                            <SelectContent className="bg-gray-800 text-white">
+                            <SelectContent>
                                 <SelectItem value="income">収入</SelectItem>
                                 <SelectItem value="expense">支出</SelectItem>
                             </SelectContent>
@@ -99,7 +99,7 @@ export function NewCategoryModal({ onSuccess }: Props) {
                             id="name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="bg-gray-800 border-gray-700"
+                            className="focus-visible:ring-indigo-500"
                         />
                     </div>
 

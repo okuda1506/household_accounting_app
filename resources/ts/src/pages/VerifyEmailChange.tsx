@@ -3,6 +3,9 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
 import {
+    Button,
+} from "../components/ui/button";
+import {
     Card,
     CardContent,
     CardHeader,
@@ -30,7 +33,7 @@ const VerifyEmailChange = () => {
 
     if (!email) {
         return (
-            <div className="min-h-screen bg-black text-white p-8">
+            <div className="min-h-screen bg-background p-8 text-foreground">
                 Redirecting...
             </div>
         );
@@ -60,8 +63,8 @@ const VerifyEmailChange = () => {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white">
-            <nav className="border-b border-gray-800">
+        <div className="min-h-screen bg-background text-foreground">
+            <nav className="border-b border-border">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="relative h-16 flex items-center">
                         <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
@@ -76,7 +79,7 @@ const VerifyEmailChange = () => {
 
             <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 sm:px-0">
-                    <Card className="bg-black border border-gray-800 max-w-md mx-auto">
+                    <Card className="mx-auto max-w-md border-border shadow-sm">
                         <CardHeader>
                             <CardTitle className="text-lg font-medium">
                                 認証コード入力
@@ -92,7 +95,7 @@ const VerifyEmailChange = () => {
                                     </div>
                                 )}
 
-                                <p className="text-sm text-gray-400">
+                                <p className="text-sm text-muted-foreground">
                                     {email}{" "}
                                     に送信された認証コードを入力してください。
                                 </p>
@@ -103,16 +106,16 @@ const VerifyEmailChange = () => {
                                     maxLength={6}
                                     value={code}
                                     onChange={(e) => setCode(e.target.value)}
-                                    className="w-full rounded bg-gray-900 px-3 py-2 border border-gray-700"
+                                    className="w-full rounded border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 />
 
-                                <button
+                                <Button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full rounded bg-indigo-600 px-4 py-2 text-sm font-medium"
+                                    className="w-full"
                                 >
                                     {loading ? "認証中..." : "認証"}
-                                </button>
+                                </Button>
                             </form>
                         </CardContent>
                     </Card>

@@ -5,6 +5,9 @@ import { toast } from "react-toastify";
 import api from "../../../lib/axios";
 import { AlertTriangle } from "lucide-react";
 import {
+    Button,
+} from "../ui/button";
+import {
     Card,
     CardContent,
     CardHeader,
@@ -69,14 +72,14 @@ const AuthPasswordForm = ({
 
     if (isInvalidLink) {
         return (
-            <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
-                <Card className="relative bg-black border border-gray-800 w-full max-w-md">
+            <div className="min-h-screen bg-background text-foreground flex items-center justify-center px-4">
+                <Card className="relative w-full max-w-md border-border shadow-sm">
                     <CardHeader>
                         <CardTitle className="text-center text-lg font-semibold text-red-400">
                             {invalidLinkCardTitle}
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="text-center text-gray-400">
+                    <CardContent className="text-center text-muted-foreground">
                         {invalidLinkCardContent}
                         <br />
                         10秒後にパスワード再設定画面へ移動します。
@@ -87,8 +90,8 @@ const AuthPasswordForm = ({
     }
 
     return (
-        <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
-            <Card className="relative bg-black border border-gray-800 w-full max-w-md">
+        <div className="min-h-screen bg-background text-foreground flex items-center justify-center px-4">
+            <Card className="relative w-full max-w-md border-border shadow-sm">
                 <CardHeader>
                     <CardTitle className="text-center text-lg font-semibold">
                         {pageTitle}
@@ -107,29 +110,29 @@ const AuthPasswordForm = ({
                             </div>
                         )}
                         <div>
-                            <label className="block text-sm text-white mb-1">
+                            <label className="mb-1 block text-sm text-foreground">
                                 メールアドレス
                             </label>
                             <input
                                 type="email"
                                 value={email}
                                 disabled
-                                className="w-full px-3 py-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="w-full rounded border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm text-white mb-1">
+                            <label className="mb-1 block text-sm text-foreground">
                                 新しいパスワード
                             </label>
                             <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full px-3 py-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="w-full rounded border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm text-white mb-1">
+                            <label className="mb-1 block text-sm text-foreground">
                                 パスワード確認
                             </label>
                             <input
@@ -138,16 +141,13 @@ const AuthPasswordForm = ({
                                 onChange={(e) =>
                                     setPasswordConfirmation(e.target.value)
                                 }
-                                className="w-full px-3 py-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="w-full rounded border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
                         </div>
                         <div className="pt-2">
-                            <button
-                                type="submit"
-                                className="w-full rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                            >
+                            <Button type="submit" className="w-full">
                                 {submitButtonText}
-                            </button>
+                            </Button>
                         </div>
                     </form>
                 </CardContent>

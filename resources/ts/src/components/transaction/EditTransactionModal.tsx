@@ -172,7 +172,7 @@ export function EditTransactionModal({
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="bg-gray-900 text-white rounded-lg">
+            <DialogContent className="rounded-lg">
                 <DialogHeader>
                     <DialogTitle>取引編集</DialogTitle>
                 </DialogHeader>
@@ -193,10 +193,10 @@ export function EditTransactionModal({
                     <div>
                         <Label htmlFor="type">取引タイプ</Label>
                         <Select value={transactionType} disabled>
-                            <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                            <SelectTrigger>
                                 <SelectValue />
                             </SelectTrigger>
-                            <SelectContent className="bg-gray-800 text-white">
+                            <SelectContent>
                                 <SelectItem value="income">収入</SelectItem>
                                 <SelectItem value="expense">支出</SelectItem>
                             </SelectContent>
@@ -212,13 +212,13 @@ export function EditTransactionModal({
                         </div>
                         <Select value={category} onValueChange={setCategory}>
                             <SelectTrigger
-                                className={`bg-gray-800 border-gray-700 text-white ${
+                                className={`${
                                     errors.category_id ? "border-red-500" : ""
                                 }`}
                             >
                                 <SelectValue />
                             </SelectTrigger>
-                            <SelectContent className="bg-gray-800 text-white">
+                            <SelectContent>
                                 {filteredCategories.map((cat) => (
                                     <SelectItem
                                         key={cat.category_id}
@@ -241,7 +241,7 @@ export function EditTransactionModal({
                         <Input
                             id="amount"
                             type="number"
-                            className={`bg-gray-800 border-gray-700 ${
+                            className={`focus-visible:ring-indigo-500 ${
                                 errors.amount ? "border-red-500" : ""
                             }`}
                             value={amount}
@@ -261,7 +261,7 @@ export function EditTransactionModal({
                             onValueChange={setPaymentMethod}
                         >
                             <SelectTrigger
-                                className={`bg-gray-800 border-gray-700 text-white ${
+                                className={`${
                                     errors.payment_method_id
                                         ? "border-red-500"
                                         : ""
@@ -269,7 +269,7 @@ export function EditTransactionModal({
                             >
                                 <SelectValue placeholder="支払方法を選択..." />
                             </SelectTrigger>
-                            <SelectContent className="bg-gray-800 text-white">
+                            <SelectContent>
                                 {filteredPaymentMethods.map((pay) => (
                                     <SelectItem
                                         key={pay.payment_method_id}
@@ -291,7 +291,7 @@ export function EditTransactionModal({
                         </div>
                         <Input
                             id="description"
-                            className={`bg-gray-800 border-gray-700 ${
+                            className={`focus-visible:ring-indigo-500 ${
                                 errors.memo ? "border-red-500" : ""
                             }`}
                             value={description}
@@ -307,7 +307,7 @@ export function EditTransactionModal({
                         </div>
                     )}
 
-                    <Button type="submit" className="w-full hover:bg-gray-600">
+                    <Button type="submit" className="w-full">
                         更新
                     </Button>
 
@@ -316,22 +316,22 @@ export function EditTransactionModal({
                             <Button
                                 type="button"
                                 variant="destructive"
-                                className="w-full bg-gray-800 hover:bg-gray-600"
+                                className="w-full"
                             >
                                 削除
                             </Button>
                         </AlertDialogTrigger>
-                        <AlertDialogContent className="bg-gray-900 text-white border-gray-700">
+                        <AlertDialogContent className="border-border">
                             <AlertDialogHeader>
                                 <AlertDialogTitle>
                                     本当に削除しますか？
                                 </AlertDialogTitle>
-                                <AlertDialogDescription className="text-gray-400">
+                                <AlertDialogDescription>
                                     この操作は元に戻せません。
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                                <AlertDialogCancel className="bg-transparent text-white border-gray-600 hover:bg-gray-800 hover:text-white">
+                                <AlertDialogCancel>
                                     キャンセル
                                 </AlertDialogCancel>
                                 <AlertDialogAction

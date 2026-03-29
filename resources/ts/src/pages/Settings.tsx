@@ -23,6 +23,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
 import DeleteAccountDialog from "../components/DeleteAccountDialog";
+import { useTheme } from "../contexts/ThemeContext";
 
 type SettingsTab = "account" | "app";
 
@@ -34,10 +35,10 @@ const SettingsTabs = ({
     onChange: (tab: SettingsTab) => void;
 }) => {
     return (
-        <div className="relative bg-gray-800 rounded-full p-1 w-full max-w-md mx-auto mb-6">
+        <div className="relative w-full max-w-md mx-auto mb-6 rounded-full bg-foreground/[0.08] p-1 dark:bg-muted">
             {/* スライド時のbg */}
             <div
-                className={`absolute top-1 left-1 h-[calc(100%-8px)] w-[calc(50%-4px)] rounded-full bg-gray-700 transition-transform duration-300 ease-out ${
+                className={`absolute top-1 left-1 h-[calc(100%-8px)] w-[calc(50%-4px)] rounded-full border border-border bg-background shadow-sm transition-transform duration-300 ease-out ${
                     activeTab === "app"
                         ? "translate-x-[calc(100%)]"
                         : "translate-x-0"
@@ -49,7 +50,9 @@ const SettingsTabs = ({
                 <button
                     onClick={() => onChange("account")}
                     className={`px-6 py-2 text-sm font-medium rounded-full transition-colors ${
-                        activeTab === "account" ? "text-white" : "text-gray-400"
+                        activeTab === "account"
+                            ? "text-foreground"
+                            : "text-muted-foreground"
                     }`}
                 >
                     アカウント設定
@@ -57,7 +60,9 @@ const SettingsTabs = ({
                 <button
                     onClick={() => onChange("app")}
                     className={`px-6 py-2 text-sm font-medium rounded-full transition-colors ${
-                        activeTab === "app" ? "text-white" : "text-gray-400"
+                        activeTab === "app"
+                            ? "text-foreground"
+                            : "text-muted-foreground"
                     }`}
                 >
                     アプリ設定
@@ -77,16 +82,14 @@ const SettingItem = ({
 }) => {
     const textColor =
         variant === "danger"
-            ? "text-red-400"
+            ? "text-red-500"
             : visuallyDisabled
-            ? "text-gray-500"
-            : "text-white";
+            ? "text-muted-foreground"
+            : "text-foreground";
     const iconColor =
         variant === "danger"
-            ? "text-red-400"
-            : visuallyDisabled
-            ? "text-gray-600"
-            : "text-gray-400";
+            ? "text-red-500"
+            : "text-muted-foreground";
 
     return (
         <button
@@ -95,7 +98,7 @@ const SettingItem = ({
             className={`w-full flex items-center justify-between px-4 py-3 transition-colors rounded-lg group ${
                 visuallyDisabled
                     ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-gray-900"
+                    : "hover:bg-accent"
             }`}
         >
             <div className="flex items-center gap-3">
@@ -108,8 +111,8 @@ const SettingItem = ({
                 size={20}
                 className={`transition-colors ${
                     visuallyDisabled
-                        ? "text-gray-700"
-                        : "text-gray-600 group-hover:text-gray-400"
+                        ? "text-muted-foreground opacity-70"
+                        : "text-muted-foreground group-hover:text-foreground"
                 }`}
             />
         </button>
@@ -133,13 +136,13 @@ const ToggleItem = ({
             <div className="flex items-center gap-3">
                 <Icon
                     size={20}
-                    className={
-                        visuallyDisabled ? "text-gray-600" : "text-gray-400"
-                    }
+                    className="text-muted-foreground"
                 />
                 <span
                     className={`text-sm font-medium ${
-                        visuallyDisabled ? "text-gray-500" : "text-white"
+                        visuallyDisabled
+                            ? "text-muted-foreground"
+                            : "text-foreground"
                     }`}
                 >
                     {label}
@@ -149,7 +152,7 @@ const ToggleItem = ({
                 disabled={disabled}
                 onClick={() => onChange(!checked)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    checked ? "bg-blue-600" : "bg-gray-700"
+                    checked ? "bg-blue-600" : "bg-muted"
                 } ${disabled ? "cursor-not-allowed" : ""}`}
             >
                 <span
@@ -163,12 +166,13 @@ const ToggleItem = ({
 };
 
 export default function Settings() {
+    const { isDarkMode, setIsDarkMode } = useTheme();
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [activeTab, setActiveTab] = useState<SettingsTab>("account");
     const [isAiAdviceModeEnabled, setIsAiAdviceModeEnabled] = useState(false);
     const [isAiUpdating, setIsAiUpdating] = useState(false);
     const [isBudgetEnabled, setIsBudgetEnabled] = useState(false);
-    // NOTE: 
+    // NOTE:
     // 操作制御（disabled）と視覚的な無効状態（visuallyDisabled）を分離
     // 通信中は操作のみ無効化し、予算未設定時のみグレーアウトする
     const isAiAdviceDisabled = isAiUpdating || !isBudgetEnabled;
@@ -230,8 +234,8 @@ export default function Settings() {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white">
-            <nav className="border-b border-gray-800">
+        <div className="min-h-screen bg-background text-foreground">
+            <nav className="border-b border-border">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="relative h-16 flex items-center">
                         <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
@@ -251,7 +255,7 @@ export default function Settings() {
                         onChange={setActiveTab}
                     />
                     {activeTab === "account" && (
-                        <Card className="bg-black border-gray-800">
+                        <Card className="border-border shadow-sm">
                             <CardHeader>
                                 <CardTitle className="text-lg font-medium">
                                     アカウント設定
@@ -287,7 +291,7 @@ export default function Settings() {
                                             navigate("/settings/budget")
                                         }
                                     />
-                                    <div className="border-t border-gray-800 my-2" />
+                                    <div className="my-2 border-t border-border" />
                                     <SettingItem
                                         icon={LogOut}
                                         label="サインアウト"
@@ -306,7 +310,7 @@ export default function Settings() {
                     )}
 
                     {activeTab === "app" && (
-                        <Card className="bg-black border-gray-800">
+                        <Card className="border-border shadow-sm">
                             <CardHeader>
                                 <CardTitle className="text-lg font-medium">
                                     アプリ設定
@@ -326,23 +330,18 @@ export default function Settings() {
                                             }
                                         />
                                         {!isBudgetEnabled && (
-                                            <p className="px-4 pt-1 text-xs text-gray-500">
+                                            <p className="px-4 pt-1 text-xs text-muted-foreground">
                                                 AIアドバイスモードを利用するには予算を設定してください。
                                             </p>
                                         )}
                                     </div>
                                     <div>
                                         <ToggleItem
-                                            icon={Moon}
+                                            icon={isDarkMode ? Moon : Sun}
                                             label="ダークモード"
-                                            checked={false}
-                                            onChange={() => {}}
-                                            disabled={true}
-                                            visuallyDisabled={true}
+                                            checked={isDarkMode}
+                                            onChange={setIsDarkMode}
                                         />
-                                        <p className="px-4 pt-1 text-xs text-gray-500">
-                                            ※ ベータ版ではご利用いただけません。
-                                        </p>
                                     </div>
                                     <div>
                                         <SettingItem
@@ -352,7 +351,7 @@ export default function Settings() {
                                             disabled={true}
                                             visuallyDisabled={true}
                                         />
-                                        <p className="px-4 pt-1 text-xs text-gray-500">
+                                        <p className="px-4 pt-1 text-xs text-muted-foreground">
                                             ※ ベータ版ではご利用いただけません。
                                         </p>
                                     </div>
