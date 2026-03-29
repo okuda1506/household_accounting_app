@@ -12,7 +12,7 @@ import {
 } from "../components/ui/card";
 import { ExpenseChart } from "../components/ExpenseChart";
 import { NewTransactionModal } from "../components/transaction/NewTransactionModal";
-import { NavigationModal } from "../components/NavigationModal";
+import { NavigationMenuAnchor } from "../components/NavigationModal";
 import { BotMessageSquare, Loader2 } from "lucide-react";
 import api from "../../lib/axios";
 import { toast } from "react-toastify";
@@ -165,9 +165,7 @@ export default function Dashboard() {
                         <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
                             ダッシュボード
                         </span>
-                        <div className="absolute right-0">
-                            <NavigationModal />
-                        </div>
+                        <NavigationMenuAnchor />
                     </div>
                 </div>
             </nav>

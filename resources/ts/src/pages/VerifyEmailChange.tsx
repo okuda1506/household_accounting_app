@@ -11,7 +11,7 @@ import {
     CardHeader,
     CardTitle,
 } from "../components/ui/card";
-import { NavigationModal } from "../components/NavigationModal";
+import { NavigationMenuAnchor } from "../components/NavigationModal";
 
 const VerifyEmailChange = () => {
     const navigate = useNavigate();
@@ -70,9 +70,7 @@ const VerifyEmailChange = () => {
                         <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
                             設定
                         </span>
-                        <div className="absolute right-0">
-                            <NavigationModal />
-                        </div>
+                        <NavigationMenuAnchor />
                     </div>
                 </div>
             </nav>
