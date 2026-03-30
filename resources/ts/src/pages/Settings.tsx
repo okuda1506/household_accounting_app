@@ -253,7 +253,7 @@ export default function Settings() {
                         onChange={setActiveTab}
                     />
                     {activeTab === "account" && (
-                        <Card className="border-border shadow-sm">
+                        <Card className="rounded-[32px] border-border/70 bg-background/55 shadow-[0_32px_80px_-36px_rgba(15,23,42,0.45)] backdrop-blur-sm">
                             <CardHeader>
                                 <CardTitle className="text-lg font-medium">
                                     アカウント設定
@@ -308,7 +308,7 @@ export default function Settings() {
                     )}
 
                     {activeTab === "app" && (
-                        <Card className="border-border shadow-sm">
+                        <Card className="rounded-[32px] border-border/70 bg-background/55 shadow-[0_32px_80px_-36px_rgba(15,23,42,0.45)] backdrop-blur-sm">
                             <CardHeader>
                                 <CardTitle className="text-lg font-medium">
                                     アプリ設定
