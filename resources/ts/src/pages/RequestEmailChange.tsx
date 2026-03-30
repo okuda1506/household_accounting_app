@@ -1,17 +1,17 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AlertTriangle, Loader2, Mail } from "lucide-react";
 import { toast } from "react-toastify";
+
 import api from "../../lib/axios";
 import {
-    Button,
-} from "../components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "../components/ui/card";
-import { NavigationMenuAnchor } from "../components/NavigationModal";
+    SettingsPageShell,
+    settingsInfoCardClassName,
+    settingsInputClassName,
+} from "../components/settings/SettingsPageShell";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
 
 const RequestEmailChange = () => {
     const navigate = useNavigate();
@@ -30,6 +30,7 @@ const RequestEmailChange = () => {
                 navigate("/settings");
             }
         };
+
         fetchCurrentUser();
     }, [navigate]);
 
@@ -53,87 +54,78 @@ const RequestEmailChange = () => {
     };
 
     return (
-        <div className="min-h-screen bg-background text-foreground">
-            <nav className="border-b border-border">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="relative h-16 flex items-center">
-                        <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
-                            設定
-                        </span>
-                        <NavigationMenuAnchor />
+        <SettingsPageShell
+            icon={Mail}
+            title="メールアドレス変更"
+            description="新しいメールアドレス宛に認証コードを送信します。"
+        >
+            <form onSubmit={handleSubmit} className="space-y-6">
+                {errors.length > 0 && (
+                    <div className="rounded-2xl border border-red-200/80 bg-red-50/90 p-4 text-sm text-red-700 shadow-sm dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
+                        <div className="flex items-start gap-3">
+                            <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
+                            <div className="space-y-1">
+                                {errors.map((error, index) => (
+                                    <p key={index}>{error}</p>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {currentEmail && (
+                    <div className={settingsInfoCardClassName}>
+                        <p className="text-sm font-medium text-muted-foreground">
+                            現在のメールアドレス
+                        </p>
+                        <p className="mt-2 text-sm text-foreground">
+                            {currentEmail}
+                        </p>
+                    </div>
+                )}
+
+                <div className="space-y-2">
+                    <Label htmlFor="email">新しいメールアドレス</Label>
+                    <div className="relative">
+                        <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                            id="email"
+                            type="email"
+                            autoComplete="email"
+                            required
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className={settingsInputClassName}
+                        />
                     </div>
                 </div>
-            </nav>
 
-            <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
-                <div className="px-4 sm:px-0">
-                    <Card className="mx-auto max-w-md border-border shadow-sm">
-                        <CardHeader>
-                            <CardTitle className="text-lg font-medium">
-                                メールアドレス変更
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                {errors.length > 0 && (
-                                    <div className="bg-red-900/30 border border-red-500/50 text-red-400 text-sm p-3 rounded-md">
-                                        {errors.map((e, i) => (
-                                            <p key={i}>{e}</p>
-                                        ))}
-                                    </div>
-                                )}
-
-                                {currentEmail && (
-                                    <div className="space-y-1">
-                                        <p className="text-sm text-muted-foreground">
-                                            現在のメールアドレス
-                                        </p>
-                                        <p className="text-sm text-muted-foreground">
-                                            {currentEmail}
-                                        </p>
-                                    </div>
-                                )}
-
-                                <div>
-                                    <label className="block text-sm mb-1">
-                                        新しいメールアドレス
-                                    </label>
-                                    <input
-                                        type="email"
-                                        required
-                                        value={email}
-                                        onChange={(e) =>
-                                            setEmail(e.target.value)
-                                        }
-                                        className="w-full rounded border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                    />
-                                </div>
-
-                                <div className="pt-6 space-y-3">
-                                    <Button
-                                        type="submit"
-                                        disabled={loading}
-                                        className="w-full"
-                                    >
-                                        {loading
-                                            ? "送信中..."
-                                            : "認証コードを送信"}
-                                    </Button>
-                                    <Button
-                                        type="button"
-                                        variant="secondary"
-                                        onClick={() => navigate("/settings")}
-                                        className="w-full"
-                                    >
-                                        キャンセル
-                                    </Button>
-                                </div>
-                            </form>
-                        </CardContent>
-                    </Card>
+                <div className="space-y-3 pt-2">
+                    <Button
+                        type="submit"
+                        disabled={loading}
+                        className="h-12 w-full rounded-xl text-sm font-semibold shadow-lg shadow-primary/25"
+                    >
+                        {loading ? (
+                            <>
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                                送信中...
+                            </>
+                        ) : (
+                            "認証コードを送信"
+                        )}
+                    </Button>
+                    <Button
+                        type="button"
+                        variant="utility"
+                        onClick={() => navigate("/settings")}
+                        className="h-12 w-full rounded-xl text-sm font-semibold"
+                    >
+                        キャンセル
+                    </Button>
                 </div>
-            </main>
-        </div>
+            </form>
+        </SettingsPageShell>
     );
 };
 

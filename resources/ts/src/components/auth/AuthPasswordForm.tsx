@@ -1,21 +1,30 @@
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams, useNavigate } from "react-router-dom";
-import { AuthPasswordFormProps } from "../../types/auth";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import {
+    AlertTriangle,
+    ArrowRight,
+    Loader2,
+    LockKeyhole,
+    Mail,
+} from "lucide-react";
 import { toast } from "react-toastify";
+
 import api from "../../../lib/axios";
-import { AlertTriangle } from "lucide-react";
-import {
-    Button,
-} from "../ui/button";
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "../ui/card";
+import type { AuthPasswordFormProps } from "../../types/auth";
+import { AuthShell } from "./AuthShell";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+
+const inputClassName =
+    "h-12 rounded-xl border-border/70 bg-background/80 pl-11 shadow-sm transition focus-visible:border-primary/40 focus-visible:ring-[3px] focus-visible:ring-primary/20 focus-visible:ring-offset-0 dark:bg-background/60";
+
+const linkClassName =
+    "inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground";
 
 const AuthPasswordForm = ({
     pageTitle,
+    pageDescription,
     invalidLinkToastMessage,
     invalidLinkCardTitle,
     invalidLinkCardContent,
@@ -33,16 +42,22 @@ const AuthPasswordForm = ({
     const [password, setPassword] = useState("");
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [isInvalidLink, setIsInvalidLink] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         if (!token || !email) {
             setIsInvalidLink(true);
             toast.error(invalidLinkToastMessage);
-            setTimeout(() => navigate(invalidLinkRedirectPath), 10000);
-        } else {
-            setIsInvalidLink(false);
+            const timer = setTimeout(
+                () => navigate(invalidLinkRedirectPath),
+                10000
+            );
+
+            return () => clearTimeout(timer);
         }
+
+        setIsInvalidLink(false);
     }, [
         token,
         email,
@@ -54,6 +69,8 @@ const AuthPasswordForm = ({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setErrors([]);
+        setIsSubmitting(true);
+
         try {
             await api.post(apiEndpoint, {
                 email,
@@ -64,95 +81,157 @@ const AuthPasswordForm = ({
             toast.success(successToastMessage);
             navigate(successRedirectPath);
         } catch (error: any) {
-            console.log(error);
             setErrors(error.response.data.messages);
             toast.error(failureToastMessage);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     if (isInvalidLink) {
         return (
-            <div className="min-h-screen bg-background text-foreground flex items-center justify-center px-4">
-                <Card className="relative w-full max-w-md border-border shadow-sm">
-                    <CardHeader>
-                        <CardTitle className="text-center text-lg font-semibold text-red-400">
-                            {invalidLinkCardTitle}
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-center text-muted-foreground">
-                        {invalidLinkCardContent}
-                        <br />
-                        10秒後にパスワード再設定画面へ移動します。
-                    </CardContent>
-                </Card>
-            </div>
+            <AuthShell variant="simple">
+                <div className="mx-auto w-full max-w-md">
+                    <div className="text-center">
+                        <div className="flex items-center justify-center gap-3">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-500/10 text-red-500 dark:text-red-300">
+                                <AlertTriangle className="h-5 w-5" />
+                            </div>
+                            <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+                                {invalidLinkCardTitle}
+                            </h1>
+                        </div>
+                        <p className="mt-4 text-sm leading-7 text-muted-foreground">
+                            {invalidLinkCardContent}
+                        </p>
+                        <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                            10秒後に自動で移動します。
+                        </p>
+                    </div>
+
+                    <div className="mt-8">
+                        <Link
+                            to={invalidLinkRedirectPath}
+                            className={linkClassName}
+                        >
+                            いますぐ移動する
+                            <ArrowRight className="h-4 w-4" />
+                        </Link>
+                    </div>
+                </div>
+            </AuthShell>
         );
     }
 
     return (
-        <div className="min-h-screen bg-background text-foreground flex items-center justify-center px-4">
-            <Card className="relative w-full max-w-md border-border shadow-sm">
-                <CardHeader>
-                    <CardTitle className="text-center text-lg font-semibold">
-                        {pageTitle}
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        {errors.length > 0 && (
-                            <div className="bg-red-900/30 border border-red-500/50 text-red-400 text-sm p-3 rounded-md flex items-center space-x-2">
-                                <AlertTriangle className="h-5 w-5 text-red-400 flex-shrink-0" />
-                                <div>
+        <AuthShell variant="simple">
+            <div className="mx-auto w-full max-w-md">
+                <div className="mb-8 text-center">
+                    <div className="flex items-center justify-center gap-3">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                            <LockKeyhole className="h-5 w-5" />
+                        </div>
+                        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+                            {pageTitle}
+                        </h1>
+                    </div>
+                    {pageDescription && (
+                        <p className="mt-4 text-sm leading-7 text-muted-foreground">
+                            {pageDescription}
+                        </p>
+                    )}
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    {errors.length > 0 && (
+                        <div className="rounded-2xl border border-red-200/80 bg-red-50/90 p-4 text-sm text-red-700 shadow-sm dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
+                            <div className="flex items-start gap-3">
+                                <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
+                                <div className="space-y-1">
                                     {errors.map((error, index) => (
                                         <p key={index}>{error}</p>
                                     ))}
                                 </div>
                             </div>
-                        )}
-                        <div>
-                            <label className="mb-1 block text-sm text-foreground">
-                                メールアドレス
-                            </label>
-                            <input
-                                type="email"
-                                value={email}
-                                disabled
-                                className="w-full rounded border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            />
                         </div>
-                        <div>
-                            <label className="mb-1 block text-sm text-foreground">
-                                新しいパスワード
-                            </label>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-full rounded border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            />
+                    )}
+
+                    <div className="space-y-5">
+                        <div className="space-y-2">
+                            <Label htmlFor="email">メールアドレス</Label>
+                            <div className="relative">
+                                <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                <Input
+                                    id="email"
+                                    type="email"
+                                    value={email}
+                                    readOnly
+                                    className={`${inputClassName} bg-muted/60 text-muted-foreground`}
+                                />
+                            </div>
                         </div>
-                        <div>
-                            <label className="mb-1 block text-sm text-foreground">
+
+                        <div className="space-y-2">
+                            <Label htmlFor="password">新しいパスワード</Label>
+                            <div className="relative">
+                                <LockKeyhole className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    autoComplete="new-password"
+                                    required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className={inputClassName}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="password_confirmation">
                                 パスワード確認
-                            </label>
-                            <input
-                                type="password"
-                                value={passwordConfirmation}
-                                onChange={(e) =>
-                                    setPasswordConfirmation(e.target.value)
-                                }
-                                className="w-full rounded border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            />
+                            </Label>
+                            <div className="relative">
+                                <LockKeyhole className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                <Input
+                                    id="password_confirmation"
+                                    type="password"
+                                    autoComplete="new-password"
+                                    required
+                                    value={passwordConfirmation}
+                                    onChange={(e) =>
+                                        setPasswordConfirmation(e.target.value)
+                                    }
+                                    className={inputClassName}
+                                />
+                            </div>
                         </div>
-                        <div className="pt-2">
-                            <Button type="submit" className="w-full">
-                                {submitButtonText}
-                            </Button>
-                        </div>
-                    </form>
-                </CardContent>
-            </Card>
-        </div>
+                    </div>
+
+                    <div className="space-y-4 pt-2">
+                        <Button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="h-12 w-full rounded-xl text-sm font-semibold shadow-lg shadow-primary/25"
+                        >
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                    送信中...
+                                </>
+                            ) : (
+                                submitButtonText
+                            )}
+                        </Button>
+
+                        <Link to="/login" className={linkClassName}>
+                            ログイン画面に戻る
+                            <ArrowRight className="h-4 w-4" />
+                        </Link>
+                    </div>
+                </form>
+            </div>
+        </AuthShell>
     );
 };
 

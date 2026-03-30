@@ -1,5 +1,6 @@
 export interface AuthPasswordFormProps {
     pageTitle: string;
+    pageDescription?: string;
     invalidLinkToastMessage: string;
     invalidLinkCardTitle: string;
     invalidLinkCardContent: string;

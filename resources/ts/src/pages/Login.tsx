@@ -1,23 +1,26 @@
-import { useState, useEffect} from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AlertTriangle, ArrowRight, LockKeyhole, LogIn, Mail } from "lucide-react";
 import { toast } from "react-toastify";
+
 import api from "../../lib/axios";
-import {
-    Button,
-} from "../components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "../components/ui/card";
+import { AuthShell } from "../components/auth/AuthShell";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+
+const inputClassName =
+    "h-12 rounded-xl border-border/70 bg-background/80 pl-11 shadow-sm transition focus-visible:border-primary/40 focus-visible:ring-[3px] focus-visible:ring-primary/20 focus-visible:ring-offset-0 dark:bg-background/60";
+
+const linkClassName =
+    "inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [remember, setRemember] = useState(false);
     const [errors, setErrors] = useState<string[]>([]);
     const navigate = useNavigate();
+    const remember = false;
 
     useEffect(() => {
         const token = localStorage.getItem("access_token");
@@ -34,7 +37,7 @@ const Login = () => {
             const response = await api.post("/login", {
                 email,
                 password,
-                remember, // todo: 多分ここ機能してない
+                remember,
             });
 
             const accessToken = response.data.data.token;
@@ -49,113 +52,105 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen bg-background text-foreground flex items-center justify-center px-4">
-            <Card className="relative w-full max-w-md border-border shadow-sm">
-                <CardHeader>
-                    <CardTitle className="text-center text-lg font-semibold">
-                        サインイン
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        {errors.length > 0 && (
-                            <div className="bg-red-900/30 border border-red-500/50 text-red-400 text-sm p-3 rounded-md">
-                                {errors.map((error, index) => (
-                                    <p key={index}>{error}</p>
-                                ))}
+        <AuthShell
+            variant="simple"
+        >
+            <div className="mx-auto w-full max-w-md">
+                <div className="mb-8 text-center">
+                    <div className="flex items-center justify-center gap-3">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                            <LogIn className="h-5 w-5" />
+                        </div>
+                        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+                            サインイン
+                        </h1>
+                    </div>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    {errors.length > 0 && (
+                        <div className="rounded-2xl border border-red-200/80 bg-red-50/90 p-4 text-sm text-red-700 shadow-sm dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
+                            <div className="flex items-start gap-3">
+                                <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
+                                <div className="space-y-1">
+                                    {errors.map((error, index) => (
+                                        <p key={index}>{error}</p>
+                                    ))}
+                                </div>
                             </div>
-                        )}
-                        {errors.some((error) =>
-                            error.includes(
-                                "このアカウントは既に退会済みです。ご利用の場合は再開手続きをしてください。"
-                            )
-                        ) && (
-                            <div>
-                                <a
-                                    href="/forgot-password"
-                                    className="block text-sm text-red-400 underline"
-                                >
-                                    再開手続きはこちら
-                                </a>
+                        </div>
+                    )}
+
+                    {errors.some((error) =>
+                        error.includes(
+                            "このアカウントは既に退会済みです。ご利用の場合は再開手続きをしてください。"
+                        )
+                    ) && (
+                        <Link
+                            to="/forgot-password"
+                            className="inline-flex items-center gap-2 text-sm font-medium text-red-600 transition hover:text-red-700 dark:text-red-300 dark:hover:text-red-200"
+                        >
+                            再開手続きはこちら
+                            <ArrowRight className="h-4 w-4" />
+                        </Link>
+                    )}
+
+                    <div className="space-y-5">
+                        <div className="space-y-2">
+                            <Label htmlFor="email">メールアドレス</Label>
+                            <div className="relative">
+                                <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                <Input
+                                    id="email"
+                                    type="email"
+                                    autoComplete="username"
+                                    required
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className={inputClassName}
+                                />
                             </div>
-                        )}
-                        {/* Email */}
-                        <div>
-                            <label
-                                htmlFor="email"
-                                className="mb-1 block text-sm text-foreground"
-                            >
-                                メールアドレス
-                            </label>
-                            <input
-                                id="email"
-                                type="email"
-                                autoComplete="username"
-                                required
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="w-full rounded border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            />
                         </div>
 
-                        {/* Password */}
-                        <div>
-                            <label
-                                htmlFor="password"
-                                className="mb-1 block text-sm text-foreground"
-                            >
-                                パスワード
-                            </label>
-                            <input
-                                id="password"
-                                type="password"
-                                autoComplete="current-password"
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-full rounded border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            />
+                        <div className="space-y-2">
+                            <Label htmlFor="password">パスワード</Label>
+                            <div className="relative">
+                                <LockKeyhole className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    autoComplete="current-password"
+                                    required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className={inputClassName}
+                                />
+                            </div>
                         </div>
+                    </div>
 
-                        {/* Remember Me 一旦不要とする */}
-                        {/* <div className="flex items-center">
-                            <input
-                                id="remember_me"
-                                type="checkbox"
-                                checked={remember}
-                                onChange={(e) => setRemember(e.target.checked)}
-                                className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
-                            />
-                            <label
-                                htmlFor="remember_me"
-                                className="ml-2 text-sm text-foreground"
-                            >
-                                サインイン状態を保持
-                            </label>
-                        </div> */}
+                    <div className="space-y-4 pt-2">
+                        <Button
+                            type="submit"
+                            className="h-12 w-full rounded-xl text-sm font-semibold shadow-lg shadow-primary/25"
+                        >
+                            サインイン
+                        </Button>
 
-                        {/* Submit */}
-                        <div className="space-y-4 pt-6">
-                            <Button type="submit" className="w-full">
-                                サインイン
-                            </Button>
-                            <a
-                                href="/forgot-password"
-                                className="block text-sm text-muted-foreground underline hover:text-foreground"
-                            >
+                        <div className="flex flex-col gap-3">
+                            <Link to="/forgot-password" className={linkClassName}>
                                 パスワードをお忘れの場合
-                            </a>
-                            <Link
-                                to="/register"
-                                className="block text-sm text-muted-foreground underline hover:text-foreground"
-                            >
+                                <ArrowRight className="h-4 w-4" />
+                            </Link>
+                            <Link to="/register" className={linkClassName}>
                                 サインアップはこちら
+                                <ArrowRight className="h-4 w-4" />
                             </Link>
                         </div>
-                    </form>
-                </CardContent>
-            </Card>
-        </div>
+                    </div>
+                </form>
+            </div>
+        </AuthShell>
     );
 };
 
