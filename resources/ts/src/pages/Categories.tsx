@@ -21,6 +21,12 @@ import { NavigationMenuAnchor } from "../components/NavigationModal";
 import api from "../../lib/axios";
 import type { Category } from "../types/categories";
 
+const categoryCardClassName =
+    "overflow-hidden rounded-[32px] border-border/70 bg-background/55 shadow-[0_32px_80px_-36px_rgba(15,23,42,0.45)] backdrop-blur-sm";
+
+const categoryRowClassName =
+    "flex cursor-pointer items-center justify-between rounded-2xl border border-border/60 bg-background/70 px-4 py-4 shadow-sm backdrop-blur-sm transition-colors hover:bg-background/90";
+
 export default function Categories() {
     const [type, setType] = useState<"income" | "expense">("income");
     const [categories, setCategories] = useState<Category[]>([]);
@@ -73,19 +79,33 @@ export default function Categories() {
                         <NewCategoryModal onSuccess={fetchCategories} />
                     </div>
 
-                    <Card className="border-border shadow-sm">
-                        <CardHeader>
-                            <div className="flex items-center justify-between w-full">
-                                <CardTitle className="text-lg font-medium">
-                                    カテゴリ一覧
-                                </CardTitle>
+                    <div className="space-y-2">
+                        <h1 className="text-3xl font-semibold tracking-tight">
+                            カテゴリ
+                        </h1>
+                        <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+                            収入と支出のカテゴリを整理して、日々の入力を迷いなく進められます。
+                        </p>
+                    </div>
+
+                    <Card className={categoryCardClassName}>
+                        <CardHeader className="space-y-4">
+                            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                                <div className="space-y-1">
+                                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                                        Category Manager
+                                    </p>
+                                    <CardTitle className="text-lg font-medium">
+                                        カテゴリ一覧
+                                    </CardTitle>
+                                </div>
                                 <Select
                                     defaultValue="income"
                                     onValueChange={(val) =>
                                         setType(val as "income" | "expense")
                                     }
                                 >
-                                    <SelectTrigger className="w-[80px]">
+                                    <SelectTrigger className="h-10 w-[88px] rounded-xl border-border/60 bg-background/80 shadow-sm">
                                         <SelectValue placeholder="選択してください" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -102,21 +122,21 @@ export default function Categories() {
 
                         <CardContent>
                             {filteredCategories.length === 0 ? (
-                                <p className="text-sm text-muted-foreground">
+                                <div className="rounded-2xl border border-dashed border-border/70 bg-background/60 px-4 py-10 text-center text-sm text-muted-foreground">
                                     カテゴリを登録してください。
-                                </p>
+                                </div>
                             ) : (
                                 <ul className="space-y-3">
                                     {filteredCategories.map((category) => (
                                         <li
                                             key={category.category_id}
-                                            className="flex items-center justify-between rounded-md px-4 py-3 transition-colors hover:bg-accent"
+                                            className={categoryRowClassName}
                                             onClick={() => {
                                                 setEditingCategory(category);
                                                 setEditModalOpen(true);
                                             }}
                                         >
-                                            <p className="text-sm font-medium">
+                                            <p className="text-sm font-medium text-foreground">
                                                 {category.name}
                                             </p>
                                             <Button
@@ -127,7 +147,7 @@ export default function Categories() {
                                                     setDeleteTarget(category);
                                                     setDeleteModalOpen(true);
                                                 }}
-                                                className="ml-2 border-transparent bg-transparent text-muted-foreground shadow-none hover:bg-accent hover:text-red-500"
+                                                className="ml-2 rounded-xl border border-border/50 bg-background/70 text-muted-foreground shadow-none hover:bg-background hover:text-red-500"
                                             >
                                                 <Trash2 className="w-4 h-4" />
                                             </Button>

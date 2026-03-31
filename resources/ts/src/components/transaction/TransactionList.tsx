@@ -13,6 +13,12 @@ import { EditTransactionModal } from "./EditTransactionModal";
 import { Category } from "../../types/categories";
 import { PaymentMethod } from "../../types/paymentMethod";
 
+const transactionCardClassName =
+    "overflow-hidden rounded-[32px] border-border/70 bg-background/55 shadow-[0_32px_80px_-36px_rgba(15,23,42,0.45)] backdrop-blur-sm";
+
+const transactionPanelClassName =
+    "rounded-2xl border border-border/60 bg-background/70 p-4 shadow-sm backdrop-blur-sm";
+
 type TransactionListProps = {
     transactions: Transaction[];
     onSuccess: () => void;
@@ -68,12 +74,17 @@ export function TransactionList({
 
     return (
         <>
-            <Card className="border-border shadow-sm">
-                <CardHeader>
-                    <div className="flex items-center justify-between w-full">
-                        <CardTitle className="text-lg font-medium">
-                            取引履歴
-                        </CardTitle>
+            <Card className={transactionCardClassName}>
+                <CardHeader className="space-y-4">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                        <div className="space-y-1">
+                            <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                                Transaction History
+                            </p>
+                            <CardTitle className="text-lg font-medium">
+                                取引履歴
+                            </CardTitle>
+                        </div>
                         <div className="flex gap-2">
                             <Select
                                 onValueChange={(value) =>
@@ -81,7 +92,7 @@ export function TransactionList({
                                 }
                                 value={String(selectedYear)}
                             >
-                                <SelectTrigger className="w-[100px]">
+                                <SelectTrigger className="h-10 w-[100px] rounded-xl border-border/60 bg-background/80 shadow-sm">
                                     <SelectValue placeholder="年" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -101,7 +112,7 @@ export function TransactionList({
                                 }
                                 value={String(selectedMonth)}
                             >
-                                <SelectTrigger className="w-[100px]">
+                                <SelectTrigger className="h-10 w-[100px] rounded-xl border-border/60 bg-background/80 shadow-sm">
                                     <SelectValue placeholder="月" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -119,24 +130,28 @@ export function TransactionList({
                     </div>
                 </CardHeader>
 
-                <CardContent>
-                    <div className="flex justify-between items-center pb-10">
-                        <p className="text-lg">
-                            収入：
-                            <span className="text-green-400 font-medium ml-2">
+                <CardContent className="space-y-6">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                        <div className={transactionPanelClassName}>
+                            <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                                収入
+                            </p>
+                            <p className="mt-3 text-2xl font-semibold text-emerald-500 dark:text-emerald-300">
                                 ¥{totalIncome.toLocaleString()}
-                            </span>
-                        </p>
-                        <p className="text-lg">
-                            支出：
-                            <span className="text-red-400 font-medium ml-2">
+                            </p>
+                        </div>
+                        <div className={transactionPanelClassName}>
+                            <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                                支出
+                            </p>
+                            <p className="mt-3 text-2xl font-semibold text-rose-500 dark:text-rose-300">
                                 ¥{Math.abs(totalExpense).toLocaleString()}
-                            </span>
-                        </p>
+                            </p>
+                        </div>
                     </div>
 
                     {filteredTransactions.length > 0 ? (
-                        <ul className="space-y-4">
+                        <ul className="space-y-3">
                             {filteredTransactions.map((transaction, index) => {
                                 const isIncome =
                                     transaction.transaction_type_id === 1;
@@ -146,25 +161,25 @@ export function TransactionList({
                                         key={
                                             transaction.transaction_id ?? index
                                         }
-                                        className="cursor-pointer rounded-md px-4 py-3 text-sm transition-colors hover:bg-accent flex justify-between items-start"
+                                        className="flex cursor-pointer items-start justify-between rounded-2xl border border-border/60 bg-background/70 px-4 py-4 text-sm shadow-sm backdrop-blur-sm transition-colors hover:bg-background/90"
                                         onClick={() => {
                                             setEditingTransaction(transaction);
                                             setEditModalOpen(true);
                                         }}
                                     >
                                         <div className="min-w-0 flex-1 pr-4">
-                                            <p className="font-medium truncate">
+                                            <p className="truncate font-medium text-foreground">
                                                 {transaction.memo}
                                             </p>
-                                            <p className="text-muted-foreground">
+                                            <p className="mt-1 text-muted-foreground">
                                                 {formatDate(transaction.date)}{" "}
                                             </p>
                                         </div>
                                         <p
-                                            className={`font-medium  shrink-0 text-right ${
+                                            className={`shrink-0 text-right text-base font-semibold ${
                                                 isIncome
-                                                    ? "text-green-400"
-                                                    : "text-red-400"
+                                                    ? "text-emerald-500 dark:text-emerald-300"
+                                                    : "text-rose-500 dark:text-rose-300"
                                             }`}
                                         >
                                             {isIncome ? "+" : "-"}¥
@@ -177,9 +192,9 @@ export function TransactionList({
                             })}
                         </ul>
                     ) : (
-                        <p className="text-muted-foreground text-center py-4">
+                        <div className="rounded-2xl border border-dashed border-border/70 bg-background/60 px-4 py-10 text-center text-muted-foreground">
                             取引がありません
-                        </p>
+                        </div>
                     )}
                 </CardContent>
             </Card>

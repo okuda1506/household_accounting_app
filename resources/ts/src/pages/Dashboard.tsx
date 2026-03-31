@@ -31,6 +31,12 @@ import type {
     AiAdviceResult,
 } from "../types/aiAdviceResult";
 
+const dashboardCardClassName =
+    "relative overflow-hidden rounded-[32px] border-border/70 bg-background/55 shadow-[0_32px_80px_-36px_rgba(15,23,42,0.45)] backdrop-blur-sm";
+
+const dashboardPanelClassName =
+    "rounded-2xl border border-border/60 bg-background/70 p-4 shadow-sm backdrop-blur-sm";
+
 export default function Dashboard() {
     const [summary, setSummary] = useState<MonthlySummary | null>(null);
     const [trend, setTrend] = useState<ExpenseTrend[]>([]);
@@ -178,60 +184,72 @@ export default function Dashboard() {
                             allPaymentMethods={allPaymentMethods}
                         />
                     </div>
-                    <div>
+                    <div className="space-y-2">
                         {user ? (
                             <TypeAnimation
                                 sequence={[`Hey, ${user.name} 🖐️`]}
                                 wrapper="h1"
                                 speed={50}
-                                className="text-2xl"
+                                className="text-3xl font-semibold tracking-tight"
                                 cursor={false}
                                 repeat={0}
                             />
                         ) : (
-                            <h1 className="text-2xl h-8">{"\u00A0"}</h1>
+                            <h1 className="h-10 text-3xl font-semibold tracking-tight">
+                                {"\u00A0"}
+                            </h1>
                         )}
+                        <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+                            今月の収支、支出の変化、最近の記録を落ち着いたレイアウトで確認できます。
+                        </p>
                     </div>
-                    <Card className="border-border shadow-sm">
-                        <CardHeader>
-                            <CardTitle className="text-lg font-medium">
-                                今月のサマリ
-                            </CardTitle>
-                            <p className="text-muted-foreground">
-                                {year}年 {month}月
-                            </p>
+                    <Card className={dashboardCardClassName}>
+                        <CardHeader className="relative space-y-4">
+                            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                                <div className="space-y-1">
+                                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                                        Monthly Overview
+                                    </p>
+                                    <CardTitle className="text-lg font-medium">
+                                        今月のサマリ
+                                    </CardTitle>
+                                </div>
+                                <div className="inline-flex w-fit items-center rounded-full border border-border/60 bg-background/80 px-3 py-1 text-sm text-muted-foreground shadow-sm">
+                                    {year}年 {month}月
+                                </div>
+                            </div>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="relative space-y-6">
                             {summary && (
                                 <>
-                                    <div className="flex justify-between items-center text-sm">
-                                        <div>
-                                            <p className="text-muted-foreground">
+                                    <div className="grid gap-3 sm:grid-cols-3">
+                                        <div className={dashboardPanelClassName}>
+                                            <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
                                                 収入
                                             </p>
-                                            <p className="text-xl font-semibold text-green-400">
+                                            <p className="mt-3 text-2xl font-semibold text-emerald-500 dark:text-emerald-300">
                                                 ¥
                                                 {parseInt(
                                                     summary.income,
                                                 ).toLocaleString()}
                                             </p>
                                         </div>
-                                        <div>
-                                            <p className="text-muted-foreground">
+                                        <div className={dashboardPanelClassName}>
+                                            <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
                                                 支出
                                             </p>
-                                            <p className="text-xl font-semibold text-red-400">
+                                            <p className="mt-3 text-2xl font-semibold text-rose-500 dark:text-rose-300">
                                                 ¥
                                                 {parseInt(
                                                     summary.expense,
                                                 ).toLocaleString()}
                                             </p>
                                         </div>
-                                        <div>
-                                            <p className="text-muted-foreground">
+                                        <div className={dashboardPanelClassName}>
+                                            <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
                                                 収支
                                             </p>
-                                            <p className="text-xl font-semibold">
+                                            <p className="mt-3 text-2xl font-semibold">
                                                 ¥
                                                 {summary.balance.toLocaleString()}
                                             </p>
@@ -251,8 +269,10 @@ export default function Dashboard() {
                                                 budgetUsagePercentage > 100;
 
                                             return (
-                                                <div className="space-y-2 mt-6">
-                                                    <div className="flex justify-between text-sm">
+                                                <div
+                                                    className={`${dashboardPanelClassName} space-y-3`}
+                                                >
+                                                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                                                         <span className="text-muted-foreground">
                                                             予算消化率（限度額:
                                                             ¥
@@ -274,7 +294,7 @@ export default function Dashboard() {
                                                             )}
                                                         </span>
                                                     </div>
-                                                    <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                                                    <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted/80">
                                                         <div
                                                             className={`h-full rounded-full transition-all duration-500 ease-out ${
                                                                 budgetUsagePercentage >=
@@ -291,7 +311,7 @@ export default function Dashboard() {
                                                         />
                                                     </div>
                                                     {expense > user.budget && (
-                                                        <p className="text-xs text-red-500 mt-1 font-medium">
+                                                        <p className="text-xs font-medium text-red-500">
                                                             ⚠️
                                                             予算を超過しています
                                                         </p>
@@ -302,23 +322,33 @@ export default function Dashboard() {
                                     {/* AIアドバイス */}
                                     {canUseAiAdvice && (
                                         <div className="mt-6 space-y-4">
-                                            <Button
-                                                type="button"
-                                                variant="utility"
-                                                onClick={handleAiAdvice}
-                                                disabled={isAiAnalyzing}
-                                                className="h-auto w-full justify-center bg-accent px-4 py-3 hover:bg-accent/80"
-                                            >
-                                                {aiButtonContent}
-                                            </Button>
+                                            <div className={dashboardPanelClassName}>
+                                                <div className="space-y-4">
+                                                    <div className="space-y-1">
+                                                        <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                                                            AI Advice
+                                                        </p>
+                                                        <p className="text-sm text-muted-foreground">
+                                                            今月の支出状況をもとに、次の一手を提案します。
+                                                        </p>
+                                                    </div>
+                                                    <Button
+                                                        type="button"
+                                                        variant="utility"
+                                                        onClick={handleAiAdvice}
+                                                        disabled={isAiAnalyzing}
+                                                        className="h-auto w-full justify-center rounded-xl border border-border/60 bg-background/85 px-4 py-3 shadow-sm hover:bg-background"
+                                                    >
+                                                        {aiButtonContent}
+                                                    </Button>
+                                                </div>
+                                            </div>
 
                                             {aiAdvice && isAiAdviceVisible && (
                                                 <div
                                                     ref={aiAdviceRef}
-                                                    className="animate-in fade-in slide-in-from-top-6 relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm duration-1000 ease-out"
+                                                    className="animate-in fade-in slide-in-from-top-6 relative overflow-hidden rounded-[28px] border border-border/70 bg-background/70 p-5 shadow-[0_24px_60px_-32px_rgba(15,23,42,0.45)] backdrop-blur-sm duration-1000 ease-out"
                                                 >
-                                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.08),transparent_40%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.10),transparent_40%)]" />
-
                                                     <div className="relative space-y-5">
                                                         <div className="flex items-start justify-between gap-3">
                                                             <div className="space-y-1">
@@ -339,7 +369,7 @@ export default function Dashboard() {
                                                         </div>
 
                                                         <div className="grid gap-4 md:grid-cols-[1.1fr_0.9fr]">
-                                                            <div className="rounded-xl border border-border bg-muted/40 p-4">
+                                                            <div className="rounded-2xl border border-border/60 bg-background/75 p-4 shadow-sm">
                                                                 <p className="mb-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
                                                                     Analysis
                                                                 </p>
@@ -352,7 +382,7 @@ export default function Dashboard() {
                                                                 </p>
                                                             </div>
 
-                                                            <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:shadow-inner dark:shadow-indigo-950/30">
+                                                            <div className="rounded-2xl border border-indigo-200/80 bg-indigo-50/85 p-4 shadow-sm dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:shadow-inner dark:shadow-indigo-950/30">
                                                                 <p className="mb-2 text-xs font-medium uppercase tracking-widest text-indigo-600 dark:text-indigo-300">
                                                                     Action Today
                                                                 </p>
@@ -366,7 +396,7 @@ export default function Dashboard() {
                                                             </div>
                                                         </div>
 
-                                                        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 dark:border-emerald-500/15 dark:bg-emerald-500/5">
+                                                        <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/85 px-4 py-3 shadow-sm dark:border-emerald-500/15 dark:bg-emerald-500/5">
                                                             <p className="mb-1 text-xs font-medium uppercase tracking-widest text-emerald-700 dark:text-emerald-300/90">
                                                                 Message
                                                             </p>
@@ -388,15 +418,18 @@ export default function Dashboard() {
 
                     {trend && <ExpenseChart trend={trend} />}
 
-                    <Card className="border-border shadow-sm">
-                        <CardHeader>
+                    <Card className={dashboardCardClassName}>
+                        <CardHeader className="relative space-y-1">
+                            <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                                Recent Activity
+                            </p>
                             <CardTitle className="text-lg font-medium">
                                 最近の取引
                             </CardTitle>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="relative">
                             {transactions.length > 0 ? (
-                                <ul className="space-y-4">
+                                <ul className="space-y-3">
                                     {transactions.map((transaction) => {
                                         const amount = parseFloat(
                                             transaction.amount,
@@ -408,23 +441,23 @@ export default function Dashboard() {
                                         return (
                                             <li
                                                 key={transaction.id}
-                                                className="flex justify-between items-start text-sm"
+                                                className="flex items-start justify-between rounded-2xl border border-border/60 bg-background/70 px-4 py-4 text-sm shadow-sm backdrop-blur-sm"
                                             >
                                                 <div className="min-w-0 flex-1 pr-4">
-                                                    <p className="font-medium truncate">
+                                                    <p className="truncate font-medium text-foreground">
                                                         {transaction.memo}
                                                     </p>
-                                                    <p className="text-muted-foreground">
+                                                    <p className="mt-1 text-muted-foreground">
                                                         {formatDate(
                                                             transaction.transaction_date,
                                                         )}{" "}
                                                     </p>
                                                 </div>
                                                 <p
-                                                    className={`font-medium shrink-0 text-right ${
+                                                    className={`shrink-0 text-right text-base font-semibold ${
                                                         isIncome
-                                                            ? "text-green-400"
-                                                            : "text-red-400"
+                                                            ? "text-emerald-500 dark:text-emerald-300"
+                                                            : "text-rose-500 dark:text-rose-300"
                                                     }`}
                                                 >
                                                     {isIncome ? "+" : "-"}¥
@@ -437,9 +470,9 @@ export default function Dashboard() {
                                     })}
                                 </ul>
                             ) : (
-                                <p className="text-center py-4 text-muted-foreground">
+                                <div className="rounded-2xl border border-dashed border-border/70 bg-background/60 px-4 py-10 text-center text-muted-foreground">
                                     最近の取引はありません。
-                                </p>
+                                </div>
                             )}
                         </CardContent>
                     </Card>
