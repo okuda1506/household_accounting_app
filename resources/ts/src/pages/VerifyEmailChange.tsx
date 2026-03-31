@@ -116,6 +116,7 @@ const VerifyEmailChange = () => {
                             maxLength={6}
                             value={code}
                             onChange={(e) => setCode(e.target.value)}
+                            onClear={() => setCode("")}
                             className={settingsInputClassName}
                         />
                     </div>

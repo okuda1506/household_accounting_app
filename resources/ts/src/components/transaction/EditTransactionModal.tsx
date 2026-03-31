@@ -260,6 +260,7 @@ export function EditTransactionModal({
                                 }`}
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
+                                onClear={() => setAmount("")}
                             />
                         </div>
 
@@ -314,6 +315,7 @@ export function EditTransactionModal({
                                 }`}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
+                                onClear={() => setDescription("")}
                             />
                         </div>
 

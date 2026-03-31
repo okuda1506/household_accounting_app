@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AlertTriangle, Loader2, User, X } from "lucide-react";
+import { AlertTriangle, Loader2, User } from "lucide-react";
 import { toast } from "react-toastify";
 
 import api from "../../lib/axios";
@@ -96,18 +96,9 @@ const UpdateUserName = () => {
                             required
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className={`${settingsInputClassName} pr-11`}
+                            onClear={() => setName("")}
+                            className={settingsInputClassName}
                         />
-                        {name && (
-                            <button
-                                type="button"
-                                onClick={() => setName("")}
-                                className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground transition hover:text-foreground"
-                                aria-label="Clear input"
-                            >
-                                <X className="h-5 w-5" />
-                            </button>
-                        )}
                     </div>
                 </div>
 

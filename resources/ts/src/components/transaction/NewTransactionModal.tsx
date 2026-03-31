@@ -249,6 +249,7 @@ export function NewTransactionModal({
                             }`}
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
+                            onClear={() => setAmount("")}
                         />
                     </div>
                     {/* 支払方法 */}
@@ -299,6 +300,7 @@ export function NewTransactionModal({
                             }`}
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
+                            onClear={() => setDescription("")}
                         />
                     </div>
 

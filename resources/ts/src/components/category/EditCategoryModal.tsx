@@ -101,6 +101,7 @@ export function EditCategoryModal({
                             id="name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
+                            onClear={() => setName("")}
                             className={modalFieldClassName}
                         />
                     </div>

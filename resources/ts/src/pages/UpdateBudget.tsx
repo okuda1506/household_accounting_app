@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AlertTriangle, Loader2, Wallet, X } from "lucide-react";
+import { AlertTriangle, Loader2, Wallet } from "lucide-react";
 import { toast } from "react-toastify";
 
 import api from "../../lib/axios";
@@ -157,19 +157,10 @@ const UpdateBudget = () => {
                                         e.target.value.replace(/[^0-9]/g, "")
                                     )
                                 }
-                                className={`${settingsInputClassName} pr-11`}
+                                onClear={() => setBudget("")}
+                                className={settingsInputClassName}
                                 placeholder="100000"
                             />
-                            {budget && (
-                                <button
-                                    type="button"
-                                    onClick={() => setBudget("")}
-                                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground transition hover:text-foreground"
-                                    aria-label="Clear input"
-                                >
-                                    <X className="h-5 w-5" />
-                                </button>
-                            )}
                         </div>
                     </div>
                 )}

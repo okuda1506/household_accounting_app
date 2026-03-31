@@ -95,6 +95,7 @@ const RequestEmailChange = () => {
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            onClear={() => setEmail("")}
                             className={settingsInputClassName}
                         />
                     </div>

@@ -83,6 +83,7 @@ const ForgotPassword = () => {
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                onClear={() => setEmail("")}
                                 className={inputClassName}
                             />
                         </div>

@@ -127,6 +127,7 @@ const Register = () => {
                                     required
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
+                                    onClear={() => setName("")}
                                     className={inputClassName}
                                 />
                             </div>
@@ -143,6 +144,7 @@ const Register = () => {
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
+                                    onClear={() => setEmail("")}
                                     className={inputClassName}
                                 />
                             </div>
