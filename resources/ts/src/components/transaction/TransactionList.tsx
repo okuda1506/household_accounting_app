@@ -185,9 +185,7 @@ export function TransactionList({
                                             const isIncome =
                                                 transaction.transaction_type_id ===
                                                 1;
-                                            const fallbackMemo = isIncome
-                                                ? "収入の記録"
-                                                : "支出の記録";
+                                            const fallbackMemo = "メモなし";
 
                                             return (
                                                 <li

@@ -39,9 +39,6 @@ export function ExpenseChart({ trend }: ExpenseChartProps) {
                 <CardTitle className="text-lg font-medium">
                     支出傾向
                 </CardTitle>
-                <p className="text-sm text-muted-foreground">
-                    直近の月次支出の流れをまとめて確認できます。
-                </p>
             </CardHeader>
             <CardContent className="relative">
                 <ResponsiveContainer width="100%" height={300}>

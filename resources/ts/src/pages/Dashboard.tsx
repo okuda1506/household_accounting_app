@@ -207,29 +207,20 @@ export default function Dashboard() {
                         )}
                     </div>
                     <Card className={dashboardCardClassName}>
-                        <CardHeader className="relative space-y-4">
-                            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                        <CardHeader className="relative space-y-1">
+                            <div className="flex flex-wrap items-center gap-3">
                                 <CardTitle className="text-lg font-medium">
-                                    今月のサマリ
+                                    月間サマリ
                                 </CardTitle>
                                 <div className="inline-flex w-fit items-center rounded-full border border-border/60 bg-background/80 px-3 py-1 text-sm text-muted-foreground shadow-sm">
                                     {year}年 {month}月
                                 </div>
                             </div>
                         </CardHeader>
-                        <CardContent className="relative space-y-6">
+                        <CardContent className="relative space-y-6 pt-2">
                             {summary && (
                                 <>
-                                    <section className="space-y-3">
-                                        <div>
-                                            <p className="text-sm font-medium text-foreground">
-                                                月間サマリ
-                                            </p>
-                                            <p className="text-sm text-muted-foreground">
-                                                今月の収支をまとめて確認できます。
-                                            </p>
-                                        </div>
-
+                                    <section>
                                         <div className="grid gap-3 sm:grid-cols-3">
                                             <div
                                                 className={`${dashboardSummaryCardClassName} border-emerald-500/20 bg-emerald-500/[0.08]`}
@@ -340,7 +331,7 @@ export default function Dashboard() {
                                             <div className={dashboardPanelClassName}>
                                                 <div className="space-y-4">
                                                     <p className="text-sm text-muted-foreground">
-                                                        今月の支出状況をもとに、次の一手を提案します。
+                                                        今月の予算・支出状況をもとにAIがアドバイスを提案します。
                                                     </p>
                                                     <Button
                                                         type="button"
@@ -415,20 +406,12 @@ export default function Dashboard() {
                     {trend && <ExpenseChart trend={trend} />}
 
                     <Card className={dashboardCardClassName}>
-                        <CardHeader className="relative space-y-4">
+                        <CardHeader className="relative space-y-1">
                             <CardTitle className="text-lg font-medium">
                                 最近の取引
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="relative space-y-3">
-                            <div>
-                                <p className="text-sm font-medium text-foreground">
-                                    取引データ
-                                </p>
-                                <p className="text-sm text-muted-foreground">
-                                    直近の記録を一覧で確認できます。
-                                </p>
-                            </div>
+                        <CardContent className="relative">
                             {transactions.length > 0 ? (
                                 <div className={dashboardListShellClassName}>
                                     <ul className="divide-y divide-border/50">
@@ -439,9 +422,7 @@ export default function Dashboard() {
                                             const isIncome =
                                                 transaction.transaction_type_id ===
                                                 1;
-                                            const fallbackMemo = isIncome
-                                                ? "収入の記録"
-                                                : "支出の記録";
+                                            const fallbackMemo = "メモなし";
 
                                             return (
                                                 <li key={transaction.id}>
