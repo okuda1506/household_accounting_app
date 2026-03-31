@@ -134,9 +134,6 @@ export function TransactionList({
                             <p className="text-sm font-medium text-foreground">
                                 月間サマリ
                             </p>
-                            <p className="text-sm text-muted-foreground">
-                                収入と支出をまとめて確認できます。
-                            </p>
                         </div>
 
                         <div className="grid gap-3 sm:grid-cols-2">

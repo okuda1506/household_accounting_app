@@ -13,8 +13,8 @@ import {
     DialogTitle,
 } from "../components/ui/dialog";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { PasswordInput } from "./ui/password-input";
 
 export type DeleteAccountDialogProps = {
     open: boolean;
@@ -81,9 +81,8 @@ const DeleteAccountDialog = ({ open, onClose }: DeleteAccountDialogProps) => {
                     <Label htmlFor="password-confirm">
                         パスワード
                     </Label>
-                    <Input
+                    <PasswordInput
                         id="password-confirm"
-                        type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className="focus-visible:ring-indigo-500"

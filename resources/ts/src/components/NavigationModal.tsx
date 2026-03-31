@@ -741,7 +741,6 @@ export function NavigationModal() {
                                 id={descriptionId}
                                 className="mt-2 space-y-2 text-xs leading-5 text-muted-foreground"
                             >
-                                <p>主要な画面へ移動できます。</p>
                                 {isPinned ? (
                                     <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-foreground/[0.03] px-3 py-1 text-[11px] leading-none">
                                         <span className="h-1.5 w-1.5 rounded-full bg-primary/60" />
@@ -816,9 +815,6 @@ export function NavigationModal() {
                     <DialogTitle className="pr-10 text-[1.35rem] font-semibold tracking-tight">
                         ナビゲーション
                     </DialogTitle>
-                    <DialogDescription className="pr-10 text-sm leading-6">
-                        主要な画面へ移動できます。
-                    </DialogDescription>
                 </DialogHeader>
                 {navigationLinks}
             </DialogContent>

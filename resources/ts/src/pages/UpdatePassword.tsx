@@ -9,8 +9,8 @@ import {
     settingsInputClassName,
 } from "../components/settings/SettingsPageShell";
 import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import { PasswordInput } from "../components/ui/password-input";
 
 const UpdatePassword = () => {
     const navigate = useNavigate();
@@ -70,9 +70,8 @@ const UpdatePassword = () => {
                         <Label htmlFor="current_password">現在のパスワード</Label>
                         <div className="relative">
                             <LockKeyhole className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                            <Input
+                            <PasswordInput
                                 id="current_password"
-                                type="password"
                                 autoComplete="current-password"
                                 required
                                 value={currentPassword}
@@ -88,9 +87,8 @@ const UpdatePassword = () => {
                         <Label htmlFor="new_password">新しいパスワード</Label>
                         <div className="relative">
                             <LockKeyhole className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                            <Input
+                            <PasswordInput
                                 id="new_password"
-                                type="password"
                                 autoComplete="new-password"
                                 required
                                 value={newPassword}
@@ -106,9 +104,8 @@ const UpdatePassword = () => {
                         </Label>
                         <div className="relative">
                             <LockKeyhole className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                            <Input
+                            <PasswordInput
                                 id="new_password_confirmation"
-                                type="password"
                                 autoComplete="new-password"
                                 required
                                 value={newPasswordConfirmation}

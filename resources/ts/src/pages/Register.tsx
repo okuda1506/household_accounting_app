@@ -15,6 +15,7 @@ import { AuthShell } from "../components/auth/AuthShell";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import { PasswordInput } from "../components/ui/password-input";
 
 const inputClassName =
     "h-12 rounded-xl border-border/70 bg-background/80 pl-11 shadow-sm transition focus-visible:border-primary/40 focus-visible:ring-[3px] focus-visible:ring-primary/20 focus-visible:ring-offset-0 dark:bg-background/60";
@@ -150,9 +151,8 @@ const Register = () => {
                             <Label htmlFor="password">パスワード</Label>
                             <div className="relative">
                                 <LockKeyhole className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                                <Input
+                                <PasswordInput
                                     id="password"
-                                    type="password"
                                     autoComplete="new-password"
                                     required
                                     value={password}
@@ -168,9 +168,8 @@ const Register = () => {
                             </Label>
                             <div className="relative">
                                 <LockKeyhole className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                                <Input
+                                <PasswordInput
                                     id="password_confirmation"
-                                    type="password"
                                     autoComplete="new-password"
                                     required
                                     value={passwordConfirmation}
