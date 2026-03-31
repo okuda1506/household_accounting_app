@@ -40,14 +40,14 @@ const navigationItems: NavigationItem[] = [
     {
         to: "/",
         label: "ダッシュボード",
-        description: "今月の収支と動きを確認",
+        description: "今月の収支と直近取引を確認",
         icon: LayoutDashboard,
         isActive: (pathname) => pathname === "/",
     },
     {
         to: "/categories",
         label: "カテゴリ",
-        description: "費目の追加と整理を管理",
+        description: "費目の追加・編集を管理",
         icon: Tags,
         isActive: (pathname) => pathname.startsWith("/categories"),
     },
