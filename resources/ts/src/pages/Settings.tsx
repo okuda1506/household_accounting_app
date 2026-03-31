@@ -23,6 +23,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../lib/axios";
 import DeleteAccountDialog from "../components/DeleteAccountDialog";
+import SignOutDialog from "../components/SignOutDialog";
 import { useTheme } from "../contexts/ThemeContext";
 
 type SettingsTab = "account" | "app";
@@ -167,6 +168,7 @@ const ToggleItem = ({
 
 export default function Settings() {
     const { isDarkMode, setIsDarkMode } = useTheme();
+    const [signOutDialogOpen, setSignOutDialogOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [activeTab, setActiveTab] = useState<SettingsTab>("account");
     const [isAiAdviceModeEnabled, setIsAiAdviceModeEnabled] = useState(false);
@@ -218,15 +220,8 @@ export default function Settings() {
         }
     };
 
-    const handleSignout = async () => {
-        try {
-            const response = await api.post("/logout");
-            localStorage.removeItem("access_token");
-            toast.success(response.data.message);
-            navigate("/login", { replace: true });
-        } catch (error) {
-            toast.error("サインアウトに失敗しました。");
-        }
+    const handleSignout = () => {
+        setSignOutDialogOpen(true);
     };
 
     const handleDeleteAccount = () => {
@@ -359,6 +354,10 @@ export default function Settings() {
                     )}
                 </div>
             </main>
+            <SignOutDialog
+                open={signOutDialogOpen}
+                onClose={() => setSignOutDialogOpen(false)}
+            />
             <DeleteAccountDialog
                 open={deleteDialogOpen}
                 onClose={() => setDeleteDialogOpen(false)}
