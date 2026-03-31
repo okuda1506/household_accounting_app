@@ -49,7 +49,12 @@ const ForgotPassword = () => {
                         </h1>
                     </div>
                     <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                        ご登録のメールアドレスを入力してください。パスワードリセット、またはアカウント再開用のリンクをメールでお送りします。
+                        <span className="block">
+                            ご登録のメールアドレスを入力してください。
+                        </span>
+                        <span className="block">
+                            パスワードリセット、またはアカウント再開用のリンクをメールでお送りします。
+                        </span>
                     </p>
                 </div>
 

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import {
     BarChart3,
     BotMessageSquare,
@@ -22,16 +22,22 @@ type AuthShellProps = {
     className?: string;
     description?: string;
     panelDescription?: string;
-    panelTitle?: string;
+    panelTitle?: ReactNode;
     title?: string;
     variant?: "default" | "simple";
+};
+
+type RevealOnViewProps = {
+    children: ReactNode;
+    className?: string;
+    delay?: number;
 };
 
 const highlights: Highlight[] = [
     {
         icon: Wallet,
-        title: "毎月の支出をひと目で整理",
-        description: "収入、支出、残額を落ち着いたUIでまとめて確認できます。",
+        title: "毎月の収支をひと目で整理",
+        description: "収入・支出・残額をシンプルなUIによりひと目で確認できます。",
     },
     {
         icon: BarChart3,
@@ -40,7 +46,7 @@ const highlights: Highlight[] = [
     },
     {
         icon: ShieldCheck,
-        title: "日々の入力に集中できる",
+        title: "日々の入力を素早く",
         description:
             "余計なノイズを抑えた構成で、必要な操作だけを素早く進められます。",
     },
@@ -51,6 +57,63 @@ const highlights: Highlight[] = [
             "AIからのアドバイスが、記録から支出習慣の変化につながります。",
     },
 ];
+
+const RevealOnView = ({
+    children,
+    className,
+    delay = 0,
+}: RevealOnViewProps) => {
+    const ref = useRef<HTMLDivElement | null>(null);
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        const element = ref.current;
+
+        if (!element) {
+            return;
+        }
+
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            setIsVisible(true);
+            return;
+        }
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (!entry?.isIntersecting) {
+                    return;
+                }
+
+                setIsVisible(true);
+                observer.unobserve(entry.target);
+            },
+            {
+                threshold: 0.16,
+                rootMargin: "0px 0px -8% 0px",
+            }
+        );
+
+        observer.observe(element);
+
+        return () => observer.disconnect();
+    }, []);
+
+    return (
+        <div
+            ref={ref}
+            className={cn(
+                "transform-gpu transition-all duration-1000 ease-out motion-reduce:transform-none motion-reduce:transition-none",
+                isVisible
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-6 opacity-0",
+                className
+            )}
+            style={{ transitionDelay: `${delay}ms` }}
+        >
+            {children}
+        </div>
+    );
+};
 
 export const AuthShell = ({
     brandName = "Kakei Flow",
@@ -86,29 +149,34 @@ export const AuthShell = ({
                 >
                     {isSimple ? (
                         <div className="px-6 py-8 sm:px-8 sm:py-10">
-                            {(title || description) && (
-                                <div className="mx-auto mb-8 w-full max-w-md">
-                                    {title && (
-                                        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-                                            {title}
-                                        </h1>
-                                    )}
-                                    {description && (
-                                        <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                                            {description}
-                                        </p>
-                                    )}
-                                </div>
-                            )}
+                            <RevealOnView className="mx-auto w-full max-w-md">
+                                {(title || description) && (
+                                    <div className="mb-8">
+                                        {title && (
+                                            <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+                                                {title}
+                                            </h1>
+                                        )}
+                                        {description && (
+                                            <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                                                {description}
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
 
-                            {children}
+                                {children}
+                            </RevealOnView>
                         </div>
                     ) : (
                     <div className="grid lg:min-h-[720px] lg:grid-cols-[1.05fr_0.95fr]">
                         <div className="relative hidden overflow-hidden bg-slate-950 px-10 py-12 text-white lg:flex">
                             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(129,140,248,0.38),transparent_35%),linear-gradient(160deg,rgba(15,23,42,0.98),rgba(30,41,59,0.96))]" />
 
-                            <div className="relative space-y-10">
+                            <RevealOnView
+                                className="relative space-y-10"
+                                delay={80}
+                            >
                                 <div className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.28em] text-slate-200">
                                     {brandName}
                                 </div>
@@ -150,30 +218,36 @@ export const AuthShell = ({
                                         );
                                     })}
                                 </div>
-                            </div>
+                            </RevealOnView>
                         </div>
 
                         <div className="flex flex-col justify-center px-6 py-8 sm:px-10 sm:py-10">
                             <div className="mb-8 lg:hidden">
-                                <div className="inline-flex items-center rounded-full border border-border/70 bg-background/70 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.28em] text-foreground/80 shadow-sm backdrop-blur">
-                                    {brandName}
-                                </div>
-                                <div className="mt-6 rounded-[28px] border border-border/70 bg-background/70 p-5 shadow-[0_20px_50px_-28px_rgba(15,23,42,0.35)] backdrop-blur">
+                                <RevealOnView className="inline-flex">
+                                    <div className="inline-flex items-center rounded-full border border-border/70 bg-background/70 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.28em] text-foreground/80 shadow-sm backdrop-blur">
+                                        {brandName}
+                                    </div>
+                                </RevealOnView>
+                                <RevealOnView
+                                    className="mt-6 rounded-[28px] border border-border/70 bg-background/70 p-5 shadow-[0_20px_50px_-28px_rgba(15,23,42,0.35)] backdrop-blur"
+                                    delay={70}
+                                >
                                     <h2 className="text-2xl font-semibold tracking-tight">
                                         {panelTitle}
                                     </h2>
                                     <p className="mt-3 text-sm leading-6 text-muted-foreground">
                                         {panelDescription}
                                     </p>
-                                </div>
+                                </RevealOnView>
                                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                                    {highlights.map((highlight) => {
+                                    {highlights.map((highlight, index) => {
                                         const Icon = highlight.icon;
 
                                         return (
-                                            <div
+                                            <RevealOnView
                                                 key={highlight.title}
                                                 className="rounded-2xl border border-border/70 bg-background/75 p-4 shadow-[0_18px_40px_-28px_rgba(15,23,42,0.35)] backdrop-blur"
+                                                delay={140 + index * 60}
                                             >
                                                 <div className="flex items-start gap-3">
                                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
@@ -190,22 +264,29 @@ export const AuthShell = ({
                                                         </p>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </RevealOnView>
                                         );
                                     })}
                                 </div>
                             </div>
 
-                            <div className="mx-auto w-full max-w-md">
+                            <RevealOnView
+                                className="mx-auto w-full max-w-md"
+                                delay={120}
+                            >
                                 <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                                     {title}
                                 </h1>
-                                <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                                    {description}
-                                </p>
+                                {description && (
+                                    <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                                        {description}
+                                    </p>
+                                )}
 
-                                <div className="mt-8">{children}</div>
-                            </div>
+                                <div className={cn(description ? "mt-8" : "mt-6")}>
+                                    {children}
+                                </div>
+                            </RevealOnView>
                         </div>
                     </div>
                     )}
