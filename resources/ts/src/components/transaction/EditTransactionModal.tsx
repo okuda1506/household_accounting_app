@@ -179,7 +179,7 @@ export function EditTransactionModal({
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="max-h-[calc(100dvh-1rem)] max-w-lg overflow-hidden rounded-lg p-0">
-                <DialogHeader className="shrink-0 px-4 pb-3 pt-5 sm:px-6 sm:pb-4 sm:pt-6">
+                <DialogHeader className="shrink-0 px-4 pb-3 pt-5 pr-12 text-center sm:px-6 sm:pb-4 sm:pt-6 sm:text-center">
                     <DialogTitle>取引編集</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="flex min-h-0 flex-col">
@@ -339,7 +339,7 @@ export function EditTransactionModal({
                                     </Button>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent className="border-border">
-                                    <AlertDialogHeader>
+                                    <AlertDialogHeader className="text-center sm:text-center">
                                         <AlertDialogTitle>
                                             本当に削除しますか？
                                         </AlertDialogTitle>

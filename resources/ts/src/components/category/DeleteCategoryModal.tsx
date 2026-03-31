@@ -68,7 +68,7 @@ export function DeleteCategoryModal({
             }}
         >
             <DialogContent className="rounded-lg">
-                <DialogHeader>
+                <DialogHeader className="pr-10 text-center sm:text-center">
                     <DialogTitle>カテゴリ削除</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">

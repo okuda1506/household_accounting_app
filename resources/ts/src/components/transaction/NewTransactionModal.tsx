@@ -160,7 +160,7 @@ export function NewTransactionModal({
                 </Button>
             </DialogTrigger>
             <DialogContent className="rounded-lg">
-                <DialogHeader>
+                <DialogHeader className="pr-10 text-center sm:text-center">
                     <DialogTitle>新規取引</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">

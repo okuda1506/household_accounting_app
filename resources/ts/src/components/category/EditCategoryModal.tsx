@@ -78,7 +78,7 @@ export function EditCategoryModal({
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="rounded-lg">
-                <DialogHeader>
+                <DialogHeader className="pr-10 text-center sm:text-center">
                     <DialogTitle>カテゴリ編集</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
