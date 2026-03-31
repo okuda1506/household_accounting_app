@@ -94,8 +94,8 @@ export function DeleteCategoryModal({
                     <div className="flex flex-col gap-3">
                         <Button
                             type="button"
-                            variant="secondary"
-                            className="w-full"
+                            variant="utility"
+                            className="h-12 w-full rounded-xl text-sm font-semibold"
                             onClick={handleClose}
                             disabled={isDeleting}
                         >
@@ -103,7 +103,7 @@ export function DeleteCategoryModal({
                         </Button>
                         <Button
                             type="submit"
-                            className="w-full"
+                            className="h-12 w-full rounded-xl text-sm font-semibold shadow-lg shadow-red-500/20"
                             variant="destructive"
                             disabled={isDeleting}
                         >

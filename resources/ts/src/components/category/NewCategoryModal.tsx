@@ -20,6 +20,7 @@ import {
 } from "../ui/select";
 import api from "../../../lib/axios";
 import { toast } from "react-toastify";
+import { settingsInputClassName } from "../settings/SettingsPageShell";
 
 type Props = {
     onSuccess: () => void;
@@ -30,6 +31,7 @@ export function NewCategoryModal({ onSuccess }: Props) {
     const [name, setName] = useState("");
     const [type, setType] = useState<"income" | "expense">("income");
     const [errorMessage, setErrorMessage] = useState("");
+    const modalFieldClassName = settingsInputClassName.replace("pl-11", "pl-3");
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -84,7 +86,7 @@ export function NewCategoryModal({ onSuccess }: Props) {
                                 setType(val as "income" | "expense")
                             }
                         >
-                            <SelectTrigger>
+                            <SelectTrigger className={modalFieldClassName}>
                                 <SelectValue placeholder="選択してください" />
                             </SelectTrigger>
                             <SelectContent>
@@ -99,7 +101,7 @@ export function NewCategoryModal({ onSuccess }: Props) {
                             id="name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="focus-visible:ring-indigo-500"
+                            className={modalFieldClassName}
                         />
                     </div>
 
@@ -107,8 +109,11 @@ export function NewCategoryModal({ onSuccess }: Props) {
                         <p className="text-sm text-red-400">{errorMessage}</p>
                     )}
 
-                    <Button type="submit" className="w-full">
-                        追加
+                    <Button
+                        type="submit"
+                        className="h-12 w-full rounded-xl text-sm font-semibold shadow-lg shadow-primary/25"
+                    >
+                        登録
                     </Button>
                 </form>
             </DialogContent>
