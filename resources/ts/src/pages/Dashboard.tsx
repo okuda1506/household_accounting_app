@@ -37,6 +37,12 @@ const dashboardCardClassName =
 const dashboardPanelClassName =
     "rounded-2xl border border-border/60 bg-background/70 p-4 shadow-sm backdrop-blur-sm";
 
+const dashboardSummaryCardClassName =
+    "rounded-3xl border p-4 shadow-sm backdrop-blur-sm";
+
+const dashboardListShellClassName =
+    "overflow-hidden rounded-3xl border border-border/60 bg-background/45 shadow-sm backdrop-blur-sm";
+
 export default function Dashboard() {
     const [summary, setSummary] = useState<MonthlySummary | null>(null);
     const [trend, setTrend] = useState<ExpenseTrend[]>([]);
@@ -57,7 +63,7 @@ export default function Dashboard() {
     const aiAdviceRef = useRef<HTMLDivElement | null>(null);
 
     const formatDate = (dateString: string) => {
-        return format(dateString, "M月d日");
+        return format(new Date(dateString), "M月d日");
     };
 
     const fetchDashboardData = () => {
@@ -184,7 +190,7 @@ export default function Dashboard() {
                             allPaymentMethods={allPaymentMethods}
                         />
                     </div>
-                    <div className="space-y-2">
+                    <div>
                         {user ? (
                             <TypeAnimation
                                 sequence={[`Hey, ${user.name} 🖐️`]}
@@ -199,9 +205,6 @@ export default function Dashboard() {
                                 {"\u00A0"}
                             </h1>
                         )}
-                        <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-                            今月の収支、支出の変化、最近の記録を落ち着いたレイアウトで確認できます。
-                        </p>
                     </div>
                     <Card className={dashboardCardClassName}>
                         <CardHeader className="relative space-y-4">
@@ -222,39 +225,56 @@ export default function Dashboard() {
                         <CardContent className="relative space-y-6">
                             {summary && (
                                 <>
-                                    <div className="grid gap-3 sm:grid-cols-3">
-                                        <div className={dashboardPanelClassName}>
-                                            <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                                                収入
+                                    <section className="space-y-3">
+                                        <div>
+                                            <p className="text-sm font-medium text-foreground">
+                                                月間サマリ
                                             </p>
-                                            <p className="mt-3 text-2xl font-semibold text-emerald-500 dark:text-emerald-300">
-                                                ¥
-                                                {parseInt(
-                                                    summary.income,
-                                                ).toLocaleString()}
+                                            <p className="text-sm text-muted-foreground">
+                                                今月の収支をまとめて確認できます。
                                             </p>
                                         </div>
-                                        <div className={dashboardPanelClassName}>
-                                            <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                                                支出
-                                            </p>
-                                            <p className="mt-3 text-2xl font-semibold text-rose-500 dark:text-rose-300">
-                                                ¥
-                                                {parseInt(
-                                                    summary.expense,
-                                                ).toLocaleString()}
-                                            </p>
+
+                                        <div className="grid gap-3 sm:grid-cols-3">
+                                            <div
+                                                className={`${dashboardSummaryCardClassName} border-emerald-500/20 bg-emerald-500/[0.08]`}
+                                            >
+                                                <p className="text-xs font-medium uppercase tracking-[0.18em] text-emerald-700/80 dark:text-emerald-200/80">
+                                                    収入
+                                                </p>
+                                                <p className="mt-4 text-xl font-semibold text-emerald-600 dark:text-emerald-300 sm:text-2xl">
+                                                    ¥
+                                                    {parseInt(
+                                                        summary.income,
+                                                    ).toLocaleString()}
+                                                </p>
+                                            </div>
+                                            <div
+                                                className={`${dashboardSummaryCardClassName} border-rose-500/20 bg-rose-500/[0.08]`}
+                                            >
+                                                <p className="text-xs font-medium uppercase tracking-[0.18em] text-rose-700/80 dark:text-rose-200/80">
+                                                    支出
+                                                </p>
+                                                <p className="mt-4 text-xl font-semibold text-rose-600 dark:text-rose-300 sm:text-2xl">
+                                                    ¥
+                                                    {parseInt(
+                                                        summary.expense,
+                                                    ).toLocaleString()}
+                                                </p>
+                                            </div>
+                                            <div
+                                                className={`${dashboardSummaryCardClassName} border-border/60 bg-background/70`}
+                                            >
+                                                <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                                                    収支
+                                                </p>
+                                                <p className="mt-4 text-xl font-semibold sm:text-2xl">
+                                                    ¥
+                                                    {summary.balance.toLocaleString()}
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div className={dashboardPanelClassName}>
-                                            <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                                                収支
-                                            </p>
-                                            <p className="mt-3 text-2xl font-semibold">
-                                                ¥
-                                                {summary.balance.toLocaleString()}
-                                            </p>
-                                        </div>
-                                    </div>
+                                    </section>
                                     {/* 予算消化率プログレスバー */}
                                     {user &&
                                         user.budget !== null &&
@@ -419,56 +439,85 @@ export default function Dashboard() {
                     {trend && <ExpenseChart trend={trend} />}
 
                     <Card className={dashboardCardClassName}>
-                        <CardHeader className="relative space-y-1">
-                            <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                                Recent Activity
-                            </p>
-                            <CardTitle className="text-lg font-medium">
-                                最近の取引
-                            </CardTitle>
+                        <CardHeader className="relative space-y-4">
+                            <div className="space-y-1">
+                                <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                                    Recent Activity
+                                </p>
+                                <CardTitle className="text-lg font-medium">
+                                    最近の取引
+                                </CardTitle>
+                            </div>
                         </CardHeader>
-                        <CardContent className="relative">
+                        <CardContent className="relative space-y-3">
+                            <div>
+                                <p className="text-sm font-medium text-foreground">
+                                    取引データ
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                    直近の記録を一覧で確認できます。
+                                </p>
+                            </div>
                             {transactions.length > 0 ? (
-                                <ul className="space-y-3">
-                                    {transactions.map((transaction) => {
-                                        const amount = parseFloat(
-                                            transaction.amount,
-                                        );
-                                        const isIncome =
-                                            transaction.transaction_type_id ===
-                                            1;
+                                <div className={dashboardListShellClassName}>
+                                    <ul className="divide-y divide-border/50">
+                                        {transactions.map((transaction) => {
+                                            const amount = parseFloat(
+                                                transaction.amount,
+                                            );
+                                            const isIncome =
+                                                transaction.transaction_type_id ===
+                                                1;
+                                            const fallbackMemo = isIncome
+                                                ? "収入の記録"
+                                                : "支出の記録";
 
-                                        return (
-                                            <li
-                                                key={transaction.id}
-                                                className="flex items-start justify-between rounded-2xl border border-border/60 bg-background/70 px-4 py-4 text-sm shadow-sm backdrop-blur-sm"
-                                            >
-                                                <div className="min-w-0 flex-1 pr-4">
-                                                    <p className="truncate font-medium text-foreground">
-                                                        {transaction.memo}
-                                                    </p>
-                                                    <p className="mt-1 text-muted-foreground">
-                                                        {formatDate(
-                                                            transaction.transaction_date,
-                                                        )}{" "}
-                                                    </p>
-                                                </div>
-                                                <p
-                                                    className={`shrink-0 text-right text-base font-semibold ${
-                                                        isIncome
-                                                            ? "text-emerald-500 dark:text-emerald-300"
-                                                            : "text-rose-500 dark:text-rose-300"
-                                                    }`}
-                                                >
-                                                    {isIncome ? "+" : "-"}¥
-                                                    {Math.abs(
-                                                        amount,
-                                                    ).toLocaleString()}
-                                                </p>
-                                            </li>
-                                        );
-                                    })}
-                                </ul>
+                                            return (
+                                                <li key={transaction.id}>
+                                                    <div className="flex items-start justify-between gap-4 px-4 py-4 sm:px-5">
+                                                        <div className="min-w-0 flex-1">
+                                                            <div className="flex flex-wrap items-center gap-2">
+                                                                <span
+                                                                    className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-medium ${
+                                                                        isIncome
+                                                                            ? "bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300"
+                                                                            : "bg-rose-500/10 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300"
+                                                                    }`}
+                                                                >
+                                                                    {isIncome
+                                                                        ? "収入"
+                                                                        : "支出"}
+                                                                </span>
+                                                                <span className="text-xs text-muted-foreground">
+                                                                    {formatDate(
+                                                                        transaction.transaction_date,
+                                                                    )}
+                                                                </span>
+                                                            </div>
+                                                            <p className="mt-3 truncate text-sm font-medium text-foreground sm:text-[15px]">
+                                                                {transaction.memo ||
+                                                                    fallbackMemo}
+                                                            </p>
+                                                        </div>
+                                                        <p
+                                                            className={`shrink-0 text-right text-base font-semibold ${
+                                                                isIncome
+                                                                    ? "text-emerald-600 dark:text-emerald-300"
+                                                                    : "text-rose-600 dark:text-rose-300"
+                                                            }`}
+                                                        >
+                                                            {isIncome ? "+" : "-"}
+                                                            ¥
+                                                            {Math.abs(
+                                                                amount,
+                                                            ).toLocaleString()}
+                                                        </p>
+                                                    </div>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                </div>
                             ) : (
                                 <div className="rounded-2xl border border-dashed border-border/70 bg-background/60 px-4 py-10 text-center text-muted-foreground">
                                     最近の取引はありません。

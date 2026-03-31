@@ -135,18 +135,13 @@ export function TransactionList({
 
                 <CardContent className="space-y-6">
                     <section className="space-y-3">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-foreground">
-                                    月間サマリ
-                                </p>
-                                <p className="text-sm text-muted-foreground">
-                                    収入と支出をまとめて確認できます。
-                                </p>
-                            </div>
-                            <div className="hidden rounded-full border border-border/60 bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm sm:inline-flex">
-                                Overview
-                            </div>
+                        <div>
+                            <p className="text-sm font-medium text-foreground">
+                                月間サマリ
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                                収入と支出をまとめて確認できます。
+                            </p>
                         </div>
 
                         <div className="grid gap-3 sm:grid-cols-2">
@@ -178,18 +173,13 @@ export function TransactionList({
                     </section>
 
                     <section className="space-y-3">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-foreground">
-                                    取引データ
-                                </p>
-                                <p className="text-sm text-muted-foreground">
-                                    行をタップすると内容を編集できます。
-                                </p>
-                            </div>
-                            <div className="inline-flex rounded-full border border-border/60 bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm">
-                                {filteredTransactions.length}件
-                            </div>
+                        <div>
+                            <p className="text-sm font-medium text-foreground">
+                                取引データ
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                                行をタップすると内容を編集できます。
+                            </p>
                         </div>
 
                         {filteredTransactions.length > 0 ? (

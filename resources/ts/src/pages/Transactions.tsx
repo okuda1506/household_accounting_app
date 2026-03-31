@@ -85,14 +85,6 @@ export default function Transactions() {
                             allPaymentMethods={allPaymentMethods}
                         />
                     </div>
-                    <div className="space-y-2">
-                        <h1 className="text-3xl font-semibold tracking-tight">
-                            取引一覧
-                        </h1>
-                        <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-                            月ごとの取引を整理しながら、収入と支出の流れを落ち着いたUIで確認できます。
-                        </p>
-                    </div>
                     <TransactionList
                         transactions={transactions}
                         onSuccess={fetchTransactions}

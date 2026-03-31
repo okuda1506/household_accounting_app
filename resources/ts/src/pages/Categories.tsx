@@ -79,15 +79,6 @@ export default function Categories() {
                         <NewCategoryModal onSuccess={fetchCategories} />
                     </div>
 
-                    <div className="space-y-2">
-                        <h1 className="text-3xl font-semibold tracking-tight">
-                            カテゴリ
-                        </h1>
-                        <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-                            収入と支出のカテゴリを整理して、日々の入力を迷いなく進められます。
-                        </p>
-                    </div>
-
                     <Card className={categoryCardClassName}>
                         <CardHeader className="space-y-4">
                             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
