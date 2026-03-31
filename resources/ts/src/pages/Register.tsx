@@ -65,7 +65,6 @@ const Register = () => {
     return (
         <AuthShell
             brandName="Kakei Flow"
-            eyebrow="Create Account"
             title="サインアップ"
             description="必要な情報を入力するだけで、すぐに記録を始められます。"
             panelTitle="家計の流れを、シンプルに整える"

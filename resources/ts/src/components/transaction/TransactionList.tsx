@@ -80,14 +80,9 @@ export function TransactionList({
             <Card className={transactionCardClassName}>
                 <CardHeader className="space-y-4">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                        <div className="space-y-1">
-                            <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                                Transaction History
-                            </p>
-                            <CardTitle className="text-lg font-medium">
-                                取引履歴
-                            </CardTitle>
-                        </div>
+                        <CardTitle className="text-lg font-medium">
+                            取引履歴
+                        </CardTitle>
                         <div className="flex gap-2">
                             <Select
                                 onValueChange={(value) =>

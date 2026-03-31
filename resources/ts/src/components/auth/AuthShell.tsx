@@ -21,7 +21,6 @@ type AuthShellProps = {
     children: ReactNode;
     className?: string;
     description?: string;
-    eyebrow?: string;
     panelDescription?: string;
     panelTitle?: string;
     title?: string;
@@ -58,7 +57,6 @@ export const AuthShell = ({
     children,
     className,
     description,
-    eyebrow,
     panelDescription,
     panelTitle,
     title,
@@ -88,15 +86,10 @@ export const AuthShell = ({
                 >
                     {isSimple ? (
                         <div className="px-6 py-8 sm:px-8 sm:py-10">
-                            {(eyebrow || title || description) && (
+                            {(title || description) && (
                                 <div className="mx-auto mb-8 w-full max-w-md">
-                                    {eyebrow && (
-                                        <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary/80">
-                                            {eyebrow}
-                                        </p>
-                                    )}
                                     {title && (
-                                        <h1 className="mt-4 text-3xl font-semibold tracking-tight text-foreground">
+                                        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
                                             {title}
                                         </h1>
                                     )}
@@ -121,9 +114,6 @@ export const AuthShell = ({
                                 </div>
 
                                 <div className="space-y-4">
-                                    <p className="text-xs font-semibold uppercase tracking-[0.35em] text-indigo-200/80">
-                                        {eyebrow}
-                                    </p>
                                     <h2 className="max-w-sm text-4xl font-semibold leading-tight">
                                         {panelTitle}
                                     </h2>
@@ -169,10 +159,7 @@ export const AuthShell = ({
                                     {brandName}
                                 </div>
                                 <div className="mt-6 rounded-[28px] border border-border/70 bg-background/70 p-5 shadow-[0_20px_50px_-28px_rgba(15,23,42,0.35)] backdrop-blur">
-                                    <p className="text-xs font-semibold uppercase tracking-[0.32em] text-primary/80">
-                                        {eyebrow}
-                                    </p>
-                                    <h2 className="mt-3 text-2xl font-semibold tracking-tight">
+                                    <h2 className="text-2xl font-semibold tracking-tight">
                                         {panelTitle}
                                     </h2>
                                     <p className="mt-3 text-sm leading-6 text-muted-foreground">
@@ -210,10 +197,7 @@ export const AuthShell = ({
                             </div>
 
                             <div className="mx-auto w-full max-w-md">
-                                <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary/80">
-                                    {eyebrow}
-                                </p>
-                                <h1 className="mt-4 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+                                <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                                     {title}
                                 </h1>
                                 <p className="mt-3 text-sm leading-7 text-muted-foreground">

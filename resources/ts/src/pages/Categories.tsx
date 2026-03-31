@@ -82,14 +82,9 @@ export default function Categories() {
                     <Card className={categoryCardClassName}>
                         <CardHeader className="space-y-4">
                             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                                <div className="space-y-1">
-                                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                                        Category Manager
-                                    </p>
-                                    <CardTitle className="text-lg font-medium">
-                                        カテゴリ一覧
-                                    </CardTitle>
-                                </div>
+                                <CardTitle className="text-lg font-medium">
+                                    カテゴリ一覧
+                                </CardTitle>
                                 <Select
                                     defaultValue="income"
                                     onValueChange={(val) =>

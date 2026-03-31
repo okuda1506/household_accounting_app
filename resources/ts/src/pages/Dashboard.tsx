@@ -209,14 +209,9 @@ export default function Dashboard() {
                     <Card className={dashboardCardClassName}>
                         <CardHeader className="relative space-y-4">
                             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                                <div className="space-y-1">
-                                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                                        Monthly Overview
-                                    </p>
-                                    <CardTitle className="text-lg font-medium">
-                                        今月のサマリ
-                                    </CardTitle>
-                                </div>
+                                <CardTitle className="text-lg font-medium">
+                                    今月のサマリ
+                                </CardTitle>
                                 <div className="inline-flex w-fit items-center rounded-full border border-border/60 bg-background/80 px-3 py-1 text-sm text-muted-foreground shadow-sm">
                                     {year}年 {month}月
                                 </div>
@@ -344,14 +339,9 @@ export default function Dashboard() {
                                         <div className="mt-6 space-y-4">
                                             <div className={dashboardPanelClassName}>
                                                 <div className="space-y-4">
-                                                    <div className="space-y-1">
-                                                        <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                                                            AI Advice
-                                                        </p>
-                                                        <p className="text-sm text-muted-foreground">
-                                                            今月の支出状況をもとに、次の一手を提案します。
-                                                        </p>
-                                                    </div>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        今月の支出状況をもとに、次の一手を提案します。
+                                                    </p>
                                                     <Button
                                                         type="button"
                                                         variant="utility"
@@ -371,14 +361,9 @@ export default function Dashboard() {
                                                 >
                                                     <div className="relative space-y-5">
                                                         <div className="flex items-start justify-between gap-3">
-                                                            <div className="space-y-1">
-                                                                <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-300/80">
-                                                                    AI Coaching
-                                                                </p>
-                                                                <h3 className="text-base font-semibold text-foreground">
-                                                                    今日のアドバイス
-                                                                </h3>
-                                                            </div>
+                                                            <h3 className="text-base font-semibold text-foreground">
+                                                                今日のアドバイス
+                                                            </h3>
                                                             <span
                                                                 className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold backdrop-blur-sm ${getRiskLevelClasses(aiAdvice.risk_level)}`}
                                                             >
@@ -390,9 +375,6 @@ export default function Dashboard() {
 
                                                         <div className="grid gap-4 md:grid-cols-[1.1fr_0.9fr]">
                                                             <div className="rounded-2xl border border-border/60 bg-background/75 p-4 shadow-sm">
-                                                                <p className="mb-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
-                                                                    Analysis
-                                                                </p>
                                                                 <p className="text-sm leading-7 text-foreground">
                                                                     {
                                                                         aiAdvice
@@ -403,9 +385,6 @@ export default function Dashboard() {
                                                             </div>
 
                                                             <div className="rounded-2xl border border-indigo-200/80 bg-indigo-50/85 p-4 shadow-sm dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:shadow-inner dark:shadow-indigo-950/30">
-                                                                <p className="mb-2 text-xs font-medium uppercase tracking-widest text-indigo-600 dark:text-indigo-300">
-                                                                    Action Today
-                                                                </p>
                                                                 <p className="text-sm font-medium leading-7 text-foreground">
                                                                     {
                                                                         aiAdvice
@@ -417,9 +396,6 @@ export default function Dashboard() {
                                                         </div>
 
                                                         <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/85 px-4 py-3 shadow-sm dark:border-emerald-500/15 dark:bg-emerald-500/5">
-                                                            <p className="mb-1 text-xs font-medium uppercase tracking-widest text-emerald-700 dark:text-emerald-300/90">
-                                                                Message
-                                                            </p>
                                                             <p className="text-sm leading-7 text-foreground">
                                                                 {
                                                                     aiAdvice.motivation
@@ -440,14 +416,9 @@ export default function Dashboard() {
 
                     <Card className={dashboardCardClassName}>
                         <CardHeader className="relative space-y-4">
-                            <div className="space-y-1">
-                                <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                                    Recent Activity
-                                </p>
-                                <CardTitle className="text-lg font-medium">
-                                    最近の取引
-                                </CardTitle>
-                            </div>
+                            <CardTitle className="text-lg font-medium">
+                                最近の取引
+                            </CardTitle>
                         </CardHeader>
                         <CardContent className="relative space-y-3">
                             <div>
