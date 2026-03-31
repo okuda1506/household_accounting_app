@@ -310,7 +310,10 @@ export function NewTransactionModal({
                         </div>
                     )}
 
-                    <Button type="submit" className="w-full">
+                    <Button
+                        type="submit"
+                        className="h-12 w-full rounded-xl text-sm font-semibold shadow-lg shadow-primary/25"
+                    >
                         追加
                     </Button>
                 </form>
