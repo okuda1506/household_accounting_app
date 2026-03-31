@@ -16,8 +16,11 @@ import { PaymentMethod } from "../../types/paymentMethod";
 const transactionCardClassName =
     "overflow-hidden rounded-[32px] border-border/70 bg-background/55 shadow-[0_32px_80px_-36px_rgba(15,23,42,0.45)] backdrop-blur-sm";
 
-const transactionPanelClassName =
-    "rounded-2xl border border-border/60 bg-background/70 p-4 shadow-sm backdrop-blur-sm";
+const transactionSummaryCardClassName =
+    "rounded-3xl border p-4 shadow-sm backdrop-blur-sm";
+
+const transactionListShellClassName =
+    "overflow-hidden rounded-3xl border border-border/60 bg-background/45 shadow-sm backdrop-blur-sm";
 
 type TransactionListProps = {
     transactions: Transaction[];
@@ -131,71 +134,149 @@ export function TransactionList({
                 </CardHeader>
 
                 <CardContent className="space-y-6">
-                    <div className="grid gap-3 sm:grid-cols-2">
-                        <div className={transactionPanelClassName}>
-                            <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                                収入
-                            </p>
-                            <p className="mt-3 text-2xl font-semibold text-emerald-500 dark:text-emerald-300">
-                                ¥{totalIncome.toLocaleString()}
-                            </p>
+                    <section className="space-y-3">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-foreground">
+                                    月間サマリ
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                    収入と支出をまとめて確認できます。
+                                </p>
+                            </div>
+                            <div className="hidden rounded-full border border-border/60 bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm sm:inline-flex">
+                                Overview
+                            </div>
                         </div>
-                        <div className={transactionPanelClassName}>
-                            <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                                支出
-                            </p>
-                            <p className="mt-3 text-2xl font-semibold text-rose-500 dark:text-rose-300">
-                                ¥{Math.abs(totalExpense).toLocaleString()}
-                            </p>
-                        </div>
-                    </div>
 
-                    {filteredTransactions.length > 0 ? (
-                        <ul className="space-y-3">
-                            {filteredTransactions.map((transaction, index) => {
-                                const isIncome =
-                                    transaction.transaction_type_id === 1;
-
-                                return (
-                                    <li
-                                        key={
-                                            transaction.transaction_id ?? index
-                                        }
-                                        className="flex cursor-pointer items-start justify-between rounded-2xl border border-border/60 bg-background/70 px-4 py-4 text-sm shadow-sm backdrop-blur-sm transition-colors hover:bg-background/90"
-                                        onClick={() => {
-                                            setEditingTransaction(transaction);
-                                            setEditModalOpen(true);
-                                        }}
-                                    >
-                                        <div className="min-w-0 flex-1 pr-4">
-                                            <p className="truncate font-medium text-foreground">
-                                                {transaction.memo}
-                                            </p>
-                                            <p className="mt-1 text-muted-foreground">
-                                                {formatDate(transaction.date)}{" "}
-                                            </p>
-                                        </div>
-                                        <p
-                                            className={`shrink-0 text-right text-base font-semibold ${
-                                                isIncome
-                                                    ? "text-emerald-500 dark:text-emerald-300"
-                                                    : "text-rose-500 dark:text-rose-300"
-                                            }`}
-                                        >
-                                            {isIncome ? "+" : "-"}¥
-                                            {Math.abs(
-                                                transaction.amount,
-                                            ).toLocaleString()}
-                                        </p>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    ) : (
-                        <div className="rounded-2xl border border-dashed border-border/70 bg-background/60 px-4 py-10 text-center text-muted-foreground">
-                            取引がありません
+                        <div className="grid gap-3 sm:grid-cols-2">
+                            <div
+                                className={`${transactionSummaryCardClassName} border-emerald-500/20 bg-emerald-500/[0.08]`}
+                            >
+                                <div className="flex items-center justify-between gap-3">
+                                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-emerald-700/80 dark:text-emerald-200/80">
+                                        収入
+                                    </p>
+                                </div>
+                                <p className="mt-4 text-xl font-semibold text-emerald-600 dark:text-emerald-300 sm:text-2xl">
+                                    ¥{totalIncome.toLocaleString()}
+                                </p>
+                            </div>
+                            <div
+                                className={`${transactionSummaryCardClassName} border-rose-500/20 bg-rose-500/[0.08]`}
+                            >
+                                <div className="flex items-center justify-between gap-3">
+                                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-rose-700/80 dark:text-rose-200/80">
+                                        支出
+                                    </p>
+                                </div>
+                                <p className="mt-4 text-xl font-semibold text-rose-600 dark:text-rose-300 sm:text-2xl">
+                                    ¥{Math.abs(totalExpense).toLocaleString()}
+                                </p>
+                            </div>
                         </div>
-                    )}
+                    </section>
+
+                    <section className="space-y-3">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-foreground">
+                                    取引データ
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                    行をタップすると内容を編集できます。
+                                </p>
+                            </div>
+                            <div className="inline-flex rounded-full border border-border/60 bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm">
+                                {filteredTransactions.length}件
+                            </div>
+                        </div>
+
+                        {filteredTransactions.length > 0 ? (
+                            <div className={transactionListShellClassName}>
+                                <ul className="divide-y divide-border/50">
+                                    {filteredTransactions.map(
+                                        (transaction, index) => {
+                                            const isIncome =
+                                                transaction.transaction_type_id ===
+                                                1;
+                                            const fallbackMemo = isIncome
+                                                ? "収入の記録"
+                                                : "支出の記録";
+
+                                            return (
+                                                <li
+                                                    key={
+                                                        transaction.transaction_id ??
+                                                        index
+                                                    }
+                                                >
+                                                    <button
+                                                        type="button"
+                                                        className="flex w-full items-start justify-between gap-4 px-4 py-4 text-left transition-colors hover:bg-background/75 sm:px-5"
+                                                        onClick={() => {
+                                                            setEditingTransaction(
+                                                                transaction,
+                                                            );
+                                                            setEditModalOpen(
+                                                                true,
+                                                            );
+                                                        }}
+                                                    >
+                                                        <div className="min-w-0 flex-1">
+                                                            <div className="flex flex-wrap items-center gap-2">
+                                                                <span
+                                                                    className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-medium ${
+                                                                        isIncome
+                                                                            ? "bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300"
+                                                                            : "bg-rose-500/10 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300"
+                                                                    }`}
+                                                                >
+                                                                    {isIncome
+                                                                        ? "収入"
+                                                                        : "支出"}
+                                                                </span>
+                                                                <span className="text-xs text-muted-foreground">
+                                                                    {formatDate(
+                                                                        transaction.date,
+                                                                    )}
+                                                                </span>
+                                                            </div>
+                                                            <p className="mt-3 truncate text-sm font-medium text-foreground sm:text-[15px]">
+                                                                {transaction.memo ||
+                                                                    fallbackMemo}
+                                                            </p>
+                                                        </div>
+                                                        <div className="shrink-0 text-right">
+                                                            <p
+                                                                className={`text-base font-semibold ${
+                                                                    isIncome
+                                                                        ? "text-emerald-600 dark:text-emerald-300"
+                                                                        : "text-rose-600 dark:text-rose-300"
+                                                                }`}
+                                                            >
+                                                                {isIncome
+                                                                    ? "+"
+                                                                    : "-"}
+                                                                ¥
+                                                                {Math.abs(
+                                                                    transaction.amount,
+                                                                ).toLocaleString()}
+                                                            </p>
+                                                        </div>
+                                                    </button>
+                                                </li>
+                                            );
+                                        },
+                                    )}
+                                </ul>
+                            </div>
+                        ) : (
+                            <div className="rounded-2xl border border-dashed border-border/70 bg-background/60 px-4 py-10 text-center text-muted-foreground">
+                                取引がありません
+                            </div>
+                        )}
+                    </section>
                 </CardContent>
             </Card>
             {editingTransaction && (
