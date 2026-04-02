@@ -31,6 +31,18 @@ import type {
     AiAdviceResult,
 } from "../types/aiAdviceResult";
 
+const dashboardCardClassName =
+    "relative overflow-hidden rounded-[32px] border-border/70 bg-background/55 shadow-[0_32px_80px_-36px_rgba(15,23,42,0.45)] backdrop-blur-sm";
+
+const dashboardPanelClassName =
+    "rounded-2xl border border-border/60 bg-background/70 p-4 shadow-sm backdrop-blur-sm";
+
+const dashboardSummaryCardClassName =
+    "rounded-3xl border p-4 shadow-sm backdrop-blur-sm";
+
+const dashboardListShellClassName =
+    "overflow-hidden rounded-3xl border border-border/60 bg-background/45 shadow-sm backdrop-blur-sm";
+
 export default function Dashboard() {
     const [summary, setSummary] = useState<MonthlySummary | null>(null);
     const [trend, setTrend] = useState<ExpenseTrend[]>([]);
@@ -51,7 +63,7 @@ export default function Dashboard() {
     const aiAdviceRef = useRef<HTMLDivElement | null>(null);
 
     const formatDate = (dateString: string) => {
-        return format(dateString, "M月d日");
+        return format(new Date(dateString), "M月d日");
     };
 
     const fetchDashboardData = () => {
@@ -184,59 +196,71 @@ export default function Dashboard() {
                                 sequence={[`Hey, ${user.name} 🖐️`]}
                                 wrapper="h1"
                                 speed={50}
-                                className="text-2xl"
+                                className="text-3xl font-semibold tracking-tight"
                                 cursor={false}
                                 repeat={0}
                             />
                         ) : (
-                            <h1 className="text-2xl h-8">{"\u00A0"}</h1>
+                            <h1 className="h-10 text-3xl font-semibold tracking-tight">
+                                {"\u00A0"}
+                            </h1>
                         )}
                     </div>
-                    <Card className="border-border shadow-sm">
-                        <CardHeader>
-                            <CardTitle className="text-lg font-medium">
-                                今月のサマリ
-                            </CardTitle>
-                            <p className="text-muted-foreground">
-                                {year}年 {month}月
-                            </p>
+                    <Card className={dashboardCardClassName}>
+                        <CardHeader className="relative space-y-1">
+                            <div className="flex flex-wrap items-center gap-3">
+                                <CardTitle className="text-lg font-medium">
+                                    月間サマリ
+                                </CardTitle>
+                                <div className="inline-flex w-fit items-center rounded-full border border-border/60 bg-background/80 px-3 py-1 text-sm text-muted-foreground shadow-sm">
+                                    {year}年 {month}月
+                                </div>
+                            </div>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="relative space-y-6 pt-2">
                             {summary && (
                                 <>
-                                    <div className="flex justify-between items-center text-sm">
-                                        <div>
-                                            <p className="text-muted-foreground">
-                                                収入
-                                            </p>
-                                            <p className="text-xl font-semibold text-green-400">
-                                                ¥
-                                                {parseInt(
-                                                    summary.income,
-                                                ).toLocaleString()}
-                                            </p>
+                                    <section>
+                                        <div className="grid gap-3 sm:grid-cols-3">
+                                            <div
+                                                className={`${dashboardSummaryCardClassName} border-emerald-500/20 bg-emerald-500/[0.08]`}
+                                            >
+                                                <p className="text-xs font-medium uppercase tracking-[0.18em] text-emerald-700/80 dark:text-emerald-200/80">
+                                                    収入
+                                                </p>
+                                                <p className="mt-4 text-xl font-semibold text-emerald-600 dark:text-emerald-300 sm:text-2xl">
+                                                    ¥
+                                                    {parseInt(
+                                                        summary.income,
+                                                    ).toLocaleString()}
+                                                </p>
+                                            </div>
+                                            <div
+                                                className={`${dashboardSummaryCardClassName} border-rose-500/20 bg-rose-500/[0.08]`}
+                                            >
+                                                <p className="text-xs font-medium uppercase tracking-[0.18em] text-rose-700/80 dark:text-rose-200/80">
+                                                    支出
+                                                </p>
+                                                <p className="mt-4 text-xl font-semibold text-rose-600 dark:text-rose-300 sm:text-2xl">
+                                                    ¥
+                                                    {parseInt(
+                                                        summary.expense,
+                                                    ).toLocaleString()}
+                                                </p>
+                                            </div>
+                                            <div
+                                                className={`${dashboardSummaryCardClassName} border-border/60 bg-background/70`}
+                                            >
+                                                <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                                                    収支
+                                                </p>
+                                                <p className="mt-4 text-xl font-semibold sm:text-2xl">
+                                                    ¥
+                                                    {summary.balance.toLocaleString()}
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p className="text-muted-foreground">
-                                                支出
-                                            </p>
-                                            <p className="text-xl font-semibold text-red-400">
-                                                ¥
-                                                {parseInt(
-                                                    summary.expense,
-                                                ).toLocaleString()}
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <p className="text-muted-foreground">
-                                                収支
-                                            </p>
-                                            <p className="text-xl font-semibold">
-                                                ¥
-                                                {summary.balance.toLocaleString()}
-                                            </p>
-                                        </div>
-                                    </div>
+                                    </section>
                                     {/* 予算消化率プログレスバー */}
                                     {user &&
                                         user.budget !== null &&
@@ -251,8 +275,10 @@ export default function Dashboard() {
                                                 budgetUsagePercentage > 100;
 
                                             return (
-                                                <div className="space-y-2 mt-6">
-                                                    <div className="flex justify-between text-sm">
+                                                <div
+                                                    className={`${dashboardPanelClassName} space-y-3`}
+                                                >
+                                                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                                                         <span className="text-muted-foreground">
                                                             予算消化率（限度額:
                                                             ¥
@@ -274,7 +300,7 @@ export default function Dashboard() {
                                                             )}
                                                         </span>
                                                     </div>
-                                                    <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                                                    <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted/80">
                                                         <div
                                                             className={`h-full rounded-full transition-all duration-500 ease-out ${
                                                                 budgetUsagePercentage >=
@@ -291,7 +317,7 @@ export default function Dashboard() {
                                                         />
                                                     </div>
                                                     {expense > user.budget && (
-                                                        <p className="text-xs text-red-500 mt-1 font-medium">
+                                                        <p className="text-xs font-medium text-red-500">
                                                             ⚠️
                                                             予算を超過しています
                                                         </p>
@@ -302,33 +328,33 @@ export default function Dashboard() {
                                     {/* AIアドバイス */}
                                     {canUseAiAdvice && (
                                         <div className="mt-6 space-y-4">
-                                            <Button
-                                                type="button"
-                                                variant="utility"
-                                                onClick={handleAiAdvice}
-                                                disabled={isAiAnalyzing}
-                                                className="h-auto w-full justify-center bg-accent px-4 py-3 hover:bg-accent/80"
-                                            >
-                                                {aiButtonContent}
-                                            </Button>
+                                            <div className={dashboardPanelClassName}>
+                                                <div className="space-y-4">
+                                                    <p className="text-sm text-muted-foreground">
+                                                        今月の予算・支出状況をもとにAIがアドバイスを提案します。
+                                                    </p>
+                                                    <Button
+                                                        type="button"
+                                                        variant="utility"
+                                                        onClick={handleAiAdvice}
+                                                        disabled={isAiAnalyzing}
+                                                        className="h-auto w-full justify-center rounded-xl border border-border/60 bg-background/85 px-4 py-3 shadow-sm hover:bg-background"
+                                                    >
+                                                        {aiButtonContent}
+                                                    </Button>
+                                                </div>
+                                            </div>
 
                                             {aiAdvice && isAiAdviceVisible && (
                                                 <div
                                                     ref={aiAdviceRef}
-                                                    className="animate-in fade-in slide-in-from-top-6 relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm duration-1000 ease-out"
+                                                    className="animate-in fade-in slide-in-from-top-6 relative overflow-hidden rounded-[28px] border border-border/70 bg-background/70 p-5 shadow-[0_24px_60px_-32px_rgba(15,23,42,0.45)] backdrop-blur-sm duration-1000 ease-out"
                                                 >
-                                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.08),transparent_40%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.10),transparent_40%)]" />
-
                                                     <div className="relative space-y-5">
                                                         <div className="flex items-start justify-between gap-3">
-                                                            <div className="space-y-1">
-                                                                <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-300/80">
-                                                                    AI Coaching
-                                                                </p>
-                                                                <h3 className="text-base font-semibold text-foreground">
-                                                                    今日のアドバイス
-                                                                </h3>
-                                                            </div>
+                                                            <h3 className="text-base font-semibold text-foreground">
+                                                                今日のアドバイス
+                                                            </h3>
                                                             <span
                                                                 className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold backdrop-blur-sm ${getRiskLevelClasses(aiAdvice.risk_level)}`}
                                                             >
@@ -339,10 +365,7 @@ export default function Dashboard() {
                                                         </div>
 
                                                         <div className="grid gap-4 md:grid-cols-[1.1fr_0.9fr]">
-                                                            <div className="rounded-xl border border-border bg-muted/40 p-4">
-                                                                <p className="mb-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
-                                                                    Analysis
-                                                                </p>
+                                                            <div className="rounded-2xl border border-border/60 bg-background/75 p-4 shadow-sm">
                                                                 <p className="text-sm leading-7 text-foreground">
                                                                     {
                                                                         aiAdvice
@@ -352,10 +375,7 @@ export default function Dashboard() {
                                                                 </p>
                                                             </div>
 
-                                                            <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:shadow-inner dark:shadow-indigo-950/30">
-                                                                <p className="mb-2 text-xs font-medium uppercase tracking-widest text-indigo-600 dark:text-indigo-300">
-                                                                    Action Today
-                                                                </p>
+                                                            <div className="rounded-2xl border border-indigo-200/80 bg-indigo-50/85 p-4 shadow-sm dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:shadow-inner dark:shadow-indigo-950/30">
                                                                 <p className="text-sm font-medium leading-7 text-foreground">
                                                                     {
                                                                         aiAdvice
@@ -366,10 +386,7 @@ export default function Dashboard() {
                                                             </div>
                                                         </div>
 
-                                                        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 dark:border-emerald-500/15 dark:bg-emerald-500/5">
-                                                            <p className="mb-1 text-xs font-medium uppercase tracking-widest text-emerald-700 dark:text-emerald-300/90">
-                                                                Message
-                                                            </p>
+                                                        <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/85 px-4 py-3 shadow-sm dark:border-emerald-500/15 dark:bg-emerald-500/5">
                                                             <p className="text-sm leading-7 text-foreground">
                                                                 {
                                                                     aiAdvice.motivation
@@ -388,58 +405,75 @@ export default function Dashboard() {
 
                     {trend && <ExpenseChart trend={trend} />}
 
-                    <Card className="border-border shadow-sm">
-                        <CardHeader>
+                    <Card className={dashboardCardClassName}>
+                        <CardHeader className="relative space-y-1">
                             <CardTitle className="text-lg font-medium">
                                 最近の取引
                             </CardTitle>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="relative">
                             {transactions.length > 0 ? (
-                                <ul className="space-y-4">
-                                    {transactions.map((transaction) => {
-                                        const amount = parseFloat(
-                                            transaction.amount,
-                                        );
-                                        const isIncome =
-                                            transaction.transaction_type_id ===
-                                            1;
+                                <div className={dashboardListShellClassName}>
+                                    <ul className="divide-y divide-border/50">
+                                        {transactions.map((transaction) => {
+                                            const amount = parseFloat(
+                                                transaction.amount,
+                                            );
+                                            const isIncome =
+                                                transaction.transaction_type_id ===
+                                                1;
+                                            const fallbackMemo = "メモなし";
 
-                                        return (
-                                            <li
-                                                key={transaction.id}
-                                                className="flex justify-between items-start text-sm"
-                                            >
-                                                <div className="min-w-0 flex-1 pr-4">
-                                                    <p className="font-medium truncate">
-                                                        {transaction.memo}
-                                                    </p>
-                                                    <p className="text-muted-foreground">
-                                                        {formatDate(
-                                                            transaction.transaction_date,
-                                                        )}{" "}
-                                                    </p>
-                                                </div>
-                                                <p
-                                                    className={`font-medium shrink-0 text-right ${
-                                                        isIncome
-                                                            ? "text-green-400"
-                                                            : "text-red-400"
-                                                    }`}
-                                                >
-                                                    {isIncome ? "+" : "-"}¥
-                                                    {Math.abs(
-                                                        amount,
-                                                    ).toLocaleString()}
-                                                </p>
-                                            </li>
-                                        );
-                                    })}
-                                </ul>
+                                            return (
+                                                <li key={transaction.id}>
+                                                    <div className="flex items-start justify-between gap-4 px-4 py-4 sm:px-5">
+                                                        <div className="min-w-0 flex-1">
+                                                            <div className="flex flex-wrap items-center gap-2">
+                                                                <span
+                                                                    className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-medium ${
+                                                                        isIncome
+                                                                            ? "bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300"
+                                                                            : "bg-rose-500/10 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300"
+                                                                    }`}
+                                                                >
+                                                                    {isIncome
+                                                                        ? "収入"
+                                                                        : "支出"}
+                                                                </span>
+                                                                <span className="text-xs text-muted-foreground">
+                                                                    {formatDate(
+                                                                        transaction.transaction_date,
+                                                                    )}
+                                                                </span>
+                                                            </div>
+                                                            <p className="mt-3 truncate text-sm font-medium text-foreground sm:text-[15px]">
+                                                                {transaction.memo ||
+                                                                    fallbackMemo}
+                                                            </p>
+                                                        </div>
+                                                        <p
+                                                            className={`shrink-0 text-right text-base font-semibold ${
+                                                                isIncome
+                                                                    ? "text-emerald-600 dark:text-emerald-300"
+                                                                    : "text-rose-600 dark:text-rose-300"
+                                                            }`}
+                                                        >
+                                                            {isIncome ? "+" : "-"}
+                                                            ¥
+                                                            {Math.abs(
+                                                                amount,
+                                                            ).toLocaleString()}
+                                                        </p>
+                                                    </div>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                </div>
                             ) : (
-                                <p className="text-center py-4 text-muted-foreground">
+                                <div className="rounded-2xl border border-dashed border-border/70 bg-background/60 px-4 py-10 text-center text-muted-foreground">
                                     最近の取引はありません。
-                                </p>
+                                </div>
                             )}
                         </CardContent>
                     </Card>

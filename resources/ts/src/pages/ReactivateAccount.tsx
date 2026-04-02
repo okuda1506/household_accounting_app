@@ -5,6 +5,7 @@ export default function ReactivateAccount() {
     return (
         <AuthPasswordForm
             pageTitle="アカウントのご利用再開"
+            pageDescription="新しいパスワードを設定して、アカウントの利用を再開します。"
             invalidLinkToastMessage="無効なアカウント再開リンクです。再度メールを送信してください。"
             invalidLinkCardTitle="無効なリンク"
             invalidLinkCardContent="お手数ですが、再度パスワード再設定のリクエストをしてください。"

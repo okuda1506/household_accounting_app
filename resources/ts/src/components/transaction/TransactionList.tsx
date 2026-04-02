@@ -13,6 +13,15 @@ import { EditTransactionModal } from "./EditTransactionModal";
 import { Category } from "../../types/categories";
 import { PaymentMethod } from "../../types/paymentMethod";
 
+const transactionCardClassName =
+    "overflow-hidden rounded-[32px] border-border/70 bg-background/55 shadow-[0_32px_80px_-36px_rgba(15,23,42,0.45)] backdrop-blur-sm";
+
+const transactionSummaryCardClassName =
+    "rounded-3xl border p-4 shadow-sm backdrop-blur-sm";
+
+const transactionListShellClassName =
+    "overflow-hidden rounded-3xl border border-border/60 bg-background/45 shadow-sm backdrop-blur-sm";
+
 type TransactionListProps = {
     transactions: Transaction[];
     onSuccess: () => void;
@@ -68,9 +77,9 @@ export function TransactionList({
 
     return (
         <>
-            <Card className="border-border shadow-sm">
-                <CardHeader>
-                    <div className="flex items-center justify-between w-full">
+            <Card className={transactionCardClassName}>
+                <CardHeader className="space-y-4">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                         <CardTitle className="text-lg font-medium">
                             取引履歴
                         </CardTitle>
@@ -81,7 +90,7 @@ export function TransactionList({
                                 }
                                 value={String(selectedYear)}
                             >
-                                <SelectTrigger className="w-[100px]">
+                                <SelectTrigger className="h-10 w-[100px] rounded-xl border-border/60 bg-background/80 shadow-sm">
                                     <SelectValue placeholder="年" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -101,7 +110,7 @@ export function TransactionList({
                                 }
                                 value={String(selectedMonth)}
                             >
-                                <SelectTrigger className="w-[100px]">
+                                <SelectTrigger className="h-10 w-[100px] rounded-xl border-border/60 bg-background/80 shadow-sm">
                                     <SelectValue placeholder="月" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -119,68 +128,135 @@ export function TransactionList({
                     </div>
                 </CardHeader>
 
-                <CardContent>
-                    <div className="flex justify-between items-center pb-10">
-                        <p className="text-lg">
-                            収入：
-                            <span className="text-green-400 font-medium ml-2">
-                                ¥{totalIncome.toLocaleString()}
-                            </span>
-                        </p>
-                        <p className="text-lg">
-                            支出：
-                            <span className="text-red-400 font-medium ml-2">
-                                ¥{Math.abs(totalExpense).toLocaleString()}
-                            </span>
-                        </p>
-                    </div>
+                <CardContent className="space-y-6">
+                    <section className="space-y-3">
+                        <div>
+                            <p className="text-sm font-medium text-foreground">
+                                月間サマリ
+                            </p>
+                        </div>
 
-                    {filteredTransactions.length > 0 ? (
-                        <ul className="space-y-4">
-                            {filteredTransactions.map((transaction, index) => {
-                                const isIncome =
-                                    transaction.transaction_type_id === 1;
+                        <div className="grid gap-3 sm:grid-cols-2">
+                            <div
+                                className={`${transactionSummaryCardClassName} border-emerald-500/20 bg-emerald-500/[0.08]`}
+                            >
+                                <div className="flex items-center justify-between gap-3">
+                                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-emerald-700/80 dark:text-emerald-200/80">
+                                        収入
+                                    </p>
+                                </div>
+                                <p className="mt-4 text-xl font-semibold text-emerald-600 dark:text-emerald-300 sm:text-2xl">
+                                    ¥{totalIncome.toLocaleString()}
+                                </p>
+                            </div>
+                            <div
+                                className={`${transactionSummaryCardClassName} border-rose-500/20 bg-rose-500/[0.08]`}
+                            >
+                                <div className="flex items-center justify-between gap-3">
+                                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-rose-700/80 dark:text-rose-200/80">
+                                        支出
+                                    </p>
+                                </div>
+                                <p className="mt-4 text-xl font-semibold text-rose-600 dark:text-rose-300 sm:text-2xl">
+                                    ¥{Math.abs(totalExpense).toLocaleString()}
+                                </p>
+                            </div>
+                        </div>
+                    </section>
 
-                                return (
-                                    <li
-                                        key={
-                                            transaction.transaction_id ?? index
-                                        }
-                                        className="cursor-pointer rounded-md px-4 py-3 text-sm transition-colors hover:bg-accent flex justify-between items-start"
-                                        onClick={() => {
-                                            setEditingTransaction(transaction);
-                                            setEditModalOpen(true);
-                                        }}
-                                    >
-                                        <div className="min-w-0 flex-1 pr-4">
-                                            <p className="font-medium truncate">
-                                                {transaction.memo}
-                                            </p>
-                                            <p className="text-muted-foreground">
-                                                {formatDate(transaction.date)}{" "}
-                                            </p>
-                                        </div>
-                                        <p
-                                            className={`font-medium  shrink-0 text-right ${
-                                                isIncome
-                                                    ? "text-green-400"
-                                                    : "text-red-400"
-                                            }`}
-                                        >
-                                            {isIncome ? "+" : "-"}¥
-                                            {Math.abs(
-                                                transaction.amount,
-                                            ).toLocaleString()}
-                                        </p>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    ) : (
-                        <p className="text-muted-foreground text-center py-4">
-                            取引がありません
-                        </p>
-                    )}
+                    <section className="space-y-3">
+                        <div>
+                            <p className="text-sm font-medium text-foreground">
+                                取引データ
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                                行をタップすると内容を編集できます。
+                            </p>
+                        </div>
+
+                        {filteredTransactions.length > 0 ? (
+                            <div className={transactionListShellClassName}>
+                                <ul className="divide-y divide-border/50">
+                                    {filteredTransactions.map(
+                                        (transaction, index) => {
+                                            const isIncome =
+                                                transaction.transaction_type_id ===
+                                                1;
+                                            const fallbackMemo = "メモなし";
+
+                                            return (
+                                                <li
+                                                    key={
+                                                        transaction.transaction_id ??
+                                                        index
+                                                    }
+                                                >
+                                                    <button
+                                                        type="button"
+                                                        className="flex w-full items-start justify-between gap-4 px-4 py-4 text-left transition-colors hover:bg-background/75 sm:px-5"
+                                                        onClick={() => {
+                                                            setEditingTransaction(
+                                                                transaction,
+                                                            );
+                                                            setEditModalOpen(
+                                                                true,
+                                                            );
+                                                        }}
+                                                    >
+                                                        <div className="min-w-0 flex-1">
+                                                            <div className="flex flex-wrap items-center gap-2">
+                                                                <span
+                                                                    className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-medium ${
+                                                                        isIncome
+                                                                            ? "bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300"
+                                                                            : "bg-rose-500/10 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300"
+                                                                    }`}
+                                                                >
+                                                                    {isIncome
+                                                                        ? "収入"
+                                                                        : "支出"}
+                                                                </span>
+                                                                <span className="text-xs text-muted-foreground">
+                                                                    {formatDate(
+                                                                        transaction.date,
+                                                                    )}
+                                                                </span>
+                                                            </div>
+                                                            <p className="mt-3 truncate text-sm font-medium text-foreground sm:text-[15px]">
+                                                                {transaction.memo ||
+                                                                    fallbackMemo}
+                                                            </p>
+                                                        </div>
+                                                        <div className="shrink-0 text-right">
+                                                            <p
+                                                                className={`text-base font-semibold ${
+                                                                    isIncome
+                                                                        ? "text-emerald-600 dark:text-emerald-300"
+                                                                        : "text-rose-600 dark:text-rose-300"
+                                                                }`}
+                                                            >
+                                                                {isIncome
+                                                                    ? "+"
+                                                                    : "-"}
+                                                                ¥
+                                                                {Math.abs(
+                                                                    transaction.amount,
+                                                                ).toLocaleString()}
+                                                            </p>
+                                                        </div>
+                                                    </button>
+                                                </li>
+                                            );
+                                        },
+                                    )}
+                                </ul>
+                            </div>
+                        ) : (
+                            <div className="rounded-2xl border border-dashed border-border/70 bg-background/60 px-4 py-10 text-center text-muted-foreground">
+                                取引がありません
+                            </div>
+                        )}
+                    </section>
                 </CardContent>
             </Card>
             {editingTransaction && (

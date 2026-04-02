@@ -1,18 +1,17 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AlertTriangle, Loader2, User } from "lucide-react";
 import { toast } from "react-toastify";
+
 import api from "../../lib/axios";
 import {
-    Button,
-} from "../components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "../components/ui/card";
-import { NavigationMenuAnchor } from "../components/NavigationModal";
-import { X } from "lucide-react";
+    SettingsPageShell,
+    settingsInfoCardClassName,
+    settingsInputClassName,
+} from "../components/settings/SettingsPageShell";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
 
 const UpdateUserName = () => {
     const navigate = useNavigate();
@@ -32,6 +31,7 @@ const UpdateUserName = () => {
                 navigate("/settings");
             }
         };
+
         fetchCurrentUser();
     }, [navigate]);
 
@@ -41,10 +41,7 @@ const UpdateUserName = () => {
         setLoading(true);
 
         try {
-            const response = await api.put("/user/name", {
-                name,
-            });
-
+            const response = await api.put("/user/name", { name });
             toast.success(response.data.message ?? "ユーザー名を変更しました");
             navigate("/settings");
         } catch (error: any) {
@@ -59,101 +56,78 @@ const UpdateUserName = () => {
     };
 
     return (
-        <div className="min-h-screen bg-background text-foreground">
-            <nav className="border-b border-border">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="relative h-16 flex items-center">
-                        <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
-                            設定
-                        </span>
-                        <NavigationMenuAnchor />
+        <SettingsPageShell
+            icon={User}
+            title="ユーザー名変更"
+            description="表示名を更新して、アカウント情報を整えます。"
+        >
+            <form onSubmit={handleSubmit} className="space-y-6">
+                {errors.length > 0 && (
+                    <div className="rounded-2xl border border-red-200/80 bg-red-50/90 p-4 text-sm text-red-700 shadow-sm dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
+                        <div className="flex items-start gap-3">
+                            <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
+                            <div className="space-y-1">
+                                {errors.map((error, index) => (
+                                    <p key={index}>{error}</p>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {currentName && (
+                    <div className={settingsInfoCardClassName}>
+                        <p className="text-sm font-medium text-muted-foreground">
+                            現在のユーザー名
+                        </p>
+                        <p className="mt-2 text-sm text-foreground">
+                            {currentName}
+                        </p>
+                    </div>
+                )}
+
+                <div className="space-y-2">
+                    <Label htmlFor="name">ユーザー名</Label>
+                    <div className="relative">
+                        <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                            id="name"
+                            type="text"
+                            required
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            onClear={() => setName("")}
+                            className={settingsInputClassName}
+                        />
                     </div>
                 </div>
-            </nav>
 
-            <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
-                <div className="px-4 sm:px-0">
-                    <Card className="mx-auto max-w-md border-border shadow-sm">
-                        <CardHeader>
-                            <CardTitle className="text-lg font-medium">
-                                ユーザー名変更
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                {errors.length > 0 && (
-                                    <div className="bg-red-900/30 border border-red-500/50 text-red-400 text-sm p-3 rounded-md">
-                                        {errors.map((error, index) => (
-                                            <p key={index}>{error}</p>
-                                        ))}
-                                    </div>
-                                )}
-
-                                {currentName && (
-                                    <div className="space-y-1">
-                                        <p className="text-sm text-muted-foreground">
-                                            現在のユーザー名
-                                        </p>
-                                        <p className="text-sm text-muted-foreground">
-                                            {currentName}
-                                        </p>
-                                    </div>
-                                )}
-
-                                <div>
-                                    <label
-                                        htmlFor="name"
-                                        className="block text-sm mb-1"
-                                    >
-                                        ユーザー名
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            id="name"
-                                            type="text"
-                                            required
-                                            value={name}
-                                            onChange={(e) =>
-                                                setName(e.target.value)
-                                            }
-                                            className="w-full rounded border border-input bg-background px-3 py-2 pr-10 text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                        />
-                                        {name && (
-                                            <button
-                                                type="button"
-                                                onClick={() => setName("")}
-                                                className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground"
-                                                aria-label="Clear input"
-                                            >
-                                                <X className="h-5 w-5" />
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div className="pt-6 space-y-3">
-                                    <Button
-                                        type="submit"
-                                        disabled={loading}
-                                        className="w-full"
-                                    >
-                                        {loading ? "変更中..." : "変更する"}
-                                    </Button>
-                                    <Button
-                                        type="button"
-                                        variant="secondary"
-                                        onClick={() => navigate("/settings")}
-                                        className="w-full"
-                                    >
-                                        キャンセル
-                                    </Button>
-                                </div>
-                            </form>
-                        </CardContent>
-                    </Card>
+                <div className="space-y-3 pt-2">
+                    <Button
+                        type="submit"
+                        disabled={loading}
+                        className="h-12 w-full rounded-xl text-sm font-semibold shadow-lg shadow-primary/25"
+                    >
+                        {loading ? (
+                            <>
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                                変更中...
+                            </>
+                        ) : (
+                            "変更する"
+                        )}
+                    </Button>
+                    <Button
+                        type="button"
+                        variant="utility"
+                        onClick={() => navigate("/settings")}
+                        className="h-12 w-full rounded-xl text-sm font-semibold"
+                    >
+                        キャンセル
+                    </Button>
                 </div>
-            </main>
-        </div>
+            </form>
+        </SettingsPageShell>
     );
 };
 

@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import {
@@ -15,6 +20,7 @@ import {
 import api from "../../../lib/axios";
 import { toast } from "react-toastify";
 import { Category } from "../../types/categories";
+import { settingsInputClassName } from "../settings/SettingsPageShell";
 
 type Props = {
     open: boolean;
@@ -31,6 +37,7 @@ export function EditCategoryModal({
 }: Props) {
     const [name, setName] = useState(category.name);
     const [errorMessage, setErrorMessage] = useState("");
+    const modalFieldClassName = settingsInputClassName.replace("pl-11", "pl-3");
 
     // transaction_type_idは表示のみ（変更不可）
     const transactionType =
@@ -71,14 +78,14 @@ export function EditCategoryModal({
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="rounded-lg">
-                <DialogHeader>
+                <DialogHeader className="pr-10 text-center sm:text-center">
                     <DialogTitle>カテゴリ編集</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <Label htmlFor="type">取引タイプ</Label>
                         <Select value={transactionType} disabled>
-                            <SelectTrigger>
+                            <SelectTrigger className={modalFieldClassName}>
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -94,7 +101,8 @@ export function EditCategoryModal({
                             id="name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="focus-visible:ring-indigo-500"
+                            onClear={() => setName("")}
+                            className={modalFieldClassName}
                         />
                     </div>
 
@@ -102,7 +110,10 @@ export function EditCategoryModal({
                         <p className="text-sm text-red-400">{errorMessage}</p>
                     )}
 
-                    <Button type="submit" className="w-full">
+                    <Button
+                        type="submit"
+                        className="h-12 w-full rounded-xl text-sm font-semibold shadow-lg shadow-primary/25"
+                    >
                         更新
                     </Button>
                 </form>

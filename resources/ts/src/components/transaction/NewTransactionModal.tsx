@@ -160,7 +160,7 @@ export function NewTransactionModal({
                 </Button>
             </DialogTrigger>
             <DialogContent className="rounded-lg">
-                <DialogHeader>
+                <DialogHeader className="pr-10 text-center sm:text-center">
                     <DialogTitle>新規取引</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -249,6 +249,7 @@ export function NewTransactionModal({
                             }`}
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
+                            onClear={() => setAmount("")}
                         />
                     </div>
                     {/* 支払方法 */}
@@ -299,6 +300,7 @@ export function NewTransactionModal({
                             }`}
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
+                            onClear={() => setDescription("")}
                         />
                     </div>
 
@@ -310,7 +312,10 @@ export function NewTransactionModal({
                         </div>
                     )}
 
-                    <Button type="submit" className="w-full">
+                    <Button
+                        type="submit"
+                        className="h-12 w-full rounded-xl text-sm font-semibold shadow-lg shadow-primary/25"
+                    >
                         追加
                     </Button>
                 </form>

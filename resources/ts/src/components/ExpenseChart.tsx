@@ -34,13 +34,13 @@ export function ExpenseChart({ trend }: ExpenseChartProps) {
     }));
 
     return (
-        <Card className="border-border shadow-sm">
-            <CardHeader>
+        <Card className="relative overflow-hidden rounded-[32px] border-border/70 bg-background/55 shadow-[0_32px_80px_-36px_rgba(15,23,42,0.45)] backdrop-blur-sm">
+            <CardHeader className="relative space-y-1">
                 <CardTitle className="text-lg font-medium">
                     支出傾向
                 </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="relative">
                 <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={chartData}>
                         <XAxis
@@ -63,7 +63,7 @@ export function ExpenseChart({ trend }: ExpenseChartProps) {
                             content={({ active, payload }) => {
                                 if (active && payload && payload.length) {
                                     return (
-                                        <div className="rounded-md border border-border bg-popover p-2 text-popover-foreground shadow-md">
+                                        <div className="rounded-xl border border-border/70 bg-background/95 p-2 text-popover-foreground shadow-lg backdrop-blur-sm">
                                             <p>
                                                 {`¥${Number(
                                                     payload[0].value,
@@ -79,7 +79,7 @@ export function ExpenseChart({ trend }: ExpenseChartProps) {
                             type="monotone"
                             dataKey="expense"
                             stroke="hsl(var(--foreground))"
-                            strokeWidth={2}
+                            strokeWidth={2.5}
                             dot={false}
                         />
                     </LineChart>

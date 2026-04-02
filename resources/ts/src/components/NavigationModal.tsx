@@ -21,6 +21,8 @@ import { Bars3Icon as MenuIcon } from "@heroicons/react/24/outline";
 import {
     ChevronRight,
     LayoutDashboard,
+    Pin,
+    PinOff,
     ReceiptText,
     Settings2,
     Tags,
@@ -38,14 +40,14 @@ const navigationItems: NavigationItem[] = [
     {
         to: "/",
         label: "ダッシュボード",
-        description: "今月の収支と動きを確認",
+        description: "今月の収支と直近取引を確認",
         icon: LayoutDashboard,
         isActive: (pathname) => pathname === "/",
     },
     {
         to: "/categories",
         label: "カテゴリ",
-        description: "費目の追加と整理を管理",
+        description: "費目の追加・編集を管理",
         icon: Tags,
         isActive: (pathname) => pathname.startsWith("/categories"),
     },
@@ -66,6 +68,7 @@ const navigationItems: NavigationItem[] = [
 ];
 
 const DESKTOP_MENU_STORAGE_KEY = "navigation-menu-desktop-position";
+const DESKTOP_MENU_PINNED_STORAGE_KEY = "navigation-menu-desktop-pinned";
 const DESKTOP_MEDIA_QUERY = "(min-width: 1024px)";
 const DESKTOP_MENU_WIDTH = 352;
 const DESKTOP_MENU_FALLBACK_HEIGHT = 420;
@@ -124,6 +127,7 @@ export function NavigationModal() {
     const [open, setOpen] = useState(false);
     const [isDesktop, setIsDesktop] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
+    const [isPinned, setIsPinned] = useState(false);
     const [desktopPosition, setDesktopPosition] =
         useState<DesktopMenuPosition | null>(null);
     const [hasLoadedDesktopPosition, setHasLoadedDesktopPosition] =
@@ -135,8 +139,10 @@ export function NavigationModal() {
     const triggerRef = useRef<HTMLButtonElement | null>(null);
     const desktopPanelRef = useRef<HTMLDivElement | null>(null);
     const desktopPositionRef = useRef<DesktopMenuPosition | null>(null);
+    const lastPinnedPositionRef = useRef<DesktopMenuPosition | null>(null);
     const dragStateRef = useRef<DragState | null>(null);
     const previousDesktopModeRef = useRef<boolean | null>(null);
+    const previousPathnameRef = useRef(location.pathname);
     const titleId = useId();
     const descriptionId = useId();
 
@@ -229,12 +235,21 @@ export function NavigationModal() {
             return;
         }
 
+        const savedPinnedState = window.localStorage.getItem(
+            DESKTOP_MENU_PINNED_STORAGE_KEY,
+        );
+
+        setIsPinned(savedPinnedState === "true");
+
         const savedPosition = window.localStorage.getItem(
             DESKTOP_MENU_STORAGE_KEY,
         );
 
         if (!savedPosition) {
-            setDesktopPosition(getDefaultDesktopPosition());
+            const defaultPosition = getDefaultDesktopPosition();
+
+            setDesktopPosition(defaultPosition);
+            lastPinnedPositionRef.current = defaultPosition;
             setHasLoadedDesktopPosition(true);
             return;
         }
@@ -248,21 +263,28 @@ export function NavigationModal() {
                 typeof parsedPosition.x === "number" &&
                 typeof parsedPosition.y === "number"
             ) {
-                setDesktopPosition(
-                    clampDesktopPosition(
-                        {
-                            x: parsedPosition.x,
-                            y: parsedPosition.y,
-                        },
-                        desktopPanelRef.current,
-                    ),
+                const nextPosition = clampDesktopPosition(
+                    {
+                        x: parsedPosition.x,
+                        y: parsedPosition.y,
+                    },
+                    desktopPanelRef.current,
                 );
+
+                setDesktopPosition(nextPosition);
+                lastPinnedPositionRef.current = nextPosition;
             } else {
-                setDesktopPosition(getDefaultDesktopPosition());
+                const defaultPosition = getDefaultDesktopPosition();
+
+                setDesktopPosition(defaultPosition);
+                lastPinnedPositionRef.current = defaultPosition;
             }
         } catch (error) {
             console.error("Failed to parse desktop position from localStorage:", error);
-            setDesktopPosition(getDefaultDesktopPosition());
+            const defaultPosition = getDefaultDesktopPosition();
+
+            setDesktopPosition(defaultPosition);
+            lastPinnedPositionRef.current = defaultPosition;
         }
 
         setHasLoadedDesktopPosition(true);
@@ -272,17 +294,37 @@ export function NavigationModal() {
         if (
             !isMounted ||
             !isDesktop ||
+            !isPinned ||
             !hasLoadedDesktopPosition ||
             !desktopPosition
         ) {
             return;
         }
 
+        lastPinnedPositionRef.current = desktopPosition;
+
         window.localStorage.setItem(
             DESKTOP_MENU_STORAGE_KEY,
             JSON.stringify(desktopPosition),
         );
-    }, [desktopPosition, hasLoadedDesktopPosition, isDesktop, isMounted]);
+    }, [
+        desktopPosition,
+        hasLoadedDesktopPosition,
+        isDesktop,
+        isMounted,
+        isPinned,
+    ]);
+
+    useEffect(() => {
+        if (!isMounted || !isDesktop || !hasLoadedDesktopPosition) {
+            return;
+        }
+
+        window.localStorage.setItem(
+            DESKTOP_MENU_PINNED_STORAGE_KEY,
+            isPinned ? "true" : "false",
+        );
+    }, [isDesktop, isMounted, isPinned]);
 
     useEffect(() => {
         if (!desktopPosition) {
@@ -316,6 +358,18 @@ export function NavigationModal() {
     }, [hasLoadedDesktopPosition, isDesktop]);
 
     useEffect(() => {
+        const hasPathChanged = previousPathnameRef.current !== location.pathname;
+
+        previousPathnameRef.current = location.pathname;
+
+        if (!isDesktop || isPinned || !hasPathChanged) {
+            return;
+        }
+
+        setOpen(false);
+    }, [isDesktop, isPinned, location.pathname]);
+
+    useEffect(() => {
         if (!isDesktop || !open) {
             return;
         }
@@ -346,13 +400,57 @@ export function NavigationModal() {
     }, [isDesktop, open]);
 
     useEffect(() => {
+        if (!isDesktop || !open || isPinned) {
+            return;
+        }
+
+        const handlePointerDown = (event: PointerEvent) => {
+            const target = event.target as Node | null;
+
+            if (!target) {
+                return;
+            }
+
+            if (desktopPanelRef.current?.contains(target)) {
+                return;
+            }
+
+            if (triggerRef.current?.contains(target)) {
+                return;
+            }
+
+            setOpen(false);
+        };
+
+        document.addEventListener("pointerdown", handlePointerDown);
+
+        return () => {
+            document.removeEventListener("pointerdown", handlePointerDown);
+        };
+    }, [isDesktop, isPinned, open]);
+
+    useEffect(() => {
         return () => {
             dragStateRef.current = null;
         };
     }, []);
 
     const handleDesktopTriggerClick = () => {
-        if (!desktopPosition && isDesktop) {
+        if (!isDesktop) {
+            return;
+        }
+
+        if (isPinned) {
+            const nextPosition =
+                desktopPosition ??
+                lastPinnedPositionRef.current ??
+                getDefaultDesktopPosition();
+
+            setDesktopPosition(
+                clampDesktopPosition(nextPosition, desktopPanelRef.current),
+            );
+            setHasLoadedDesktopPosition(true);
+        } else {
             setDesktopPosition(getDefaultDesktopPosition());
             setHasLoadedDesktopPosition(true);
         }
@@ -362,12 +460,46 @@ export function NavigationModal() {
             return;
         }
 
+        if (!isPinned) {
+            setOpen(false);
+            return;
+        }
+
         desktopPanelRef.current?.focus();
+    };
+
+    const handlePinToggle = () => {
+        const nextPinned = !isPinned;
+
+        if (!nextPinned && desktopPosition) {
+            lastPinnedPositionRef.current = desktopPosition;
+        }
+
+        setIsPinned(nextPinned);
+
+        if (nextPinned) {
+            const nextPosition =
+                lastPinnedPositionRef.current ??
+                desktopPosition ??
+                getDefaultDesktopPosition();
+
+            setDesktopPosition(
+                clampDesktopPosition(nextPosition, desktopPanelRef.current),
+            );
+            setOpen(true);
+            return;
+        }
+
+        setDesktopPosition(getDefaultDesktopPosition());
     };
 
     const handleDesktopHeaderPointerDown = (
         event: ReactPointerEvent<HTMLDivElement>,
     ) => {
+        if (!isPinned) {
+            return;
+        }
+
         if (!desktopPanelRef.current) {
             return;
         }
@@ -396,6 +528,10 @@ export function NavigationModal() {
     const handleDesktopHeaderPointerMove = (
         event: ReactPointerEvent<HTMLDivElement>,
     ) => {
+        if (!isPinned) {
+            return;
+        }
+
         if (!dragStateRef.current) {
             return;
         }
@@ -428,6 +564,10 @@ export function NavigationModal() {
     const handleDesktopHeaderPointerUp = (
         event: ReactPointerEvent<HTMLDivElement>,
     ) => {
+        if (!isPinned) {
+            return;
+        }
+
         if (!dragStateRef.current) {
             return;
         }
@@ -478,7 +618,11 @@ export function NavigationModal() {
                                     ? "border-border/80 bg-accent shadow-sm"
                                     : "border-transparent hover:border-border/70 hover:bg-accent/70",
                             )}
-                            onClick={isDesktop ? undefined : closeModal}
+                            onClick={
+                                !isDesktop || !isPinned
+                                    ? closeModal
+                                    : undefined
+                            }
                         >
                             <div
                                 className={cn(
@@ -496,9 +640,15 @@ export function NavigationModal() {
                                         {label}
                                     </span>
                                     {active && (
-                                        <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">
-                                            現在地
-                                        </span>
+                                        <>
+                                            <span
+                                                aria-hidden="true"
+                                                className="h-2 w-2 rounded-full bg-primary"
+                                            />
+                                            <span className="sr-only">
+                                                現在地
+                                            </span>
+                                        </>
                                     )}
                                 </div>
                                 <p className="mt-1 truncate text-xs leading-4 text-muted-foreground">
@@ -574,17 +724,16 @@ export function NavigationModal() {
                         onPointerCancel={handleDesktopHeaderPointerUp}
                         onLostPointerCapture={handleDesktopHeaderLostPointerCapture}
                     >
-                        <div className="min-w-0 flex-1 cursor-grab select-none touch-none active:cursor-grabbing">
-                            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
-                                <span>Navigation</span>
-                                <span className="h-1 w-1 rounded-full bg-border" />
-                                <span className="text-[10px] tracking-[0.18em]">
-                                    Drag
-                                </span>
-                            </div>
+                        <div
+                            className={cn(
+                                "min-w-0 flex-1 select-none",
+                                isPinned &&
+                                    "cursor-grab touch-none active:cursor-grabbing",
+                            )}
+                        >
                             <h2
                                 id={titleId}
-                                className="mt-3 text-[1.35rem] font-semibold tracking-tight text-foreground"
+                                className="text-[1.35rem] font-semibold tracking-tight text-foreground"
                             >
                                 ナビゲーション
                             </h2>
@@ -592,22 +741,55 @@ export function NavigationModal() {
                                 id={descriptionId}
                                 className="mt-2 space-y-2 text-xs leading-5 text-muted-foreground"
                             >
-                                <p>主要な画面へ移動できます。</p>
-                                <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-foreground/[0.03] px-3 py-1 text-[11px] leading-none">
-                                    <span className="h-1.5 w-1.5 rounded-full bg-primary/60" />
-                                    <span>ドラッグ位置は次回も保持されます</span>
-                                </div>
+                                {isPinned ? (
+                                    <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-foreground/[0.03] px-3 py-1 text-[11px] leading-none">
+                                        <span className="h-1.5 w-1.5 rounded-full bg-primary/60" />
+                                        <span>ドラッグ位置は次回も保持されます</span>
+                                    </div>
+                                ) : (
+                                    <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-foreground/[0.03] px-3 py-1 text-[11px] leading-none">
+                                        <span className="h-1.5 w-1.5 rounded-full bg-border" />
+                                        <span>未ピン時は画面遷移で閉じます</span>
+                                    </div>
+                                )}
                             </div>
                         </div>
-                        <button
-                            type="button"
-                            data-drag-ignore="true"
-                            className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                            onClick={closeModal}
-                        >
-                            <X className="h-4 w-4" />
-                            <span className="sr-only">Close menu</span>
-                        </button>
+                        <div className="flex items-center gap-2" data-drag-ignore="true">
+                            <button
+                                type="button"
+                                data-drag-ignore="true"
+                                aria-pressed={isPinned}
+                                className={cn(
+                                    "rounded-full p-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                                    isPinned
+                                        ? "bg-accent text-foreground"
+                                        : "text-muted-foreground hover:bg-accent hover:text-foreground",
+                                )}
+                                onClick={handlePinToggle}
+                            >
+                                {isPinned ? (
+                                    <PinOff className="h-4 w-4" />
+                                ) : (
+                                    <Pin className="h-4 w-4" />
+                                )}
+                                <span className="sr-only">
+                                    {isPinned ? "Unpin menu" : "Pin menu"}
+                                </span>
+                            </button>
+                            {!isPinned && (
+                                <button
+                                    type="button"
+                                    data-drag-ignore="true"
+                                    className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                    onClick={closeModal}
+                                >
+                                    <X className="h-4 w-4" />
+                                    <span className="sr-only">
+                                        Close menu
+                                    </span>
+                                </button>
+                            )}
+                        </div>
                     </div>
                     {navigationLinks}
                 </div>,
@@ -630,15 +812,9 @@ export function NavigationModal() {
             {mobileTrigger}
             <DialogContent className="w-[calc(100%-2rem)] max-w-sm gap-0 overflow-hidden rounded-[28px] border-border/70 bg-background/95 p-0 shadow-[0_24px_80px_-32px_rgba(15,23,42,0.55)] backdrop-blur-xl">
                 <DialogHeader className="border-b border-border/60 px-6 pb-4 pt-6 text-left">
-                    <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
-                        Navigation
-                    </span>
                     <DialogTitle className="pr-10 text-[1.35rem] font-semibold tracking-tight">
                         ナビゲーション
                     </DialogTitle>
-                    <DialogDescription className="pr-10 text-sm leading-6">
-                        主要な画面へ移動できます。
-                    </DialogDescription>
                 </DialogHeader>
                 {navigationLinks}
             </DialogContent>

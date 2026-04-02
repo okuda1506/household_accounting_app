@@ -4,7 +4,12 @@ import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "../ui/dialog";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -67,6 +72,7 @@ export function EditTransactionModal({
     // transaction_type_idは表示のみ（変更不可）
     const transactionType =
         transaction.transaction_type_id === 1 ? "income" : "expense";
+    const transactionTypeLabel = transactionType === "income" ? "収入" : "支出";
 
     useEffect(() => {
         if (open) {
@@ -172,177 +178,199 @@ export function EditTransactionModal({
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="rounded-lg">
-                <DialogHeader>
+            <DialogContent className="max-h-[calc(100dvh-1rem)] max-w-lg overflow-hidden rounded-lg p-0">
+                <DialogHeader className="shrink-0 px-4 pb-3 pt-5 pr-12 text-center sm:px-6 sm:pb-4 sm:pt-6 sm:text-center">
                     <DialogTitle>取引編集</DialogTitle>
                 </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <div className="flex items-center justify-between mb-1">
+                <form onSubmit={handleSubmit} className="flex min-h-0 flex-col">
+                    <div className="min-h-0 space-y-3 overflow-y-auto px-4 py-4 sm:space-y-4 sm:px-6 sm:py-5">
+                        <div className="space-y-2">
+                            <div className="flex items-start justify-between gap-3">
                             <Label htmlFor="transaction-date">取引日</Label>
-                            <p className="h-5 text-sm text-red-400 text-right">
-                                {errors.transaction_date?.[0]}
-                            </p>
-                        </div>
-                        <DatePicker
-                            date={transactionDate}
-                            setDate={setTransactionDate}
-                        />
-                    </div>
-                    {/* 取引タイプ */}
-                    <div>
-                        <Label htmlFor="type">取引タイプ</Label>
-                        <Select value={transactionType} disabled>
-                            <SelectTrigger>
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="income">収入</SelectItem>
-                                <SelectItem value="expense">支出</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    {/* カテゴリ */}
-                    <div>
-                        <div className="flex items-center justify-between mb-1">
-                            <Label htmlFor="category">カテゴリ</Label>
-                            <p className="h-5 text-sm text-red-400 text-right">
-                                {errors.category_id?.[0]}
-                            </p>
-                        </div>
-                        <Select value={category} onValueChange={setCategory}>
-                            <SelectTrigger
-                                className={`${
-                                    errors.category_id ? "border-red-500" : ""
-                                }`}
-                            >
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {filteredCategories.map((cat) => (
-                                    <SelectItem
-                                        key={cat.category_id}
-                                        value={String(cat.category_id)}
-                                    >
-                                        {cat.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    {/* 金額 */}
-                    <div>
-                        <div className="flex items-center justify-between mb-1">
-                            <Label htmlFor="amount">金額</Label>
-                            <p className="h-5 text-sm text-red-400 text-right">
-                                {errors.amount?.[0]}
-                            </p>
-                        </div>
-                        <Input
-                            id="amount"
-                            type="number"
-                            className={`focus-visible:ring-indigo-500 ${
-                                errors.amount ? "border-red-500" : ""
-                            }`}
-                            value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
-                        />
-                    </div>
-                    {/* 支払方法 */}
-                    <div>
-                        <div className="flex items-center justify-between mb-1">
-                            <Label htmlFor="payment-method">支払方法</Label>
-                            <p className="h-5 text-sm text-red-400 text-right">
-                                {errors.payment_method_id?.[0]}
-                            </p>
-                        </div>
-                        <Select
-                            value={paymentMethod}
-                            onValueChange={setPaymentMethod}
-                        >
-                            <SelectTrigger
-                                className={`${
-                                    errors.payment_method_id
+                                {errors.transaction_date?.[0] && (
+                                    <p className="text-right text-sm text-red-400">
+                                        {errors.transaction_date[0]}
+                                    </p>
+                                )}
+                            </div>
+                            <DatePicker
+                                date={transactionDate}
+                                setDate={setTransactionDate}
+                                className={
+                                    errors.transaction_date
                                         ? "border-red-500"
                                         : ""
-                                }`}
-                            >
-                                <SelectValue placeholder="支払方法を選択..." />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {filteredPaymentMethods.map((pay) => (
-                                    <SelectItem
-                                        key={pay.payment_method_id}
-                                        value={String(pay.payment_method_id)}
-                                    >
-                                        {pay.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    {/* メモ */}
-                    <div>
-                        <div className="flex items-center justify-between mb-1">
-                            <Label htmlFor="description">メモ</Label>
-                            <p className="h-5 text-sm text-red-400 text-right">
-                                {errors.memo?.[0]}
-                            </p>
+                                }
+                            />
                         </div>
-                        <Input
-                            id="description"
-                            className={`focus-visible:ring-indigo-500 ${
-                                errors.memo ? "border-red-500" : ""
-                            }`}
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                        />
-                    </div>
 
-                    {errors.general && (
-                        <div className="text-sm text-red-400 space-y-1">
-                            {errors.general.map((msg, index) => (
-                                <p key={index}>{msg}</p>
-                            ))}
+                        <div className="space-y-2">
+                            <Label htmlFor="type">取引タイプ</Label>
+                            <div className="flex h-10 items-center rounded-xl border border-border/70 bg-background/70 px-3 text-sm text-foreground/80">
+                                {transactionTypeLabel}
+                            </div>
                         </div>
-                    )}
 
-                    <Button type="submit" className="w-full">
-                        更新
-                    </Button>
-
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button
-                                type="button"
-                                variant="destructive"
-                                className="w-full"
-                            >
-                                削除
-                            </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent className="border-border">
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                    本当に削除しますか？
-                                </AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    この操作は元に戻せません。
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>
-                                    キャンセル
-                                </AlertDialogCancel>
-                                <AlertDialogAction
-                                    onClick={handleDelete}
-                                    className="bg-red-600 hover:bg-red-700"
+                        <div className="space-y-2">
+                            <div className="flex items-start justify-between gap-3">
+                            <Label htmlFor="category">カテゴリ</Label>
+                                {errors.category_id?.[0] && (
+                                    <p className="text-right text-sm text-red-400">
+                                        {errors.category_id[0]}
+                                    </p>
+                                )}
+                            </div>
+                            <Select value={category} onValueChange={setCategory}>
+                                <SelectTrigger
+                                    className={`${
+                                        errors.category_id
+                                            ? "border-red-500"
+                                            : ""
+                                    }`}
                                 >
-                                    削除
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {filteredCategories.map((cat) => (
+                                        <SelectItem
+                                            key={cat.category_id}
+                                            value={String(cat.category_id)}
+                                        >
+                                            {cat.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                            <div className="flex items-start justify-between gap-3">
+                            <Label htmlFor="amount">金額</Label>
+                                {errors.amount?.[0] && (
+                                    <p className="text-right text-sm text-red-400">
+                                        {errors.amount[0]}
+                                    </p>
+                                )}
+                            </div>
+                            <Input
+                                id="amount"
+                                type="number"
+                                className={`focus-visible:ring-indigo-500 ${
+                                    errors.amount ? "border-red-500" : ""
+                                }`}
+                                value={amount}
+                                onChange={(e) => setAmount(e.target.value)}
+                                onClear={() => setAmount("")}
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <div className="flex items-start justify-between gap-3">
+                            <Label htmlFor="payment-method">支払方法</Label>
+                                {errors.payment_method_id?.[0] && (
+                                    <p className="text-right text-sm text-red-400">
+                                        {errors.payment_method_id[0]}
+                                    </p>
+                                )}
+                            </div>
+                            <Select
+                                value={paymentMethod}
+                                onValueChange={setPaymentMethod}
+                            >
+                                <SelectTrigger
+                                    className={`${
+                                        errors.payment_method_id
+                                            ? "border-red-500"
+                                            : ""
+                                    }`}
+                                >
+                                    <SelectValue placeholder="支払方法を選択..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {filteredPaymentMethods.map((pay) => (
+                                        <SelectItem
+                                            key={pay.payment_method_id}
+                                            value={String(pay.payment_method_id)}
+                                        >
+                                            {pay.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                            <div className="flex items-start justify-between gap-3">
+                            <Label htmlFor="description">メモ</Label>
+                                {errors.memo?.[0] && (
+                                    <p className="text-right text-sm text-red-400">
+                                        {errors.memo[0]}
+                                    </p>
+                                )}
+                            </div>
+                            <Input
+                                id="description"
+                                className={`focus-visible:ring-indigo-500 ${
+                                    errors.memo ? "border-red-500" : ""
+                                }`}
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                onClear={() => setDescription("")}
+                            />
+                        </div>
+
+                        {errors.general && (
+                            <div className="space-y-1 text-sm text-red-400">
+                                {errors.general.map((msg, index) => (
+                                    <p key={index}>{msg}</p>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="shrink-0 px-4 pb-4 pt-3 sm:px-6 sm:pb-6 sm:pt-4">
+                        <div className="grid grid-cols-2 gap-3">
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button
+                                        type="button"
+                                        variant="destructive"
+                                        className="h-12 w-full rounded-xl text-sm font-semibold shadow-lg shadow-red-500/20"
+                                    >
+                                        削除
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent className="border-border">
+                                    <AlertDialogHeader className="text-center sm:text-center">
+                                        <AlertDialogTitle>
+                                            本当に削除しますか？
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            この操作は元に戻せません。
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel className="mt-2 h-12 rounded-xl border border-border bg-background/80 text-sm font-semibold text-foreground shadow-sm backdrop-blur-sm hover:bg-accent hover:text-accent-foreground sm:mt-0">
+                                            キャンセル
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={handleDelete}
+                                            className="h-12 rounded-xl bg-red-600 text-sm font-semibold shadow-lg shadow-red-500/20 hover:bg-red-700"
+                                        >
+                                            削除
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+
+                            <Button
+                                type="submit"
+                                className="h-12 w-full rounded-xl text-sm font-semibold shadow-lg shadow-primary/25"
+                            >
+                                更新
+                            </Button>
+                        </div>
+                    </div>
                 </form>
             </DialogContent>
         </Dialog>
