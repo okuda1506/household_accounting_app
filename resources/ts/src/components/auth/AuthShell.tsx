@@ -1,37 +1,18 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     BarChart3,
     BotMessageSquare,
     ShieldCheck,
     Wallet,
-    type LucideIcon,
 } from "lucide-react";
 
 import { cn } from "../../../lib/utils";
+import type {
+    AuthShellProps,
+    Highlight,
+    RevealOnViewProps,
+} from "../../types/auth";
 import { Card } from "../ui/card";
-
-type Highlight = {
-    description: string;
-    icon: LucideIcon;
-    title: string;
-};
-
-type AuthShellProps = {
-    brandName?: string;
-    children: ReactNode;
-    className?: string;
-    description?: string;
-    panelDescription?: string;
-    panelTitle?: ReactNode;
-    title?: string;
-    variant?: "default" | "simple";
-};
-
-type RevealOnViewProps = {
-    children: ReactNode;
-    className?: string;
-    delay?: number;
-};
 
 const highlights: Highlight[] = [
     {
