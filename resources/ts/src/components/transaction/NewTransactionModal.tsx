@@ -116,32 +116,14 @@ export function NewTransactionModal({
                 onSuccess();
             }
         } catch (err: any) {
-            if (
-                err.response &&
-                err.response.status === 422 &&
-                Array.isArray(err.response.data.messages)
-            ) {
-                const newErrors: { [key: string]: string[] } = {};
-                const errorMessages: string[] = err.response.data.messages;
+            const validationErrors = err.response?.data?.errors;
 
-                // エラーメッセージをキーワードで振り分ける
-                errorMessages.forEach((msg) => {
-                    if (msg.includes("取引日")) {
-                        newErrors.transaction_date = [msg];
-                    } else if (msg.includes("タイプ")) {
-                        newErrors.transaction_type_id = [msg];
-                    } else if (msg.includes("カテゴリ")) {
-                        newErrors.category_id = [msg];
-                    } else if (msg.includes("金額")) {
-                        newErrors.amount = [msg];
-                    } else if (msg.includes("支払方法")) {
-                        newErrors.payment_method_id = [msg];
-                    } else {
-                        // どのキーワードにも一致しないエラー
-                        newErrors.general = [...(newErrors.general || []), msg];
-                    }
-                });
-                setErrors(newErrors);
+            if (
+                err.response?.status === 422 &&
+                validationErrors &&
+                typeof validationErrors === "object"
+            ) {
+                setErrors(validationErrors);
             } else {
                 setErrors({ general: ["登録に失敗しました。"] });
             }
