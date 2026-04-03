@@ -35,10 +35,10 @@ class RequestEmailChangeRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.required' => 'メールアドレスは必須です。',
-            'email.email' => 'メールアドレスの形式が正しくありません。',
-            'email.max' => 'メールアドレスは255文字以内で入力してください。',
-            'email.unique' => 'このメールアドレスは既に使用されています。',
+            'email.required' => '入力してください。',
+            'email.email' => '形式が正しくありません。',
+            'email.max' => '255文字以内で入力してください。',
+            'email.unique' => '既に使用されています。',
         ];
     }
 }
