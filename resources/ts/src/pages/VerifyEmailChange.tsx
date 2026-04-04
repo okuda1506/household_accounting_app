@@ -10,6 +10,7 @@ import {
 import { toast } from "react-toastify";
 
 import api from "../../lib/axios";
+import { extractFieldErrors, type FieldErrors } from "../../lib/error-response";
 import {
     SettingsPageShell,
     settingsInfoCardClassName,
@@ -26,7 +27,7 @@ const VerifyEmailChange = () => {
 
     const [code, setCode] = useState("");
     const [loading, setLoading] = useState(false);
-    const [errors, setErrors] = useState<string[]>([]);
+    const [errors, setErrors] = useState<FieldErrors>({});
 
     useEffect(() => {
         if (!email) {
@@ -53,7 +54,7 @@ const VerifyEmailChange = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setErrors([]);
+        setErrors({});
         setLoading(true);
 
         try {
@@ -64,12 +65,9 @@ const VerifyEmailChange = () => {
                 navigate("/settings");
             }, 2000);
         } catch (error: any) {
-            const messages =
-                error?.response?.data?.messages ??
-                (error?.response?.data?.message
-                    ? [error.response.data.message]
-                    : ["認証コードの送信に失敗しました"]);
-            setErrors(messages);
+            setErrors(
+                extractFieldErrors(error, "認証コードの送信に失敗しました。")
+            );
             setLoading(false);
         }
     };
@@ -81,12 +79,12 @@ const VerifyEmailChange = () => {
             description="新しいメールアドレス宛に届いた認証コードを入力してください。"
         >
             <form onSubmit={handleSubmit} className="space-y-6">
-                {errors.length > 0 && (
+                {errors.general && (
                     <div className="rounded-2xl border border-red-200/80 bg-red-50/90 p-4 text-sm text-red-700 shadow-sm dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
                         <div className="flex items-start gap-3">
                             <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
                             <div className="space-y-1">
-                                {errors.map((error, index) => (
+                                {errors.general.map((error, index) => (
                                     <p key={index}>{error}</p>
                                 ))}
                             </div>
@@ -105,7 +103,14 @@ const VerifyEmailChange = () => {
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="code">認証コード</Label>
+                    <div className="flex items-start justify-between gap-3">
+                        <Label htmlFor="code">認証コード</Label>
+                        {errors.code?.[0] && (
+                            <p className="text-right text-sm text-red-400">
+                                {errors.code[0]}
+                            </p>
+                        )}
+                    </div>
                     <div className="relative">
                         <KeyRound className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
@@ -117,7 +122,9 @@ const VerifyEmailChange = () => {
                             value={code}
                             onChange={(e) => setCode(e.target.value)}
                             onClear={() => setCode("")}
-                            className={settingsInputClassName}
+                            className={`${settingsInputClassName} ${
+                                errors.code ? "border-red-500" : ""
+                            }`}
                         />
                     </div>
                 </div>

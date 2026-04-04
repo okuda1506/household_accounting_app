@@ -10,6 +10,7 @@ import {
 import { toast } from "react-toastify";
 
 import api from "../../../lib/axios";
+import { extractFieldErrors, type FieldErrors } from "../../../lib/error-response";
 import type { AuthPasswordFormProps } from "../../types/auth";
 import { AuthShell } from "./AuthShell";
 import { Button } from "../ui/button";
@@ -39,12 +40,22 @@ const AuthPasswordForm = ({
     const { token } = useParams<{ token: string }>();
     const [searchParams] = useSearchParams();
     const email = searchParams.get("email") || "";
-    const [errors, setErrors] = useState<string[]>([]);
+    const [errors, setErrors] = useState<FieldErrors>({});
     const [password, setPassword] = useState("");
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [isInvalidLink, setIsInvalidLink] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
+    const passwordMessages = errors.password ?? [];
+    const passwordConfirmationMessages = [
+        ...(errors.password_confirmation ?? []),
+        ...passwordMessages.filter((message) =>
+            message.includes("確認用項目と一致しません")
+        ),
+    ];
+    const passwordValidationMessages = passwordMessages.filter(
+        (message) => !message.includes("確認用項目と一致しません")
+    );
 
     useEffect(() => {
         if (!token || !email) {
@@ -69,7 +80,7 @@ const AuthPasswordForm = ({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setErrors([]);
+        setErrors({});
         setIsSubmitting(true);
 
         try {
@@ -82,7 +93,7 @@ const AuthPasswordForm = ({
             toast.success(successToastMessage);
             navigate(successRedirectPath);
         } catch (error: any) {
-            setErrors(error.response.data.messages);
+            setErrors(extractFieldErrors(error, failureToastMessage));
             toast.error(failureToastMessage);
         } finally {
             setIsSubmitting(false);
@@ -144,12 +155,12 @@ const AuthPasswordForm = ({
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    {errors.length > 0 && (
+                    {errors.general && (
                         <div className="rounded-2xl border border-red-200/80 bg-red-50/90 p-4 text-sm text-red-700 shadow-sm dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
                             <div className="flex items-start gap-3">
                                 <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
                                 <div className="space-y-1">
-                                    {errors.map((error, index) => (
+                                    {errors.general.map((error, index) => (
                                         <p key={index}>{error}</p>
                                     ))}
                                 </div>
@@ -173,7 +184,16 @@ const AuthPasswordForm = ({
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="password">新しいパスワード</Label>
+                            <div className="flex items-start justify-between gap-3">
+                                <Label htmlFor="password">
+                                    新しいパスワード
+                                </Label>
+                                {passwordValidationMessages[0] && (
+                                    <p className="text-right text-sm text-red-400">
+                                        {passwordValidationMessages[0]}
+                                    </p>
+                                )}
+                            </div>
                             <div className="relative">
                                 <LockKeyhole className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                 <PasswordInput
@@ -182,15 +202,26 @@ const AuthPasswordForm = ({
                                     required
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className={inputClassName}
+                                    className={`${inputClassName} ${
+                                        passwordValidationMessages.length > 0
+                                            ? "border-red-500"
+                                            : ""
+                                    }`}
                                 />
                             </div>
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="password_confirmation">
-                                パスワード確認
-                            </Label>
+                            <div className="flex items-start justify-between gap-3">
+                                <Label htmlFor="password_confirmation">
+                                    パスワード確認
+                                </Label>
+                                {passwordConfirmationMessages[0] && (
+                                    <p className="text-right text-sm text-red-400">
+                                        {passwordConfirmationMessages[0]}
+                                    </p>
+                                )}
+                            </div>
                             <div className="relative">
                                 <LockKeyhole className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                 <PasswordInput
@@ -201,7 +232,11 @@ const AuthPasswordForm = ({
                                     onChange={(e) =>
                                         setPasswordConfirmation(e.target.value)
                                     }
-                                    className={inputClassName}
+                                    className={`${inputClassName} ${
+                                        passwordConfirmationMessages.length > 0
+                                            ? "border-red-500"
+                                            : ""
+                                    }`}
                                 />
                             </div>
                         </div>

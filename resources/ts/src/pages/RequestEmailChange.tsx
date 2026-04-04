@@ -4,6 +4,7 @@ import { AlertTriangle, Loader2, Mail } from "lucide-react";
 import { toast } from "react-toastify";
 
 import api from "../../lib/axios";
+import { extractFieldErrors, type FieldErrors } from "../../lib/error-response";
 import {
     SettingsPageShell,
     settingsInfoCardClassName,
@@ -17,7 +18,7 @@ const RequestEmailChange = () => {
     const navigate = useNavigate();
     const [currentEmail, setCurrentEmail] = useState("");
     const [email, setEmail] = useState("");
-    const [errors, setErrors] = useState<string[]>([]);
+    const [errors, setErrors] = useState<FieldErrors>({});
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -36,7 +37,7 @@ const RequestEmailChange = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setErrors([]);
+        setErrors({});
         setLoading(true);
 
         try {
@@ -44,10 +45,9 @@ const RequestEmailChange = () => {
             toast.success("認証コードを送信しました");
             navigate("/settings/email/verify", { state: { email } });
         } catch (error: any) {
-            const messages = error?.response?.data?.messages ?? [
-                "認証コードの送信に失敗しました",
-            ];
-            setErrors(messages);
+            setErrors(
+                extractFieldErrors(error, "認証コードの送信に失敗しました。")
+            );
         } finally {
             setLoading(false);
         }
@@ -60,12 +60,12 @@ const RequestEmailChange = () => {
             description="新しいメールアドレス宛に認証コードを送信します。"
         >
             <form onSubmit={handleSubmit} className="space-y-6">
-                {errors.length > 0 && (
+                {errors.general && (
                     <div className="rounded-2xl border border-red-200/80 bg-red-50/90 p-4 text-sm text-red-700 shadow-sm dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
                         <div className="flex items-start gap-3">
                             <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
                             <div className="space-y-1">
-                                {errors.map((error, index) => (
+                                {errors.general.map((error, index) => (
                                     <p key={index}>{error}</p>
                                 ))}
                             </div>
@@ -85,7 +85,14 @@ const RequestEmailChange = () => {
                 )}
 
                 <div className="space-y-2">
-                    <Label htmlFor="email">新しいメールアドレス</Label>
+                    <div className="flex items-start justify-between gap-3">
+                        <Label htmlFor="email">新しいメールアドレス</Label>
+                        {errors.email?.[0] && (
+                            <p className="text-right text-sm text-red-400">
+                                {errors.email[0]}
+                            </p>
+                        )}
+                    </div>
                     <div className="relative">
                         <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
@@ -96,7 +103,9 @@ const RequestEmailChange = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             onClear={() => setEmail("")}
-                            className={settingsInputClassName}
+                            className={`${settingsInputClassName} ${
+                                errors.email ? "border-red-500" : ""
+                            }`}
                         />
                     </div>
                 </div>

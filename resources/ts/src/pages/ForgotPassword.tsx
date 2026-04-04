@@ -4,6 +4,7 @@ import { AlertTriangle, ArrowRight, Loader2, Mail } from "lucide-react";
 import { toast } from "react-toastify";
 
 import api from "../../lib/axios";
+import { extractFieldErrors, type FieldErrors } from "../../lib/error-response";
 import { AuthShell } from "../components/auth/AuthShell";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -17,19 +18,19 @@ const linkClassName =
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
-    const [errors, setErrors] = useState<string[]>([]);
+    const [errors, setErrors] = useState<FieldErrors>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setErrors([]);
+        setErrors({});
         setIsSubmitting(true);
 
         try {
             await api.post("/forgot-password", { email });
             toast.success("案内メールを送信しました。");
         } catch (error: any) {
-            setErrors(error.response.data.messages);
+            setErrors(extractFieldErrors(error, "送信に失敗しました。"));
             toast.error("送信に失敗しました。");
         } finally {
             setIsSubmitting(false);
@@ -59,12 +60,12 @@ const ForgotPassword = () => {
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    {errors.length > 0 && (
+                    {errors.general && (
                         <div className="rounded-2xl border border-red-200/80 bg-red-50/90 p-4 text-sm text-red-700 shadow-sm dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
                             <div className="flex items-start gap-3">
                                 <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
                                 <div className="space-y-1">
-                                    {errors.map((error, index) => (
+                                    {errors.general.map((error, index) => (
                                         <p key={index}>{error}</p>
                                     ))}
                                 </div>
@@ -73,7 +74,14 @@ const ForgotPassword = () => {
                     )}
 
                     <div className="space-y-2">
-                        <Label htmlFor="email">メールアドレス</Label>
+                        <div className="flex items-start justify-between gap-3">
+                            <Label htmlFor="email">メールアドレス</Label>
+                            {errors.email?.[0] && (
+                                <p className="text-right text-sm text-red-400">
+                                    {errors.email[0]}
+                                </p>
+                            )}
+                        </div>
                         <div className="relative">
                             <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                             <Input
@@ -84,7 +92,9 @@ const ForgotPassword = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 onClear={() => setEmail("")}
-                                className={inputClassName}
+                                className={`${inputClassName} ${
+                                    errors.email ? "border-red-500" : ""
+                                }`}
                             />
                         </div>
                     </div>

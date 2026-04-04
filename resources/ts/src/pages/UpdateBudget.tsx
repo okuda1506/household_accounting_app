@@ -4,6 +4,7 @@ import { AlertTriangle, Loader2, Wallet } from "lucide-react";
 import { toast } from "react-toastify";
 
 import api from "../../lib/axios";
+import { extractFieldErrors, type FieldErrors } from "../../lib/error-response";
 import {
     SettingsPageShell,
     settingsInfoCardClassName,
@@ -50,7 +51,7 @@ const UpdateBudget = () => {
     const [currentBudget, setCurrentBudget] = useState("");
     const [budget, setBudget] = useState("");
     const [isBudgetEnabled, setIsBudgetEnabled] = useState(true);
-    const [errors, setErrors] = useState<string[]>([]);
+    const [errors, setErrors] = useState<FieldErrors>({});
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -76,12 +77,12 @@ const UpdateBudget = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setErrors([]);
+        setErrors({});
         setLoading(true);
 
         try {
             if (isBudgetEnabled && (budget === "" || Number(budget) <= 0)) {
-                setErrors(["1円以上の値を入力してください。"]);
+                setErrors({ budget: ["1円以上の値を入力してください。"] });
                 setLoading(false);
                 return;
             }
@@ -94,10 +95,7 @@ const UpdateBudget = () => {
             toast.success(response.data.message ?? "予算を更新しました");
             navigate("/settings");
         } catch (error: any) {
-            const messages = error?.response?.data?.messages ?? [
-                "予算の更新に失敗しました",
-            ];
-            setErrors(messages);
+            setErrors(extractFieldErrors(error, "予算の更新に失敗しました。"));
             toast.error("更新に失敗しました");
         } finally {
             setLoading(false);
@@ -111,12 +109,12 @@ const UpdateBudget = () => {
             description="毎月の予算を設定して、家計のコントロールを整えます。"
         >
             <form onSubmit={handleSubmit} className="space-y-6">
-                {errors.length > 0 && (
+                {errors.general && (
                     <div className="rounded-2xl border border-red-200/80 bg-red-50/90 p-4 text-sm text-red-700 shadow-sm dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
                         <div className="flex items-start gap-3">
                             <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
                             <div className="space-y-1">
-                                {errors.map((error, index) => (
+                                {errors.general.map((error, index) => (
                                     <p key={index}>{error}</p>
                                 ))}
                             </div>
@@ -143,7 +141,14 @@ const UpdateBudget = () => {
 
                 {isBudgetEnabled && (
                     <div className="space-y-2">
-                        <Label htmlFor="budget">毎月の予算（円）</Label>
+                        <div className="flex items-start justify-between gap-3">
+                            <Label htmlFor="budget">毎月の予算（円）</Label>
+                            {errors.budget?.[0] && (
+                                <p className="text-right text-sm text-red-400">
+                                    {errors.budget[0]}
+                                </p>
+                            )}
+                        </div>
                         <div className="relative">
                             <Wallet className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                             <Input
@@ -158,7 +163,9 @@ const UpdateBudget = () => {
                                     )
                                 }
                                 onClear={() => setBudget("")}
-                                className={settingsInputClassName}
+                                className={`${settingsInputClassName} ${
+                                    errors.budget ? "border-red-500" : ""
+                                }`}
                                 placeholder="100000"
                             />
                         </div>
