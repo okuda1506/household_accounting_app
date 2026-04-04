@@ -21,7 +21,7 @@ class UpdateBudgetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'budget'  => ['bail', 'required', 'regex:/^-?\d+$/', 'numeric', 'min:0', 'max:999999999'],
+            'budget'  => ['bail', 'required', 'regex:/^-?\d+$/', 'numeric', 'min:1', 'max:999999999'],
         ];
     }
 
