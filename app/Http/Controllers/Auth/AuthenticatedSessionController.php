@@ -38,7 +38,7 @@ class AuthenticatedSessionController extends Controller
             $result = $this->authService->loginUser($request);
         } catch (ValidationException $e) {
             return ApiResponse::error(
-                null,
+                $e->errors(),
                 $e->validator->errors()->all(),
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );

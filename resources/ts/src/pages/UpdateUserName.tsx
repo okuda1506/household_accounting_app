@@ -4,6 +4,7 @@ import { AlertTriangle, Loader2, User } from "lucide-react";
 import { toast } from "react-toastify";
 
 import api from "../../lib/axios";
+import { extractFieldErrors, type FieldErrors } from "../../lib/error-response";
 import {
     SettingsPageShell,
     settingsInfoCardClassName,
@@ -17,7 +18,7 @@ const UpdateUserName = () => {
     const navigate = useNavigate();
     const [currentName, setCurrentName] = useState("");
     const [name, setName] = useState("");
-    const [errors, setErrors] = useState<string[]>([]);
+    const [errors, setErrors] = useState<FieldErrors>({});
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -37,19 +38,18 @@ const UpdateUserName = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setErrors([]);
+        setErrors({});
         setLoading(true);
 
         try {
             const response = await api.put("/user/name", { name });
             toast.success(response.data.message ?? "ユーザー名を変更しました");
             navigate("/settings");
-        } catch (error: any) {
-            const messages = error?.response?.data?.messages ?? [
-                "ユーザー名の変更に失敗しました",
-            ];
-            setErrors(messages);
-            toast.error("更新に失敗しました");
+        } catch (err: any) {
+            setErrors(extractFieldErrors(err, "更新に失敗しました。"));
+            if (err.response?.status !== 422) {
+                toast.error("更新に失敗しました");
+            }
         } finally {
             setLoading(false);
         }
@@ -62,12 +62,12 @@ const UpdateUserName = () => {
             description="表示名を更新して、アカウント情報を整えます。"
         >
             <form onSubmit={handleSubmit} className="space-y-6">
-                {errors.length > 0 && (
+                {errors.general && (
                     <div className="rounded-2xl border border-red-200/80 bg-red-50/90 p-4 text-sm text-red-700 shadow-sm dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
                         <div className="flex items-start gap-3">
                             <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
                             <div className="space-y-1">
-                                {errors.map((error, index) => (
+                                {errors.general.map((error, index) => (
                                     <p key={index}>{error}</p>
                                 ))}
                             </div>
@@ -87,7 +87,14 @@ const UpdateUserName = () => {
                 )}
 
                 <div className="space-y-2">
-                    <Label htmlFor="name">ユーザー名</Label>
+                    <div className="flex items-start justify-between gap-3">
+                        <Label htmlFor="name">ユーザー名</Label>
+                        {errors.name?.[0] && (
+                            <p className="text-right text-sm text-red-400">
+                                {errors.name[0]}
+                            </p>
+                        )}
+                    </div>
                     <div className="relative">
                         <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
@@ -97,7 +104,9 @@ const UpdateUserName = () => {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             onClear={() => setName("")}
-                            className={settingsInputClassName}
+                            className={`${settingsInputClassName} ${
+                                errors.name ? "border-red-500" : ""
+                            }`}
                         />
                     </div>
                 </div>

@@ -32,14 +32,16 @@ class ReactivateAccountController extends Controller
         } catch (\Throwable $e) {
             if ($e instanceof \Illuminate\Validation\ValidationException) {
                 $errors = $e->validator->errors()->all();
+                $errorData = $e->errors();
                 $status = Response::HTTP_UNPROCESSABLE_ENTITY;
             } else {
                 \Illuminate\Support\Facades\Log::error($e);
                 $errors = [__('messages.server_error')];
+                $errorData = null;
                 $status = Response::HTTP_INTERNAL_SERVER_ERROR;
             }
 
-            return ApiResponse::error(null, $errors, $status);
+            return ApiResponse::error($errorData, $errors, $status);
         }
 
         $errorMap = [

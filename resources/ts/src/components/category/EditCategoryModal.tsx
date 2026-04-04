@@ -19,6 +19,7 @@ import {
 } from "../ui/select";
 import api from "../../../lib/axios";
 import { toast } from "react-toastify";
+import { extractFieldErrors, type FieldErrors } from "../../../lib/error-response";
 import { Category } from "../../types/categories";
 import { settingsInputClassName } from "../settings/SettingsPageShell";
 
@@ -36,7 +37,7 @@ export function EditCategoryModal({
     category,
 }: Props) {
     const [name, setName] = useState(category.name);
-    const [errorMessage, setErrorMessage] = useState("");
+    const [errors, setErrors] = useState<FieldErrors>({});
     const modalFieldClassName = settingsInputClassName.replace("pl-11", "pl-3");
 
     // transaction_type_idは表示のみ（変更不可）
@@ -46,7 +47,7 @@ export function EditCategoryModal({
     useEffect(() => {
         if (open) {
             setName(category.name);
-            setErrorMessage("");
+            setErrors({});
         }
     }, [open, category]);
 
@@ -62,16 +63,12 @@ export function EditCategoryModal({
 
             if (res.data.success) {
                 setOpen(false);
+                setErrors({});
                 toast.success("カテゴリを更新しました");
                 onSuccess();
             }
         } catch (err: any) {
-            const messageArray = err.response?.data?.messages;
-            if (Array.isArray(messageArray)) {
-                setErrorMessage(messageArray.join(" "));
-            } else {
-                setErrorMessage("更新に失敗しました");
-            }
+            setErrors(extractFieldErrors(err, "更新に失敗しました。"));
         }
     };
 
@@ -82,10 +79,23 @@ export function EditCategoryModal({
                     <DialogTitle>カテゴリ編集</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <Label htmlFor="type">取引タイプ</Label>
+                    <div className="space-y-2">
+                        <div className="flex items-start justify-between gap-3">
+                            <Label htmlFor="type">取引タイプ</Label>
+                            {errors.transaction_type_id?.[0] && (
+                                <p className="text-right text-sm text-red-400">
+                                    {errors.transaction_type_id[0]}
+                                </p>
+                            )}
+                        </div>
                         <Select value={transactionType} disabled>
-                            <SelectTrigger className={modalFieldClassName}>
+                            <SelectTrigger
+                                className={`${modalFieldClassName} ${
+                                    errors.transaction_type_id
+                                        ? "border-red-500"
+                                        : ""
+                                }`}
+                            >
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -95,19 +105,32 @@ export function EditCategoryModal({
                         </Select>
                     </div>
 
-                    <div>
-                        <Label htmlFor="name">カテゴリ名</Label>
+                    <div className="space-y-2">
+                        <div className="flex items-start justify-between gap-3">
+                            <Label htmlFor="name">カテゴリ名</Label>
+                            {errors.name?.[0] && (
+                                <p className="text-right text-sm text-red-400">
+                                    {errors.name[0]}
+                                </p>
+                            )}
+                        </div>
                         <Input
                             id="name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             onClear={() => setName("")}
-                            className={modalFieldClassName}
+                            className={`${modalFieldClassName} ${
+                                errors.name ? "border-red-500" : ""
+                            }`}
                         />
                     </div>
 
-                    {errorMessage && (
-                        <p className="text-sm text-red-400">{errorMessage}</p>
+                    {errors.general && (
+                        <div className="space-y-1 text-sm text-red-400">
+                            {errors.general.map((msg, index) => (
+                                <p key={index}>{msg}</p>
+                            ))}
+                        </div>
                     )}
 
                     <Button

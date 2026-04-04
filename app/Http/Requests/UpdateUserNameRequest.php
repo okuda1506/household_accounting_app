@@ -24,4 +24,13 @@ class UpdateUserNameRequest extends FormRequest
             'name'  => ['required', 'string', 'max:30'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => '入力してください。',
+            'name.string' => '文字列で入力してください。',
+            'name.max' => '30文字以内で入力してください。',
+        ];
+    }
 }

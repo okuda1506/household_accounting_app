@@ -22,6 +22,7 @@ import {
 } from "../ui/select";
 import api from "../../../lib/axios";
 import { toast } from "react-toastify";
+import { extractFieldErrors, type FieldErrors } from "../../../lib/error-response";
 import { Category } from "../../types/categories";
 import { PaymentMethod } from "../../types/paymentMethod";
 
@@ -44,7 +45,7 @@ export function NewTransactionModal({
     const [amount, setAmount] = useState("");
     const [paymentMethod, setPaymentMethod] = useState("");
     const [description, setDescription] = useState("");
-    const [errors, setErrors] = useState<{ [key: string]: string[] }>({});
+    const [errors, setErrors] = useState<FieldErrors>({});
     const [transactionDate, setTransactionDate] = useState<Date | undefined>(
         new Date()
     );
@@ -116,35 +117,7 @@ export function NewTransactionModal({
                 onSuccess();
             }
         } catch (err: any) {
-            if (
-                err.response &&
-                err.response.status === 422 &&
-                Array.isArray(err.response.data.messages)
-            ) {
-                const newErrors: { [key: string]: string[] } = {};
-                const errorMessages: string[] = err.response.data.messages;
-
-                // エラーメッセージをキーワードで振り分ける
-                errorMessages.forEach((msg) => {
-                    if (msg.includes("取引日")) {
-                        newErrors.transaction_date = [msg];
-                    } else if (msg.includes("タイプ")) {
-                        newErrors.transaction_type_id = [msg];
-                    } else if (msg.includes("カテゴリ")) {
-                        newErrors.category_id = [msg];
-                    } else if (msg.includes("金額")) {
-                        newErrors.amount = [msg];
-                    } else if (msg.includes("支払方法")) {
-                        newErrors.payment_method_id = [msg];
-                    } else {
-                        // どのキーワードにも一致しないエラー
-                        newErrors.general = [...(newErrors.general || []), msg];
-                    }
-                });
-                setErrors(newErrors);
-            } else {
-                setErrors({ general: ["登録に失敗しました。"] });
-            }
+            setErrors(extractFieldErrors(err, "登録に失敗しました。"));
         }
     };
 
