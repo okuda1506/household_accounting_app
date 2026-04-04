@@ -4,6 +4,7 @@ import { AlertTriangle, Loader2, User } from "lucide-react";
 import { toast } from "react-toastify";
 
 import api from "../../lib/axios";
+import { extractFieldErrors, type FieldErrors } from "../../lib/error-response";
 import {
     SettingsPageShell,
     settingsInfoCardClassName,
@@ -17,7 +18,7 @@ const UpdateUserName = () => {
     const navigate = useNavigate();
     const [currentName, setCurrentName] = useState("");
     const [name, setName] = useState("");
-    const [errors, setErrors] = useState<{ [key: string]: string[] }>({});
+    const [errors, setErrors] = useState<FieldErrors>({});
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -45,17 +46,8 @@ const UpdateUserName = () => {
             toast.success(response.data.message ?? "ユーザー名を変更しました");
             navigate("/settings");
         } catch (err: any) {
-            const validationErrors = err.response?.data?.errors;
-
-            if (
-                err.response?.status === 422 &&
-                validationErrors &&
-                typeof validationErrors === "object" &&
-                !Array.isArray(validationErrors)
-            ) {
-                setErrors(validationErrors);
-            } else {
-                setErrors({ general: ["更新に失敗しました。"] });
+            setErrors(extractFieldErrors(err, "更新に失敗しました。"));
+            if (err.response?.status !== 422) {
                 toast.error("更新に失敗しました");
             }
         } finally {

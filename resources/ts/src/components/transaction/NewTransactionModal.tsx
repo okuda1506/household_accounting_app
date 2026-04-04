@@ -22,6 +22,7 @@ import {
 } from "../ui/select";
 import api from "../../../lib/axios";
 import { toast } from "react-toastify";
+import { extractFieldErrors, type FieldErrors } from "../../../lib/error-response";
 import { Category } from "../../types/categories";
 import { PaymentMethod } from "../../types/paymentMethod";
 
@@ -44,7 +45,7 @@ export function NewTransactionModal({
     const [amount, setAmount] = useState("");
     const [paymentMethod, setPaymentMethod] = useState("");
     const [description, setDescription] = useState("");
-    const [errors, setErrors] = useState<{ [key: string]: string[] }>({});
+    const [errors, setErrors] = useState<FieldErrors>({});
     const [transactionDate, setTransactionDate] = useState<Date | undefined>(
         new Date()
     );
@@ -116,17 +117,7 @@ export function NewTransactionModal({
                 onSuccess();
             }
         } catch (err: any) {
-            const validationErrors = err.response?.data?.errors;
-
-            if (
-                err.response?.status === 422 &&
-                validationErrors &&
-                typeof validationErrors === "object"
-            ) {
-                setErrors(validationErrors);
-            } else {
-                setErrors({ general: ["登録に失敗しました。"] });
-            }
+            setErrors(extractFieldErrors(err, "登録に失敗しました。"));
         }
     };
 

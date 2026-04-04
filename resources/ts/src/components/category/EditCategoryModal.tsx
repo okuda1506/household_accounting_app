@@ -19,6 +19,7 @@ import {
 } from "../ui/select";
 import api from "../../../lib/axios";
 import { toast } from "react-toastify";
+import { extractFieldErrors, type FieldErrors } from "../../../lib/error-response";
 import { Category } from "../../types/categories";
 import { settingsInputClassName } from "../settings/SettingsPageShell";
 
@@ -36,7 +37,7 @@ export function EditCategoryModal({
     category,
 }: Props) {
     const [name, setName] = useState(category.name);
-    const [errors, setErrors] = useState<{ [key: string]: string[] }>({});
+    const [errors, setErrors] = useState<FieldErrors>({});
     const modalFieldClassName = settingsInputClassName.replace("pl-11", "pl-3");
 
     // transaction_type_idは表示のみ（変更不可）
@@ -67,17 +68,7 @@ export function EditCategoryModal({
                 onSuccess();
             }
         } catch (err: any) {
-            const validationErrors = err.response?.data?.errors;
-
-            if (
-                err.response?.status === 422 &&
-                validationErrors &&
-                typeof validationErrors === "object"
-            ) {
-                setErrors(validationErrors);
-            } else {
-                setErrors({ general: ["更新に失敗しました。"] });
-            }
+            setErrors(extractFieldErrors(err, "更新に失敗しました。"));
         }
     };
 

@@ -20,6 +20,7 @@ import {
 } from "../ui/select";
 import api from "../../../lib/axios";
 import { toast } from "react-toastify";
+import { extractFieldErrors, type FieldErrors } from "../../../lib/error-response";
 import { settingsInputClassName } from "../settings/SettingsPageShell";
 
 type Props = {
@@ -30,7 +31,7 @@ export function NewCategoryModal({ onSuccess }: Props) {
     const [open, setOpen] = useState(false);
     const [name, setName] = useState("");
     const [type, setType] = useState<"income" | "expense">("income");
-    const [errors, setErrors] = useState<{ [key: string]: string[] }>({});
+    const [errors, setErrors] = useState<FieldErrors>({});
     const modalFieldClassName = settingsInputClassName.replace("pl-11", "pl-3");
 
     useEffect(() => {
@@ -59,17 +60,7 @@ export function NewCategoryModal({ onSuccess }: Props) {
                 onSuccess();
             }
         } catch (err: any) {
-            const validationErrors = err.response?.data?.errors;
-
-            if (
-                err.response?.status === 422 &&
-                validationErrors &&
-                typeof validationErrors === "object"
-            ) {
-                setErrors(validationErrors);
-            } else {
-                setErrors({ general: ["登録に失敗しました。"] });
-            }
+            setErrors(extractFieldErrors(err, "登録に失敗しました。"));
         }
     };
 

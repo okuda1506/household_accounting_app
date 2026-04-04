@@ -32,6 +32,7 @@ import {
 } from "../ui/select";
 import api from "../../../lib/axios";
 import { toast } from "react-toastify";
+import { extractFieldErrors, type FieldErrors } from "../../../lib/error-response";
 import { Transaction } from "../../types/transactions";
 import { Category } from "../../types/categories";
 import { PaymentMethod } from "../../types/paymentMethod";
@@ -60,7 +61,7 @@ export function EditTransactionModal({
         String(transaction.payment_method_id)
     );
     const [description, setDescription] = useState(transaction.memo);
-    const [errors, setErrors] = useState<{ [key: string]: string[] }>({});
+    const [errors, setErrors] = useState<FieldErrors>({});
     const [transactionDate, setTransactionDate] = useState<Date | undefined>(
         new Date(transaction.date)
     );
@@ -132,17 +133,7 @@ export function EditTransactionModal({
                 onSuccess();
             }
         } catch (err: any) {
-            const validationErrors = err.response?.data?.errors;
-
-            if (
-                err.response?.status === 422 &&
-                validationErrors &&
-                typeof validationErrors === "object"
-            ) {
-                setErrors(validationErrors);
-            } else {
-                setErrors({ general: ["更新に失敗しました。"] });
-            }
+            setErrors(extractFieldErrors(err, "更新に失敗しました。"));
         }
     };
 
