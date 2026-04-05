@@ -1,6 +1,6 @@
 import { NewTransactionModal } from "../components/transaction/NewTransactionModal";
 import { useEffect, useState } from "react";
-import { NavigationMenuAnchor } from "../components/NavigationModal";
+import { AppHeader } from "../components/AppHeader";
 import { TransactionList } from "../components/transaction/TransactionList";
 import api from "../../lib/axios";
 import { Transaction } from "../types/transactions";
@@ -66,16 +66,7 @@ export default function Transactions() {
 
     return (
         <div className="min-h-screen bg-background text-foreground">
-            <nav className="border-b border-border">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="relative h-16 flex items-center">
-                        <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
-                            取引一覧
-                        </span>
-                        <NavigationMenuAnchor />
-                    </div>
-                </div>
-            </nav>
+            <AppHeader title="取引一覧" />
 
             <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 sm:px-0 space-y-6">

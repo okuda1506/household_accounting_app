@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>開発環境</title>
+    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml" sizes="any">
     <script>
         try {
             const savedTheme = window.localStorage.getItem("household-accounting-theme");

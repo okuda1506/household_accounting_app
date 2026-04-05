@@ -17,7 +17,7 @@ import {
 import { NewCategoryModal } from "../components/category/NewCategoryModal";
 import { EditCategoryModal } from "../components/category/EditCategoryModal";
 import { DeleteCategoryModal } from "../components/category/DeleteCategoryModal";
-import { NavigationMenuAnchor } from "../components/NavigationModal";
+import { AppHeader } from "../components/AppHeader";
 import api from "../../lib/axios";
 import type { Category } from "../types/categories";
 
@@ -62,16 +62,7 @@ export default function Categories() {
 
     return (
         <div className="min-h-screen bg-background text-foreground">
-            <nav className="border-b border-border">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="relative h-16 flex items-center">
-                        <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
-                            カテゴリ
-                        </span>
-                        <NavigationMenuAnchor />
-                    </div>
-                </div>
-            </nav>
+            <AppHeader title="カテゴリ" />
 
             <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 sm:px-0 space-y-6">

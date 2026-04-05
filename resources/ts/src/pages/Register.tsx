@@ -77,7 +77,7 @@ const Register = () => {
 
     return (
         <AuthShell
-            brandName="Kakei Flow"
+            brandName="KakeiFlow"
             title="サインアップ"
             panelTitle={
                 <>
@@ -94,7 +94,7 @@ const Register = () => {
                     </div>
                     <div>
                         <p className="text-lg font-semibold tracking-tight text-foreground sm:text-xl">
-                            KAKEI FLOW を始める
+                            KakeiFlow を始める
                         </p>
                     </div>
                 </div>
