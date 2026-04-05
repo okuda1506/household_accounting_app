@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
@@ -22,18 +23,40 @@ import { NavigationModal } from "./components/NavigationModal";
 
 function App() {
     const { isDarkMode } = useTheme();
+    const [isMobileViewport, setIsMobileViewport] = useState(false);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia("(max-width: 640px)");
+        const handleChange = (event: MediaQueryListEvent | MediaQueryList) => {
+            setIsMobileViewport(event.matches);
+        };
+
+        handleChange(mediaQuery);
+
+        const listener = (event: MediaQueryListEvent) => handleChange(event);
+        mediaQuery.addEventListener("change", listener);
+
+        return () => {
+            mediaQuery.removeEventListener("change", listener);
+        };
+    }, []);
 
     return (
         <div className="flex h-screen">
             <div className="flex-1 flex flex-col overflow-hidden">
                 <main className="flex-1 overflow-x-hidden overflow-y-auto bg-background text-foreground">
                     <ToastContainer
-                        position="top-center"
+                        position={
+                            isMobileViewport ? "bottom-center" : "top-center"
+                        }
                         theme={isDarkMode ? "dark" : "light"}
                         autoClose={3000}
                         hideProgressBar={true}
                         transition={Slide}
                         closeButton={false}
+                        className={
+                            isMobileViewport ? "mb-16 sm:mb-0" : undefined
+                        }
                     />
                     <NavigationModal />
                     <Routes>
