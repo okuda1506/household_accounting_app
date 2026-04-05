@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 import { type LucideIcon } from "lucide-react";
 
 import { cn } from "../../../lib/utils";
-import { NavigationMenuAnchor } from "../NavigationModal";
+import { AppHeader } from "../AppHeader";
 import { Card, CardContent } from "../ui/card";
 
 type SettingsPageShellProps = {
@@ -28,16 +28,7 @@ export const SettingsPageShell = ({
 }: SettingsPageShellProps) => {
     return (
         <div className="min-h-screen bg-background text-foreground">
-            <nav className="border-b border-border">
-                <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-                    <div className="relative flex h-16 items-center">
-                        <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
-                            設定
-                        </span>
-                        <NavigationMenuAnchor />
-                    </div>
-                </div>
-            </nav>
+            <AppHeader title="設定" />
 
             <main className="mx-auto max-w-5xl py-6 sm:px-6 lg:px-8">
                 <div className="px-4 sm:px-0">

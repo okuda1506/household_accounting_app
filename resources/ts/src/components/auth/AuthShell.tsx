@@ -12,6 +12,7 @@ import type {
     Highlight,
     RevealOnViewProps,
 } from "../../types/auth";
+import { BrandLogo } from "../BrandLogo";
 import { Card } from "../ui/card";
 
 const highlights: Highlight[] = [
@@ -97,7 +98,7 @@ const RevealOnView = ({
 };
 
 export const AuthShell = ({
-    brandName = "Kakei Flow",
+    brandName = "KakeiFlow",
     children,
     className,
     description,
@@ -109,10 +110,10 @@ export const AuthShell = ({
     const isSimple = variant === "simple";
 
     return (
-        <div className="relative isolate min-h-screen overflow-hidden bg-[linear-gradient(160deg,hsl(var(--background))_0%,rgba(226,232,240,0.85)_48%,rgba(199,210,254,0.5)_100%)] text-foreground dark:bg-[linear-gradient(160deg,#020617_0%,#0f172a_42%,#111827_100%)]">
-            <div className="absolute inset-x-0 top-[-12rem] h-[26rem] bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.22),transparent_60%)] dark:bg-[radial-gradient(circle_at_top,rgba(129,140,248,0.32),transparent_60%)]" />
-            <div className="absolute left-[-5rem] top-28 h-48 w-48 rounded-full bg-sky-300/30 blur-3xl dark:bg-sky-500/20" />
-            <div className="absolute bottom-0 right-[-3rem] h-56 w-56 rounded-full bg-indigo-300/30 blur-3xl dark:bg-indigo-500/20" />
+        <div className="relative isolate min-h-screen overflow-hidden bg-[linear-gradient(160deg,#ffffff_0%,#f8fafc_48%,#ffffff_100%)] text-foreground dark:bg-[linear-gradient(160deg,#000000_0%,#020202_48%,#000000_100%)]">
+            <div className="absolute inset-x-0 top-[-12rem] h-[26rem] bg-[radial-gradient(circle_at_top,rgba(15,23,42,0.08),transparent_62%)] dark:bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_62%)]" />
+            <div className="absolute left-[-5rem] top-28 h-48 w-48 rounded-full bg-slate-300/20 blur-3xl dark:bg-white/[0.07]" />
+            <div className="absolute bottom-0 right-[-3rem] h-56 w-56 rounded-full bg-zinc-300/20 blur-3xl dark:bg-zinc-400/10" />
 
             <div
                 className={cn(
@@ -131,6 +132,14 @@ export const AuthShell = ({
                     {isSimple ? (
                         <div className="px-6 py-8 sm:px-8 sm:py-10">
                             <RevealOnView className="mx-auto w-full max-w-md">
+                                <div className="mb-8 flex justify-center">
+                                    <BrandLogo
+                                        name={brandName}
+                                        iconClassName="h-9 w-9"
+                                        labelClassName="text-base sm:text-lg"
+                                    />
+                                </div>
+
                                 {(title || description) && (
                                     <div className="mb-8">
                                         {title && (
@@ -158,9 +167,12 @@ export const AuthShell = ({
                                 className="relative space-y-10"
                                 delay={80}
                             >
-                                <div className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.28em] text-slate-200">
-                                    {brandName}
-                                </div>
+                                <BrandLogo
+                                    name={brandName}
+                                    tone="light"
+                                    iconClassName="h-9 w-9"
+                                    labelClassName="text-base text-white"
+                                />
 
                                 <div className="space-y-4">
                                     <h2 className="max-w-sm text-4xl font-semibold leading-tight">
@@ -205,9 +217,11 @@ export const AuthShell = ({
                         <div className="flex flex-col justify-center px-6 py-8 sm:px-10 sm:py-10">
                             <div className="mb-8 lg:hidden">
                                 <RevealOnView className="inline-flex">
-                                    <div className="inline-flex items-center rounded-full border border-border/70 bg-background/70 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.28em] text-foreground/80 shadow-sm backdrop-blur">
-                                        {brandName}
-                                    </div>
+                                    <BrandLogo
+                                        name={brandName}
+                                        iconClassName="h-9 w-9"
+                                        labelClassName="text-base"
+                                    />
                                 </RevealOnView>
                                 <RevealOnView
                                     className="mt-6 rounded-[28px] border border-border/70 bg-background/70 p-5 shadow-[0_20px_50px_-28px_rgba(15,23,42,0.35)] backdrop-blur"

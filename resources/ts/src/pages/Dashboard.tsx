@@ -13,7 +13,7 @@ import {
 import { ExpenseChart } from "../components/ExpenseChart";
 import { NewTransactionModal } from "../components/transaction/NewTransactionModal";
 import { TransactionHistoryItem } from "../components/transaction/TransactionHistoryItem";
-import { NavigationMenuAnchor } from "../components/NavigationModal";
+import { AppHeader } from "../components/AppHeader";
 import { BotMessageSquare, Loader2 } from "lucide-react";
 import api from "../../lib/axios";
 import { toast } from "react-toastify";
@@ -172,16 +172,7 @@ export default function Dashboard() {
 
     return (
         <div className="min-h-screen bg-background text-foreground">
-            <nav className="border-b border-border">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="relative h-16 flex items-center">
-                        <span className="absolute left-1/2 -translate-x-1/2 text-xl font-semibold">
-                            ダッシュボード
-                        </span>
-                        <NavigationMenuAnchor />
-                    </div>
-                </div>
-            </nav>
+            <AppHeader title="ダッシュボード" />
             <main className="max-w-5xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 sm:px-0 space-y-6">
                     <div className="fixed bottom-4 right-4 z-50">
