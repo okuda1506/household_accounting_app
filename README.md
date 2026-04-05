@@ -1,7 +1,7 @@
 # household_accounting_app
 
 <p align="center">
-  <img src="storage/app/public/app_screenshots_horizontal.png" alt="プロジェクトイメージ" width="800"/>
+  <img src="storage/app/public/app_screenshots_horizontal_v2.png" alt="プロジェクトイメージ" width="800"/>
 </p>
 
 ## 概要
