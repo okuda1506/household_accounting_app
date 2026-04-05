@@ -12,6 +12,7 @@ import {
 } from "../components/ui/card";
 import { ExpenseChart } from "../components/ExpenseChart";
 import { NewTransactionModal } from "../components/transaction/NewTransactionModal";
+import { TransactionHistoryItem } from "../components/transaction/TransactionHistoryItem";
 import { NavigationMenuAnchor } from "../components/NavigationModal";
 import { BotMessageSquare, Loader2 } from "lucide-react";
 import api from "../../lib/axios";
@@ -416,66 +417,23 @@ export default function Dashboard() {
                                 <div className={dashboardListShellClassName}>
                                     <ul className="divide-y divide-border/50">
                                         {transactions.map((transaction) => {
-                                            const amount = parseFloat(
-                                                transaction.amount,
-                                            );
-                                            const isIncome =
-                                                transaction.transaction_type_id ===
-                                                1;
-                                            const memo =
-                                                transaction.memo?.trim();
-                                            const categoryName =
-                                                transaction.category_name?.trim();
-                                            const primaryText =
-                                                memo || "メモなし";
-                                            const secondaryText =
-                                                categoryName || null;
-
                                             return (
                                                 <li key={transaction.id}>
-                                                    <div className="flex items-start justify-between gap-4 px-4 py-4 sm:px-5">
-                                                        <div className="min-w-0 flex-1">
-                                                            <div className="flex flex-wrap items-center gap-2">
-                                                                <span
-                                                                    className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-medium ${
-                                                                        isIncome
-                                                                            ? "bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300"
-                                                                            : "bg-rose-500/10 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300"
-                                                                    }`}
-                                                                >
-                                                                    {isIncome
-                                                                        ? "収入"
-                                                                        : "支出"}
-                                                                </span>
-                                                                <span className="text-xs text-muted-foreground">
-                                                                    {formatDate(
-                                                                        transaction.transaction_date,
-                                                                    )}
-                                                                </span>
-                                                            </div>
-                                                            <p className="mt-3 truncate text-sm font-medium text-foreground sm:text-[15px]">
-                                                                {primaryText}
-                                                            </p>
-                                                            {secondaryText && (
-                                                                <p className="mt-1 truncate text-xs text-muted-foreground">
-                                                                    {secondaryText}
-                                                                </p>
-                                                            )}
-                                                        </div>
-                                                        <p
-                                                            className={`shrink-0 text-right text-base font-semibold ${
-                                                                isIncome
-                                                                    ? "text-emerald-600 dark:text-emerald-300"
-                                                                    : "text-rose-600 dark:text-rose-300"
-                                                            }`}
-                                                        >
-                                                            {isIncome ? "+" : "-"}
-                                                            ¥
-                                                            {Math.abs(
-                                                                amount,
-                                                            ).toLocaleString()}
-                                                        </p>
-                                                    </div>
+                                                    <TransactionHistoryItem
+                                                        amount={parseFloat(
+                                                            transaction.amount
+                                                        )}
+                                                        categoryName={
+                                                            transaction.category_name
+                                                        }
+                                                        dateLabel={formatDate(
+                                                            transaction.transaction_date
+                                                        )}
+                                                        memo={transaction.memo}
+                                                        transactionTypeId={
+                                                            transaction.transaction_type_id
+                                                        }
+                                                    />
                                                 </li>
                                             );
                                         })}
