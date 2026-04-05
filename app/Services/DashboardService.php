@@ -117,9 +117,11 @@ class DashboardService
     public function getRecentTransactions(int $userId): array
     {
         $transactions = DB::table('transactions')
-            ->where('user_id', $userId)
-            ->where('deleted', self::IS_NOT_DELETED)
-            ->orderBy('transaction_date', 'desc')
+            ->leftJoin('categories', 'transactions.category_id', '=', 'categories.id')
+            ->where('transactions.user_id', $userId)
+            ->where('transactions.deleted', self::IS_NOT_DELETED)
+            ->select('transactions.*', 'categories.name as category_name')
+            ->orderBy('transactions.transaction_date', 'desc')
             ->limit(self::RECENT_TRANSACTIONS_LIMIT)
             ->get();
 

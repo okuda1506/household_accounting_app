@@ -422,7 +422,14 @@ export default function Dashboard() {
                                             const isIncome =
                                                 transaction.transaction_type_id ===
                                                 1;
-                                            const fallbackMemo = "メモなし";
+                                            const memo =
+                                                transaction.memo?.trim();
+                                            const categoryName =
+                                                transaction.category_name?.trim();
+                                            const primaryText =
+                                                memo || "メモなし";
+                                            const secondaryText =
+                                                categoryName || null;
 
                                             return (
                                                 <li key={transaction.id}>
@@ -447,9 +454,13 @@ export default function Dashboard() {
                                                                 </span>
                                                             </div>
                                                             <p className="mt-3 truncate text-sm font-medium text-foreground sm:text-[15px]">
-                                                                {transaction.memo ||
-                                                                    fallbackMemo}
+                                                                {primaryText}
                                                             </p>
+                                                            {secondaryText && (
+                                                                <p className="mt-1 truncate text-xs text-muted-foreground">
+                                                                    {secondaryText}
+                                                                </p>
+                                                            )}
                                                         </div>
                                                         <p
                                                             className={`shrink-0 text-right text-base font-semibold ${

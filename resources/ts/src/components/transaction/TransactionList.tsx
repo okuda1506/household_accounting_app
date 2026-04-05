@@ -182,7 +182,13 @@ export function TransactionList({
                                             const isIncome =
                                                 transaction.transaction_type_id ===
                                                 1;
-                                            const fallbackMemo = "メモなし";
+                                            const memo = transaction.memo?.trim();
+                                            const categoryName =
+                                                transaction.category_name?.trim();
+                                            const primaryText =
+                                                memo || "メモなし";
+                                            const secondaryText =
+                                                categoryName || null;
 
                                             return (
                                                 <li
@@ -223,9 +229,13 @@ export function TransactionList({
                                                                 </span>
                                                             </div>
                                                             <p className="mt-3 truncate text-sm font-medium text-foreground sm:text-[15px]">
-                                                                {transaction.memo ||
-                                                                    fallbackMemo}
+                                                                {primaryText}
                                                             </p>
+                                                            {secondaryText && (
+                                                                <p className="mt-1 truncate text-xs text-muted-foreground">
+                                                                    {secondaryText}
+                                                                </p>
+                                                            )}
                                                         </div>
                                                         <div className="shrink-0 text-right">
                                                             <p
