@@ -1,223 +1,234 @@
 # アーキテクチャ設計ドキュメント
 
-<br>
+## 1. 目的
 
-## パスワード変更ルール
-本システムのログイン済みユーザー向け **パスワード変更機能**では、
-セキュリティ要件とユーザー体験（UX）の両立を目的として、以下の設計方針を採用する。
+このドキュメントは、KakeiFlow のシステム全体像と責務分離の方針を整理するための高レベル設計書である。
 
----
+個別機能の詳細仕様は本書ではなく、`docs/features/` 配下の機能別ドキュメントに分離して管理する。
 
-### 1. 入力項目
+## 2. システム全体像
 
-| 項目名                         | 必須 | 説明            |
-| --------------------------- | -- | ------------- |
-| `current_password`          | ○  | 現在のパスワード      |
-| `new_password`              | ○  | 新しいパスワード      |
-| `new_password_confirmation` | ○  | 新しいパスワード（確認用） |
+KakeiFlow は、React + TypeScript による SPA フロントエンドと、Laravel API バックエンドで構成される家計管理アプリである。
 
----
-
-### 2. バリデーション設計
-
-#### current_password
-
-* 必須入力
-* 入力値の正当性（現在のパスワードと一致するか）は **Service 層**で検証する
-* 不一致の場合は **業務例外（DomainException）**として扱う
-
-```php
-'current_password' => ['required'],
+```text
+Browser
+  ├ React SPA
+  │  ├ React Router
+  │  ├ ThemeContext
+  │  ├ Pages / Modals / Charts
+  │  └ Axios client
+  │
+  └ HTTP(S) / JSON
+        ↓
+Laravel
+  ├ routes/web.php
+  │   └ SPA エントリーポイントを返却
+  ├ routes/api.php
+  │   └ 認証付き API / 公開 API を提供
+  ├ Controllers
+  ├ Form Requests
+  ├ Services
+  ├ Resources / DTO
+  └ Models
+        ↓
+Data / External Services
+  ├ MySQL
+  ├ Mail
+  ├ Cache
+  └ AI Provider (Laravel AI SDK 経由)
 ```
 
----
+### 主要構成
 
-#### new_password
+| 構成 | 役割 | 主なファイル |
+| --- | --- | --- |
+| フロントエンド | 画面描画、ルーティング、状態管理、API 呼び出し | `resources/ts/src/App.tsx`, `resources/ts/lib/axios.ts` |
+| Web ルート | SPA のエントリーポイント返却 | `routes/web.php` |
+| API ルート | 認証・家計管理・AI 機能のエンドポイント定義 | `routes/api.php` |
+| バックエンドアプリケーション | バリデーション、業務ロジック、レスポンス整形 | `app/Http`, `app/Services`, `app/Helpers` |
+| 永続化・外部連携 | DB、メール送信、AI 呼び出し、キャッシュ | `app/Models`, `app/Mail`, `app/Ai`, `app/Services/Ai` |
 
-* 必須入力
-* 確認用項目と一致すること
-* パスワード強度ルールを満たすこと
-* `bail` を指定し、致命的なエラーは最初の 1 件で打ち切る
+## 3. フロントエンド構成
 
-```php
-'new_password' => [
-    'bail',
-    'required',
-    'confirmed',
-    Password::defaults(),
-],
-```
+### 3.1 画面構成
 
----
+- 認証前ページ: サインイン、サインアップ、パスワード再設定、アカウント再開
+- 認証後ページ: ダッシュボード、カテゴリ、取引、設定、設定配下の詳細画面
+- 共通 UI: ヘッダー、ナビゲーションメニュー、トースト、モーダル、グラフ
 
-### 3. パスワード強度ルール（共通デフォルト）
+### 3.2 ルーティング
 
-パスワードの強度要件は `Password::defaults()` により共通定義されている。
+- 画面遷移は React Router で管理する
+- 認証後ページは `PrivateRoute` により保護する
+- `PrivateRoute` は `access_token` の有無だけでなく `/api/user` 呼び出しで有効性も確認する
 
-#### 要件
+### 3.3 テーマ管理
 
-* 8 文字以上
-* 255 文字以下
-* 大文字と小文字のアルファベットをそれぞれ 1 文字以上含む
-* 数字を 1 文字以上含む
+- ライト / ダークモードの状態は `ThemeContext` で保持する
+- テーマ値は `localStorage` に保存し、`document.documentElement` の `dark` クラスへ反映する
 
-```php
-Password::min(8)
-    ->max(255)
-    ->mixedCase()
-    ->numbers();
-```
+### 3.4 API クライアント
 
----
+- Axios の `baseURL` は `http://localhost/api`
+- `localStorage` の `access_token` を毎リクエスト時に `Authorization: Bearer ...` として送信する
+- 401 応答時はトークンを削除し、ログイン画面へリダイレクトする
 
-### 4. エラーメッセージ設計方針
+## 4. バックエンドの責務分離
 
-#### new_password のエラー
+### 4.1 レイヤ構成
 
-* **複数のエラーメッセージを同時に返却する**
-* パスワードは複数条件の集合体であるため、不足している条件を一度にユーザーへ提示する
+| レイヤ | 主な責務 | 方針 |
+| --- | --- | --- |
+| Routes | エンドポイント定義、ミドルウェア適用、グルーピング | HTTP の入口だけを定義し、業務ロジックは持たない |
+| Form Request | 入力バリデーション、認可判定 | フィールド整合性と入力制約をここに集約する |
+| Controller | リクエスト受付、Service 呼び出し、レスポンス返却、例外マッピング | 処理のオーケストレーションに限定する |
+| Service | 業務ロジック、集計、状態変更、外部サービス連携 | 画面や HTTP に依存しない処理をまとめる |
+| Resource / DTO | 出力整形、レスポンス契約の保証 | API 出力と AI レスポンスの構造を明示する |
+| Model | 永続化、リレーション、論理削除 | データ表現と最低限の永続化ルールを担う |
 
-**例**
+### 4.2 API ルート構成
+
+`routes/api.php` では大きく以下のルート群に分かれている。
+
+| 区分 | 主なエンドポイント | 説明 |
+| --- | --- | --- |
+| 公開 API | `/register`, `/login`, `/forgot-password`, `/reset-password`, `/reactivate-account` | 認証前に利用する |
+| ユーザー設定 API | `/user`, `/user/name`, `/user/password`, `/user/email/*`, `/user/budget`, `/user/ai-advice-mode` | 認証済みユーザー設定 |
+| 家計管理 API | `/categories`, `/transactions`, `/payment-methods`, `/dashboard` | 認証済みの家計データ操作 |
+| AI API | `/ai-advice` | 認証済みかつレート制限付き |
+| アカウント削除 API | `/delete-user` | 認証済みユーザーの削除 |
+
+## 5. 認証・認可設計
+
+### 5.1 認証方式
+
+- Laravel Sanctum による API トークン認証を採用する
+- ログイン時に `access_token` を発行し、フロント側で `localStorage` に保存する
+- API は `auth:sanctum` ミドルウェアで保護する
+
+### 5.2 認証後の画面保護
+
+- React 側では `PrivateRoute` を利用して認証済みページを保護する
+- トークンが存在しても、`/api/user` に失敗した場合は未認証と見なす
+
+### 5.3 ユーザー状態
+
+- `users.deleted` を論理削除フラグとして利用する
+- 削除済みユーザーは通常ログイン不可
+- 削除済みユーザーに対しては、パスワード再設定フローを利用したアカウント再開を行う
+
+## 6. API 設計方針
+
+### 6.1 成功レスポンス
+
+共通の成功レスポンスは `ApiResponse::success()` で返却する。
 
 ```json
-[
-  "新しいパスワードは8文字以上で入力してください。",
-  "新しいパスワードは少なくとも大文字と小文字を1つずつ含める必要があります。",
-  "新しいパスワードは少なくとも1つの数字が含まれていなければなりません。"
-]
+{
+  "success": true,
+  "message": "リクエスト成功",
+  "data": {}
+}
 ```
 
----
+### 6.2 エラーレスポンス
 
-#### current_password のエラー
+業務エラーやサーバーエラーは `ApiResponse::error()` で返却する。
 
-* **単一のエラーメッセージのみ返却**
-* 原因が 1 つに特定できるため、複数表示は行わない
-
----
-
-### 5. 例外処理方針
-
-* 現在のパスワード不一致は **業務例外**として扱う
-* `InvalidCurrentPasswordException` を投げ、Controller 側で明示的に catch する
-* HTTP ステータスコードは `422 Unprocessable Entity` を返却する
-
----
-
-### 6. 設計方針まとめ
-
-* 入力不足や整合性エラーは **1 件で打ち切る（bail）**
-* セキュリティポリシー違反は **まとめてユーザーに通知**
-* 業務ロジック由来のエラーは **DomainException により分離**
-* API レスポンス形式は `messages: string[]` に統一し、拡張性を確保する
-
----
-
-### 7. 期待される効果
-
-* ユーザーは一度の入力で修正すべき内容を把握できる
-* パスワードポリシー変更時も API・フロント双方の修正コストが低い
-* セキュリティ要件と UX を両立した実装が可能となる
-
----
-
-<br>
-
-## パスワードリセット・アカウント再開時のルール
-「パスワードをお忘れの方」および「アカウント再開」機能におけるパスワード設定処理では、
-Laravel標準のパスワードリセット機能（Password Broker）に準拠しつつ、共通のパスワードポリシーを適用する。
-
----
-
-### 1. 入力項目
-
-| 項目名                     | 必須 | 説明                |
-| ----------------------- | -- | ----------------- |
-| `token`                 | ○  | リセット用トークン（Hidden） |
-| `email`                 | ○  | メールアドレス（Hidden）    |
-| `password`              | ○  | 新しいパスワード          |
-| `password_confirmation` | ○  | 新しいパスワード（確認用）     |
-
----
-
-### 2. バリデーション設計
-
-#### token / email
-
-* 必須入力
-* トークンの有効性検証は **Laravel標準機能（Password::reset）** 内部で実施される
-* 不正なトークンの場合、更新処理は実行されずエラーとなる
-
-#### password
-
-* 必須入力
-* 確認用項目と一致すること
-* **共通のパスワード強度ルール**を満たすこと
-
-```php
-'password' => [
-    'required',
-    'confirmed',
-    Password::defaults(),
-],
+```json
+{
+  "success": false,
+  "messages": ["エラーメッセージ"],
+  "data": null
+}
 ```
 
----
+### 6.3 バリデーションエラー
 
-### 3. エラーハンドリング方針
+- Form Request 由来の 422 は Laravel 標準の `errors` オブジェクトを返すケースがある
+- 一部の認証系 API は `data` に項目別エラー、`messages` に平坦化メッセージを返す
+- フロント側では `extractFieldErrors` / `extractErrorMessages` により両方の形式を吸収している
 
-#### トークン検証エラー
+### 6.4 今後の整理方針
 
-* トークン不一致、期限切れ、メールアドレス不一致の場合は、セキュリティリスクを考慮しつつ適切なエラーメッセージを返却する
-* 実装上は `Password::reset` の戻り値（status）に基づき判定する
+- 422 のレスポンス形式は将来的に統一対象とする
+- ただし現時点では「フロントが正規化して受ける」方針で互換性を保っている
 
-#### パスワード強度エラー
+## 7. ドメインモデル
 
-* ログイン済みユーザーの変更機能と同様、**複数のエラーメッセージを同時に返却**する方針とする
+| モデル | 役割 | 主な関連 / 備考 |
+| --- | --- | --- |
+| `User` | アプリ利用者 | `categories`, `transactions`, `aiCoachingLogs` 相当の起点。`budget`, `deleted`, `ai_advice_mode` を保持 |
+| `Transaction` | 家計の入出金記録 | `User`, `Category`, `PaymentMethod`, `TransactionType` に所属 |
+| `Category` | 収入 / 支出カテゴリ | ユーザーごとに所有。`sort_no` による表示順を管理 |
+| `PaymentMethod` | 支払方法マスタ | `TransactionType` に紐づく補助マスタ |
+| `TransactionType` | 収入 / 支出の区分 | Category / Transaction / PaymentMethod の分類基準 |
+| `AiCoachingLog` | AI アドバイスの実行ログ | 入力スナップショットと AI 応答を保存 |
 
----
+### 7.1 論理削除
 
-### 4. 設計方針まとめ
+- `User`, `Transaction`, `Category`, `PaymentMethod` は `deleted` フラグによる論理削除を採用する
+- 物理削除ではなく状態変更とすることで、履歴や再開フローとの整合性を保つ
 
-* トークン検証ロジックはフレームワーク標準機能に委譲し、セキュリティを担保する
-* パスワード強度はシステム全体で統一されたルール（`Password::defaults()`）を適用する
+## 8. AI アドバイスのアーキテクチャ
 
----
+AI アドバイス機能は KakeiFlow の付加価値機能であり、以下の流れで構成される。
 
-<br>
+1. フロントエンドが `/api/ai-advice` を呼び出す
+2. `auth:sanctum` と `throttle:3,1` により認証とレート制限を適用する
+3. `AIAdviceController` が `AiGuardService` で利用可否を検証する
+4. `AiInputBuilder` が当月支出データを集計し、AI 向け入力 JSON を構築する
+5. `SalesCoach` が `resources/prompts/ai_coaching_system.md` をシステムプロンプトとして読み込み、Laravel AI SDK 経由でモデルを呼び出す
+6. 応答は `AiAdviceResponseDTO` とその内部 DTO により構造・型を検証する
+7. `AiCoachingLogService` が入力値と応答結果を `ai_coaching_logs` に保存する
+8. `AiAdviceResource` を通じて API レスポンスとして返却する
 
-## 予算管理機能
-毎月の支出目標（予算）を設定し、ダッシュボード上で消化状況を可視化する機能。
+### 8.1 AI 入力の基本構造
 
----
+- `monthly_budget`
+- `current_total`
+- `remaining_days`
+- `projected_monthly_total`
+- `category_summary`
 
-### 1. データ設計
+### 8.2 AI 応答の基本構造
 
-| テーブル | カラム名 | 型 | 説明 |
-| --- | --- | --- | --- |
-| `users` | `budget` | `integer` | 予算額（円）。`0` または `null` の場合は機能無効とみなす。 |
+- `risk_level`
+- `analysis`
+- `pattern`
+- `advice`
+- `motivation`
 
----
+詳細仕様は [docs/features/ai-advice.md](features/ai-advice.md) を参照すること。
 
-### 2. 仕様・ルール
+## 9. 非機能要件・運用上の方針
 
-#### 予算設定
+### 9.1 セキュリティ
 
-* **範囲**: 0 〜 999,999,999（約10億円）
-* **機能の有効/無効**:
-    * 有効: `budget > 0`
-    * 無効: `budget = 0` または `null`
-* **入力制約**:
-    * 整数のみ（小数は不可）
-    * 有効にする場合は **1円以上** の入力が必須
+- 認証済み API は `auth:sanctum` で保護する
+- パスワード強度は `Password::defaults()` に一元化する
+- 削除済みユーザーの通常ログインは禁止する
 
-#### ダッシュボード表示
+### 9.2 可用性・障害耐性
 
-* **プログレスバー**: 予算に対する今月の支出合計の割合を表示
-* **色変化**:
-    * 〜 70%: 青（安全）
-    * 71% 〜 100%: 黄（注意）
-    * 101% 〜: 赤（警告）
-* **アラート**: 予算超過時に警告メッセージを表示
+- AI 呼び出し失敗時は例外を握りつぶさずログへ記録し、HTTP ステータス付きで返却する
+- AI レスポンスは DTO で構造検証し、不正な JSON / 型不整合を早期に検出する
 
----
+### 9.3 パフォーマンス
+
+- フロントエンドは SPA により画面遷移コストを抑える
+- ダッシュボードは「当月サマリ」「過去 6 か月支出推移」「最近 5 件の取引」に集約して描画する
+- AI API は 1 分あたり 3 回に制限する
+
+### 9.4 保守性
+
+- UI / API / 業務ロジック / 外部連携を層ごとに分離する
+- OpenAPI 定義は `routes/openapi.yaml` で管理する
+- 機能別仕様は `docs/features/` に分離し、本書は全体設計に集中させる
+
+## 10. 関連ドキュメント
+
+- [docs/features/password.md](features/password.md)
+- [docs/features/budget.md](features/budget.md)
+- [docs/features/ai-advice.md](features/ai-advice.md)
+- [routes/openapi.yaml](../routes/openapi.yaml)
