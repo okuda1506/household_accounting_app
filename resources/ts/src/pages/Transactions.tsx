@@ -28,12 +28,12 @@ export default function Transactions() {
                         transaction_id: t.transaction_id,
                         transaction_type_id: t.transaction_type_id,
                         date: t.transaction_date,
-                        category_name: t.category.name,
+                        category_name: t.category?.name ?? "",
                         memo: t.memo ?? "",
                         amount: Number(t.amount),
                         year: date.getFullYear(),
                         month: date.getMonth() + 1,
-                        category_id: t.category.category_id,
+                        category_id: t.category?.category_id ?? "",
                         payment_method_id: t.payment_method.payment_method_id,
                     };
                 }

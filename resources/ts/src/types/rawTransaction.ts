@@ -6,7 +6,7 @@ export type RawTransaction = {
     user_id: number;
     transaction_date: string;
     transaction_type_id: number;
-    category: Category;
+    category: Category | null;
     payment_method: PaymentMethod;
     memo: string | null;
     amount: string;
