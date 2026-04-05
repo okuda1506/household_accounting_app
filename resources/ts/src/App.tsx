@@ -26,7 +26,7 @@ function App() {
     const [isMobileViewport, setIsMobileViewport] = useState(false);
 
     useEffect(() => {
-        const mediaQuery = window.matchMedia("(max-width: 640px)");
+        const mediaQuery = window.matchMedia("(max-width: 639px)");
         const handleChange = (event: MediaQueryListEvent | MediaQueryList) => {
             setIsMobileViewport(event.matches);
         };
@@ -54,9 +54,7 @@ function App() {
                         hideProgressBar={true}
                         transition={Slide}
                         closeButton={false}
-                        className={
-                            isMobileViewport ? "mb-16 sm:mb-0" : undefined
-                        }
+                        className={isMobileViewport ? "mb-16" : undefined}
                     />
                     <NavigationModal />
                     <Routes>
