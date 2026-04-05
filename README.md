@@ -1,15 +1,15 @@
-# household_accounting_app
+# KakeiFlow
 
 <p align="center">
-  <img src="storage/app/public/app_screenshots_horizontal.png" alt="プロジェクトイメージ" width="800"/>
+  <img src="storage/app/public/app_screenshots_horizontal_v2.png" alt="プロジェクトイメージ" width="800"/>
 </p>
 
 ## 概要
 
--   モダンでシンプルな家計簿管理アプリ
--   収入/支出カテゴリの追加・編集・月毎の収支管理が可能
--   SPA 仕様により高速なデータ処理を実現
--   無駄な機能が一切なくシンプルでモダンなUI設計
+-   日々の記録と振り返りをスムーズに行える、SPA ベースの家計管理アプリ
+-   収入・支出・残高・予算消化率をひとつのダッシュボードで整理して確認可能
+-   取引やカテゴリの管理をシンプルな操作フローで行え、継続しやすい設計
+-   AIアドバイス、多言語対応、ダークモードなど、日常利用に必要な体験をコンパクトに搭載
 
 ## 技術スタック / アーキテクチャ
 <img src="storage/app/public/architecture_by_gemini.png" alt="アーキテクチャ構成図"/>
@@ -18,13 +18,13 @@
 
 ## 機能
 
--   月ごとの収支サマリ表示
--   カテゴリ管理（収入 / 支出）
--   取引登録 / 編集 / 削除
--   予算管理機能
--   言語切替（英語 / 日本語 / 韓国語）
--   ダークモード対応
--   AI による支出管理アドバイス
+-   月間ダッシュボードで収入・支出・残高・予算消化率を可視化
+-   収入 / 支出カテゴリの追加・編集・削除
+-   取引の登録・編集・削除と履歴一覧の確認
+-   月次予算の設定と超過状況のチェック
+-   AI による支出傾向分析とネクストアクションの提案
+-   英語 / 日本語 / 韓国語の言語切替
+-   ライトモード / ダークモード対応
 
 ## セットアップ
 
@@ -43,10 +43,10 @@ npm install
 
 ### Overview
 
--   Modern and simple household accounting app
--   Capable of adding/editing income/expense categories and managing monthly balances
--   High-speed data processing achieved through SPA specifications
--   Simple and modern UI design with no unnecessary features
+-   A household accounting app built as an SPA for quick daily logging and easy monthly review
+-   Brings income, expenses, balance, and budget usage together in a single dashboard
+-   Keeps transaction and category management lightweight so the app stays easy to use continuously
+-   Includes practical quality-of-life features such as AI advice, multilingual support, and dark mode
 
 ### Tech Stack / Architecture
 <img src="storage/app/public/architecture_by_gemini.png" alt="Architecture Diagram"/>
@@ -55,13 +55,13 @@ For detailed architecture design, please refer to [docs/architecture.md](docs/ar
 
 ### Features
 
--   Monthly balance summary
--   Category management (Income / Expense)
--   Register, edit, and delete transactions
--   Budget management
--   Language switching (English / Japanese / Korean)
--   Dark mode support
--   AI-based expenditure management advice
+-   Monthly dashboard with income, expenses, balance, and budget progress
+-   Add, edit, and delete income / expense categories
+-   Register, edit, delete, and review transaction history
+-   Monthly budget setup with overspending visibility
+-   AI-powered spending analysis and actionable advice
+-   Language switching for English / Japanese / Korean
+-   Light mode and dark mode support
 
 ### Setup
 
@@ -80,10 +80,10 @@ npm install
 
 ### 개요
 
--   모던하고 심플한 가계부 관리 앱
--   수입/지출 카테고리 추가·편집 및 월별 수지 관리 가능
--   SPA 사양으로 빠른 데이터 처리 실현
--   불필요한 기능이 없는 심플하고 모던한 UI 설계
+-   빠른 기록과 월별 점검을 자연스럽게 이어갈 수 있는 SPA 기반 가계 관리 앱
+-   수입, 지출, 잔액, 예산 소진율을 하나의 대시보드에서 한눈에 확인 가능
+-   거래와 카테고리 관리를 단순한 흐름으로 구성해 꾸준히 사용하기 쉬운 설계
+-   AI 조언, 다국어 지원, 다크 모드 등 실사용에 필요한 기능을 간결하게 제공
 
 ### 기술 스택 / 아키텍처
 <img src="storage/app/public/architecture_by_gemini.png" alt="아키텍처 구성도"/>
@@ -92,13 +92,13 @@ npm install
 
 ### 주요 기능
 
--   월별 수지 요약 표시
--   카테고리 관리 (수입 / 지출)
--   거래 등록 / 편집 / 삭제
--   예산 관리 기능
--   언어 전환 (영어 / 일본어 / 한국어)
--   다크 모드 지원
--   AI를 활용한 지출 관리 조언
+-   월간 대시보드에서 수입, 지출, 잔액, 예산 소진율 시각화
+-   수입 / 지출 카테고리 추가, 편집, 삭제
+-   거래 등록, 편집, 삭제 및 거래 이력 확인
+-   월간 예산 설정과 초과 여부 확인
+-   AI 기반 지출 분석 및 실천 가능한 조언 제공
+-   영어 / 일본어 / 한국어 언어 전환
+-   라이트 모드 / 다크 모드 지원
 
 ### 셋업
 
