@@ -18,6 +18,7 @@ export interface RecentTransaction {
     transaction_date: string;
     transaction_type_id: number;
     category_id: number;
+    category_name: string | null;
     amount: string;
     payment_method_id: number;
     memo: string;
