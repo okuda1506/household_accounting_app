@@ -158,7 +158,7 @@ export function EditTransactionModal({
                     <div className="min-h-0 space-y-3 overflow-y-auto px-4 py-4 sm:space-y-4 sm:px-6 sm:py-5">
                         <div className="space-y-2">
                             <div className="flex items-start justify-between gap-3">
-                            <Label htmlFor="transaction-date">取引日</Label>
+                                <Label htmlFor="transaction-date">取引日</Label>
                                 {errors.transaction_date?.[0] && (
                                     <p className="text-right text-sm text-red-400">
                                         {errors.transaction_date[0]}
@@ -185,7 +185,7 @@ export function EditTransactionModal({
 
                         <div className="space-y-2">
                             <div className="flex items-start justify-between gap-3">
-                            <Label htmlFor="category">カテゴリ</Label>
+                                <Label htmlFor="category">カテゴリ</Label>
                                 {errors.category_id?.[0] && (
                                     <p className="text-right text-sm text-red-400">
                                         {errors.category_id[0]}
@@ -194,11 +194,10 @@ export function EditTransactionModal({
                             </div>
                             <Select value={category} onValueChange={setCategory}>
                                 <SelectTrigger
-                                    className={`${
-                                        errors.category_id
-                                            ? "border-red-500"
-                                            : ""
-                                    }`}
+                                    className={`${errors.category_id
+                                        ? "border-red-500"
+                                        : ""
+                                        }`}
                                 >
                                     <SelectValue />
                                 </SelectTrigger>
@@ -217,7 +216,7 @@ export function EditTransactionModal({
 
                         <div className="space-y-2">
                             <div className="flex items-start justify-between gap-3">
-                            <Label htmlFor="amount">金額</Label>
+                                <Label htmlFor="amount">金額</Label>
                                 {errors.amount?.[0] && (
                                     <p className="text-right text-sm text-red-400">
                                         {errors.amount[0]}
@@ -227,9 +226,8 @@ export function EditTransactionModal({
                             <Input
                                 id="amount"
                                 type="number"
-                                className={`focus-visible:ring-indigo-500 ${
-                                    errors.amount ? "border-red-500" : ""
-                                }`}
+                                className={`focus-visible:ring-indigo-500 ${errors.amount ? "border-red-500" : ""
+                                    }`}
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
                                 onClear={() => setAmount("")}
@@ -238,7 +236,7 @@ export function EditTransactionModal({
 
                         <div className="space-y-2">
                             <div className="flex items-start justify-between gap-3">
-                            <Label htmlFor="payment-method">支払方法</Label>
+                                <Label htmlFor="payment-method">支払方法</Label>
                                 {errors.payment_method_id?.[0] && (
                                     <p className="text-right text-sm text-red-400">
                                         {errors.payment_method_id[0]}
@@ -250,11 +248,10 @@ export function EditTransactionModal({
                                 onValueChange={setPaymentMethod}
                             >
                                 <SelectTrigger
-                                    className={`${
-                                        errors.payment_method_id
-                                            ? "border-red-500"
-                                            : ""
-                                    }`}
+                                    className={`${errors.payment_method_id
+                                        ? "border-red-500"
+                                        : ""
+                                        }`}
                                 >
                                     <SelectValue placeholder="支払方法を選択..." />
                                 </SelectTrigger>
@@ -273,7 +270,7 @@ export function EditTransactionModal({
 
                         <div className="space-y-2">
                             <div className="flex items-start justify-between gap-3">
-                            <Label htmlFor="description">メモ</Label>
+                                <Label htmlFor="description">メモ</Label>
                                 {errors.memo?.[0] && (
                                     <p className="text-right text-sm text-red-400">
                                         {errors.memo[0]}
@@ -282,9 +279,8 @@ export function EditTransactionModal({
                             </div>
                             <Input
                                 id="description"
-                                className={`focus-visible:ring-indigo-500 ${
-                                    errors.memo ? "border-red-500" : ""
-                                }`}
+                                className={`focus-visible:ring-indigo-500 ${errors.memo ? "border-red-500" : ""
+                                    }`}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 onClear={() => setDescription("")}
@@ -321,8 +317,8 @@ export function EditTransactionModal({
                                             この操作は元に戻せません。
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel className="mt-2 h-12 rounded-xl border border-border bg-background/80 text-sm font-semibold text-foreground shadow-sm backdrop-blur-sm hover:bg-accent hover:text-accent-foreground sm:mt-0">
+                                    <AlertDialogFooter className="grid grid-cols-2 gap-3 items-center">
+                                        <AlertDialogCancel className="h-12 rounded-xl border border-border bg-background/80 text-sm font-semibold text-foreground shadow-sm backdrop-blur-sm hover:bg-accent hover:text-accent-foreground">
                                             キャンセル
                                         </AlertDialogCancel>
                                         <AlertDialogAction
