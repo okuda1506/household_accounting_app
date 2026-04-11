@@ -1,15 +1,17 @@
 openapi: 3.0.3
 info:
-  title: KakeiFlow API
+  title: KakeiFlow API仕様書
   version: 1.0.0
   description: |-
     KakeiFlow の現行 Laravel 実装を基準に再構成した API 仕様です。
+
     認証済み API は Sanctum の Bearer トークンを利用します。
+
     通常の API は `success / message / data` 形式を返しますが、`GET /user` と `GET /dashboard`、
     `DELETE /delete-user` は専用のレスポンス形状です。
 servers:
   - url: http://localhost/api
-    description: Local development
+    description: ローカル環境
 
 tags:
   - name: Auth
