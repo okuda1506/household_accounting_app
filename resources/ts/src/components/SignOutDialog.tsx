@@ -81,7 +81,7 @@ const SignOutDialog = ({ open, onClose }: SignOutDialogProps) => {
                             onClick={handleSignOut}
                             disabled={isSubmitting}
                         >
-                            {isSubmitting ? "サインアウト中..." : "サインアウトする"}
+                            {isSubmitting ? "サインアウト中..." : "サインアウト"}
                         </Button>
                     </div>
                 </div>
