@@ -4,6 +4,8 @@
   <img src="storage/app/public/app_screenshots_horizontal_v2.png" alt="プロジェクトイメージ" width="800"/>
 </p>
 
+[画面イメージはこちら](https://shore-guitar-13860263.figma.site/)
+
 ## 概要
 
 -   日々の記録と振り返りをスムーズに行える、SPA ベースの家計管理アプリ
@@ -43,6 +45,8 @@ npm install
 
 ### Overview
 
+[View Screens/Prototype](https://shore-guitar-13860263.figma.site/)
+
 -   A household accounting app built as an SPA for quick daily logging and easy monthly review
 -   Brings income, expenses, balance, and budget usage together in a single dashboard
 -   Keeps transaction and category management lightweight so the app stays easy to use continuously
@@ -79,6 +83,8 @@ npm install
 ## 한국어
 
 ### 개요
+
+[화면 미리보기](https://shore-guitar-13860263.figma.site/)
 
 -   빠른 기록과 월별 점검을 자연스럽게 이어갈 수 있는 SPA 기반 가계 관리 앱
 -   수입, 지출, 잔액, 예산 소진율을 하나의 대시보드에서 한눈에 확인 가능
