@@ -14,7 +14,7 @@ RUN npm run build
 # Stage 2: バックエンド (Laravel/Apache) の構築
 # ==========================================
 # Sailの設定に合わせてPHP8.4系（または安定版の8.3）を使用
-FROM php:8.3-apache
+FROM php:8.4-apache
 
 # 必要なパッケージとPHP拡張モジュールをインストール
 RUN apt-get update && apt-get install -y \
