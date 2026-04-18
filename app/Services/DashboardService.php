@@ -84,15 +84,15 @@ class DashboardService
 
         // DBから該当月の支出合計を取得
         $expenses = DB::table('transactions')
-            ->selectRaw('YEAR(transaction_date) as year, MONTH(transaction_date) as month, SUM(amount) as total_expense')
+            ->selectRaw('EXTRACT(YEAR FROM transaction_date) as year, EXTRACT(MONTH FROM transaction_date) as month, SUM(amount) as total_expense')
             ->where('user_id', $userId)
             ->where('transaction_type_id', self::TRANSACTION_TYPE_EXPENSE)
             ->whereBetween('transaction_date', [$start->toDateString(), $now->copy()->endOfMonth()->toDateString()])
             ->where('deleted', self::IS_NOT_DELETED)
-            ->groupByRaw('YEAR(transaction_date), MONTH(transaction_date)')
+            ->groupByRaw('EXTRACT(YEAR FROM transaction_date), EXTRACT(MONTH FROM transaction_date)')
             ->get()
             ->keyBy(function ($item) {
-                return $item->year . '-' . str_pad($item->month, 2, '0', STR_PAD_LEFT);
+                return (int)$item->year . '-' . str_pad((int)$item->month, 2, '0', STR_PAD_LEFT);
             });
 
         // 月一覧に DB 結果をマージ（なければ total_expense = 0）
