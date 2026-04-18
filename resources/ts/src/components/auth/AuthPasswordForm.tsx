@@ -259,7 +259,7 @@ const AuthPasswordForm = ({
                         </Button>
 
                         <Link to="/login" className={linkClassName}>
-                            ログイン画面に戻る
+                            サインイン画面に戻る
                             <ArrowRight className="h-4 w-4" />
                         </Link>
                     </div>

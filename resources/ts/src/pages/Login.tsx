@@ -48,7 +48,7 @@ const Login = () => {
             toast.success(response.data.message);
             navigate("/");
         } catch (error: any) {
-            const fallbackMessage = "ログインに失敗しました。";
+            const fallbackMessage = "サインインに失敗しました。";
             setErrors(extractFieldErrors(error, fallbackMessage));
             toast.error(fallbackMessage);
         }

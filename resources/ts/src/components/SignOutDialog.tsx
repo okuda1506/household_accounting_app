@@ -61,7 +61,7 @@ const SignOutDialog = ({ open, onClose }: SignOutDialogProps) => {
                     <p className="text-center text-sm leading-6 text-muted-foreground">
                         現在のセッションを終了して
                         <br />
-                        ログイン画面へ戻ります。
+                        サインイン画面へ戻ります。
                     </p>
 
                     <div className="flex flex-col gap-3">

@@ -4,7 +4,7 @@ export default function ResetPassword() {
     return (
         <AuthPasswordForm
             pageTitle="パスワード再設定"
-            pageDescription="新しいパスワードを設定して、ログインを再開します。"
+            pageDescription="新しいパスワードを設定して、サインインを再開します。"
             invalidLinkToastMessage="無効なパスワード再設定リンクです。再度メールを送信してください。"
             invalidLinkCardTitle="無効なリンク"
             invalidLinkCardContent="お手数ですが、再度パスワード再設定のリクエストをしてください。"
