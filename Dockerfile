@@ -13,10 +13,10 @@ RUN npm run build
 # ==========================================
 # Stage 2: バックエンド (Laravel/Apache) の構築
 # ==========================================
-# Sailの設定に合わせてPHP8.4系（または安定版の8.3）を使用
 FROM php:8.4-apache
 
 # 必要なパッケージとPHP拡張モジュールをインストール
+# 本番環境で必要な libpq-dev (PostgreSQL用) などを含めています
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
@@ -35,7 +35,7 @@ ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# mod_rewriteを有効化（ルーティングに必須）
+# mod_rewriteを有効化
 RUN a2enmod rewrite
 
 WORKDIR /var/www/html
@@ -43,15 +43,29 @@ WORKDIR /var/www/html
 # Laravelのソースコードをコピー
 COPY . .
 
-# Stage 1でビルドしたReactの成果物（public/build）をコピー
+# Stage 1でビルドした成果物をコピー
 COPY --from=frontend /app/public/build ./public/build
 
-# Laravelのパッケージをインストール（本番用）
+# Laravelのパッケージをインストール（本番用最適化）
 RUN composer install --no-dev --optimize-autoloader
 
-# Renderのデプロイでエラーにならないよう、ディレクトリの権限を設定
+# ディレクトリ権限の設定
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# ポート開放
+# --- [ここから追加：無料プラン用自動設定] ---
+
+# 起動時にマイグレーションを実行するスクリプトを作成
+RUN echo '#!/bin/sh\n\
+php artisan migrate --force\n\
+exec apache2-foreground' > /usr/local/bin/docker-entrypoint.sh
+
+# スクリプトに実行権限を付与
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# コンテナ起動時にこのスクリプトを通るように設定
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+# --- [ここまで] ---
+
 EXPOSE 80
