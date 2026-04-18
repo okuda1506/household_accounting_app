@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run build
+RUN VITE_API_URL=https://kakeiflow.onrender.com/api npm run build
 
 # ==========================================
 # Stage 2: バックエンド (Laravel/Apache) の構築
