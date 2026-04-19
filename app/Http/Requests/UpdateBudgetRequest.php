@@ -21,16 +21,16 @@ class UpdateBudgetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'budget'  => ['bail', 'required', 'regex:/^-?\d+$/', 'numeric', 'min:1', 'max:999999999'],
+            'budget'  => ['bail', 'required', 'integer', 'min:0', 'max:999999999'],
         ];
     }
 
     public function messages(): array
     {
+
         return [
             'budget.required' => '入力してください。',
-            'budget.regex' => '整数で入力してください。',
-            'budget.numeric' => '整数で入力してください。',
+            'budget.integer' => '整数で入力してください。',
             'budget.min' => '0以上にしてください。',
             'budget.max' => '999999999以下にしてください。',
         ];
