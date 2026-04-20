@@ -54,6 +54,6 @@ class ReactivateAccount extends Notification
             ->line(Lang::get('アカウントの利用を再開するには、以下のボタンをクリックしてパスワードを再設定してください。'))
             ->action(Lang::get('パスワードを再設定して利用を再開する'), $reactivateUrl)
             ->line(Lang::get('このリンクは :count 分で有効期限が切れます。', ['count' => config('auth.passwords.' . config('auth.defaults.passwords') . '.expire')]))
-            ->line(Lang::get('もしこのメールに心当たりがない場合は、このメールを破棄してください。'));
+            ->line(Lang::get('心当たりがない場合はこのメールを破棄してください。'));
     }
 }

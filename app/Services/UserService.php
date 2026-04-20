@@ -3,10 +3,9 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Services\MailService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\EmailChangeCodeMail;
 use App\Exceptions\Domain\InvalidCurrentPasswordException;
 
 /**
@@ -16,9 +15,21 @@ use App\Exceptions\Domain\InvalidCurrentPasswordException;
  * - sendEmailChangeCode(): メールアドレス変更の認証コードを送信
  * - verifyEmailChangeCode(): メールアドレス変更の認証コードを検証
  * - updateEmail(): メールアドレスを更新
+ * - updateBudget(): 予算を更新
+ * - updateAiAdviceMode(): AIアドバイスモードのフラグを更新
+ * - findActiveUser(): 有効なユーサーを取得
  */
 class UserService
 {
+    /**
+     * @var MailService
+     */
+    protected MailService $mailService;
+
+    public function __construct(MailService $mailService)
+    {
+        $this->mailService = $mailService;
+    }
     /**
      * ユーザー名を更新する
      *
@@ -54,7 +65,7 @@ class UserService
             'code' => $code,
         ], now()->addMinutes(5));
 
-        Mail::to($newEmail)->send(new EmailChangeCodeMail($code));
+        $this->mailService->sendEmailChangeCodeVerification($newEmail, $code);
     }
 
     /**
