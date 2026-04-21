@@ -359,6 +359,9 @@ export default function Dashboard() {
                                                         <div className="grid gap-4 md:grid-cols-[1.1fr_0.9fr]">
                                                             <div className="rounded-2xl border border-border/60 bg-background/75 p-4 shadow-sm">
                                                                 <p className="text-sm leading-7 text-foreground">
+                                                                    <span className="mb-2 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                                                        分析結果
+                                                                    </span>
                                                                     {
                                                                         aiAdvice
                                                                             .analysis
@@ -369,6 +372,9 @@ export default function Dashboard() {
 
                                                             <div className="rounded-2xl border border-indigo-200/80 bg-indigo-50/85 p-4 shadow-sm dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:shadow-inner dark:shadow-indigo-950/30">
                                                                 <p className="text-sm font-medium leading-7 text-foreground">
+                                                                    <span className="mb-2 block text-xs font-semibold uppercase tracking-wider text-indigo-700/80 dark:text-indigo-300/80">
+                                                                        実践アドバイス
+                                                                    </span>
                                                                     {
                                                                         aiAdvice
                                                                             .advice
@@ -380,6 +386,9 @@ export default function Dashboard() {
 
                                                         <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/85 px-4 py-3 shadow-sm dark:border-emerald-500/15 dark:bg-emerald-500/5">
                                                             <p className="text-sm leading-7 text-foreground">
+                                                                <span className="mb-2 block text-xs font-semibold uppercase tracking-wider text-emerald-700/80 dark:text-emerald-300/80">
+                                                                    メッセージ
+                                                                </span>
                                                                 {
                                                                     aiAdvice.motivation
                                                                 }
