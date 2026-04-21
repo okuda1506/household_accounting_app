@@ -17,7 +17,6 @@ use App\Exceptions\Domain\InvalidCurrentPasswordException;
  * - updateEmail(): メールアドレスを更新
  * - updateBudget(): 予算を更新
  * - updateAiAdviceMode(): AIアドバイスモードのフラグを更新
- * - findActiveUser(): 有効なユーサーを取得
  */
 class UserService
 {
