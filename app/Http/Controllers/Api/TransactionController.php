@@ -8,6 +8,7 @@ use App\Http\Resources\TransactionResource;
 use App\Services\TransactionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class TransactionController extends Controller
 {
@@ -30,6 +31,7 @@ class TransactionController extends Controller
                 $this->transactionService->getTransactions(auth()->id())
             );
         } catch (\Exception $e) {
+            Log::error($e);
             return ApiResponse::error(null, [__('messages.transaction_get_failed')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -48,6 +50,7 @@ class TransactionController extends Controller
         try {
             $transaction = $this->transactionService->createTransaction($request->validated(), auth()->id());
         } catch (\Exception $e) {
+            Log::error($e);
             return ApiResponse::error(null, [$e->getMessage()], (int) $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -68,6 +71,7 @@ class TransactionController extends Controller
         try {
             $transaction = $this->transactionService->updateTransaction($transactionId, $request->validated(), auth()->id());
         } catch (\Exception $e) {
+            Log::error($e);
             return ApiResponse::error(null, [$e->getMessage()], (int) $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -87,6 +91,7 @@ class TransactionController extends Controller
         try {
             $this->transactionService->deleteTransaction($transactionId, auth()->id());
         } catch (\Exception $e) {
+            Log::error($e);
             return ApiResponse::error(null, [$e->getMessage()], (int) $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 

@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Services\DashboardService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
@@ -38,6 +39,7 @@ class DashboardController extends Controller
             ], Response::HTTP_OK);
 
         } catch (\Exception $e) {
+            Log::error($e);
             return response()->json([
                 'message' => __('messages.dashboard_get_failed'),
                 'error'   => $e->getMessage(),

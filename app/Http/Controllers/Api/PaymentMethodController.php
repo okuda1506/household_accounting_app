@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\PaymentMethodResource;
 use App\Services\PaymentMethodService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class PaymentMethodController extends Controller
 {
@@ -29,6 +30,7 @@ class PaymentMethodController extends Controller
                 $this->paymentMethodService->getPaymentMethods()
             );
         } catch (\Exception $e) {
+            Log::error($e);
             return ApiResponse::error(null, [__('messages.payment_method_get_failed')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 

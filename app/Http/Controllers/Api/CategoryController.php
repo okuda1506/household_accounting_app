@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Services\CategoryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
@@ -32,6 +33,7 @@ class CategoryController extends Controller
                 $this->categoryService->getAllCategories(auth()->id())
             );
         } catch (\Exception $e) {
+            Log::error($e);
             return ApiResponse::error(null, [__('messages.category_get_failed')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -50,6 +52,7 @@ class CategoryController extends Controller
         try {
             $category = $this->categoryService->createCategory($request->validated(), auth()->id());
         } catch (\Exception $e) {
+            Log::error($e);
             return ApiResponse::error(null, [$e->getMessage()], (int) $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -69,6 +72,7 @@ class CategoryController extends Controller
         try {
             $category = $this->categoryService->updateCategory($categoryId, $request->validated(), auth()->id());
         } catch (\Exception $e) {
+            Log::error($e);
             return ApiResponse::error(null, [$e->getMessage()], (int) $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -88,6 +92,7 @@ class CategoryController extends Controller
         try {
             $this->categoryService->deleteCategory($categoryId, auth()->id());
         } catch (\Exception $e) {
+            Log::error($e);
             return ApiResponse::error(null, [$e->getMessage()], (int) $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -107,6 +112,7 @@ class CategoryController extends Controller
             $sortedCategoryIds = $request->input('sorted_category_ids');
             $this->categoryService->sortCategories($sortedCategoryIds);
         } catch (\Exception $e) {
+            Log::error($e);
             return ApiResponse::error(null, __('messages.category_sort_failed'), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
