@@ -44,11 +44,11 @@ class AIAdviceController extends Controller
             $statusCode = $e->getCode();
 
             return ApiResponse::error(
-            null,
-            [$e->getMessage()],
-            is_int($statusCode) && $statusCode >= 400
-                ? $statusCode
-                : Response::HTTP_INTERNAL_SERVER_ERROR
+                null,
+                [$e->getMessage()],
+                is_int($statusCode) && $statusCode >= 400
+                    ? $statusCode
+                    : Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
 
