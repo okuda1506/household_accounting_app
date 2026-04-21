@@ -106,16 +106,16 @@ class CategoryController extends Controller
      *
      * @return JsonResponse
      */
-    public function sort(CategorySortRequest $request): JsonResponse
-    {
-        try {
-            $sortedCategoryIds = $request->input('sorted_category_ids');
-            $this->categoryService->sortCategories($sortedCategoryIds);
-        } catch (\Exception $e) {
-            Log::error($e);
-            return ApiResponse::error(null, __('messages.category_sort_failed'), Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+    // public function sort(CategorySortRequest $request): JsonResponse
+    // {
+    //     try {
+    //         $sortedCategoryIds = $request->input('sorted_category_ids');
+    //         $this->categoryService->sortCategories($sortedCategoryIds);
+    //     } catch (\Exception $e) {
+    //         Log::error($e);
+    //         return ApiResponse::error(null, [__('messages.category_sort_failed')], Response::HTTP_INTERNAL_SERVER_ERROR);
+    //     }
 
-        return ApiResponse::success(null, __('messages.category_sorted'));
-    }
+    //     return ApiResponse::success(null, __('messages.category_sorted'));
+    // }
 }
