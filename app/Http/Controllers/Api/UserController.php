@@ -115,7 +115,6 @@ class UserController extends Controller
 
             $user = $this->userService->updateEmail(auth()->id(), $request->email);
         } catch (ModelNotFoundException $e) {
-            Log::error($e);
             return ApiResponse::error(null, [__('messages.user_not_found')], Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {
             Log::error($e);
