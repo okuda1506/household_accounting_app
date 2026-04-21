@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Services\DashboardService;
 use Illuminate\Http\JsonResponse;
@@ -40,10 +41,7 @@ class DashboardController extends Controller
 
         } catch (\Exception $e) {
             Log::error($e);
-            return response()->json([
-                'message' => __('messages.dashboard_get_failed'),
-                'error'   => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error(null, [__('messages.dashboard_get_failed')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
