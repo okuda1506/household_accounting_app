@@ -59,7 +59,7 @@ const UpdateUserName = () => {
         <SettingsPageShell
             icon={User}
             title="ユーザー名変更"
-            description="表示名を更新して、アカウント情報を整えます。"
+            description="表示名を変更します。"
         >
             <form onSubmit={handleSubmit} className="space-y-6">
                 {errors.general && (

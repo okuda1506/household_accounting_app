@@ -106,7 +106,7 @@ const UpdateBudget = () => {
         <SettingsPageShell
             icon={Wallet}
             title="予算管理"
-            description="毎月の予算を設定して、家計のコントロールを整えます。"
+            description="毎月の予算を設定して家計をコントロールします。"
         >
             <form onSubmit={handleSubmit} className="space-y-6">
                 {errors.general && (
