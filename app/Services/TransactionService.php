@@ -45,7 +45,8 @@ class TransactionService
             ])
                 ->where('user_id', $userId)
                 ->where('deleted', false)
-                ->orderBy('transaction_date')
+                ->orderBy('transaction_date', 'desc')
+                ->orderBy('created_at', 'desc')
                 ->get();
 
         } catch (\Exception $e) {
