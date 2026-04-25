@@ -122,6 +122,7 @@ class DashboardService
             ->where('transactions.deleted', self::IS_NOT_DELETED)
             ->select('transactions.*', 'categories.name as category_name')
             ->orderBy('transactions.transaction_date', 'desc')
+            ->orderBy('transactions.created_at', 'desc')
             ->limit(self::RECENT_TRANSACTIONS_LIMIT)
             ->get();
 
