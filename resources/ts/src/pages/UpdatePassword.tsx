@@ -49,7 +49,7 @@ const UpdatePassword = () => {
         <SettingsPageShell
             icon={LockKeyhole}
             title="パスワード再設定"
-            description="現在のパスワードを確認し、新しいパスワードへ更新します。"
+            description="現在のパスワードを確認して新しいパスワードへ更新します。"
         >
             <form onSubmit={handleSubmit} className="space-y-6">
                 {errors.general && (

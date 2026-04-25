@@ -336,7 +336,7 @@ export default function Settings() {
                                             visuallyDisabled={true}
                                         />
                                         <p className="px-4 pt-1 text-xs text-muted-foreground">
-                                            ※ ベータ版ではご利用いただけません。
+                                            ※ 現在ご利用いただけません。
                                         </p>
                                     </div>
                                 </div>
