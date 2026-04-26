@@ -29,3 +29,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: .
           publish_files: index.html
+          destination_dir: ./api_doc
