@@ -1,0 +1,2075 @@
+openapi: 3.0.3
+info:
+  title: KakeiFlow API仕様書
+  version: 1.0.0
+  description: |-
+    KakeiFlow の現行 Laravel 実装を基準に再構成した API 仕様です。
+
+    認証済み API は Sanctum の Bearer トークンを利用します。
+
+    通常の API は `success / message / data` 形式を返しますが、`GET /user` と `GET /dashboard`、
+    `DELETE /delete-user` は専用のレスポンス形状です。
+servers:
+  - url: http://localhost/api
+    description: ローカル環境
+
+tags:
+  - name: Auth
+    description: サインアップ・サインイン・パスワード再設定
+  - name: User
+    description: 認証済みユーザー設定
+  - name: Categories
+    description: カテゴリ管理
+  - name: Transactions
+    description: 取引管理
+  - name: Payment Methods
+    description: 支払方法マスタ
+  - name: Dashboard
+    description: ダッシュボード表示用データ
+  - name: AI Advice
+    description: AI アドバイス取得
+  - name: Account
+    description: アカウント削除
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum
+      description: Laravel Sanctum personal access token
+
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: 対象リソースの ID
+      schema:
+        type: integer
+        minimum: 1
+        example: 1
+
+  schemas:
+    FieldErrors:
+      type: object
+      description: フィールド単位のバリデーションエラー
+      additionalProperties:
+        type: array
+        items:
+          type: string
+      example:
+        email:
+          - 入力してください。
+
+    LaravelValidationError:
+      type: object
+      required:
+        - message
+        - errors
+      properties:
+        message:
+          type: string
+          example: The given data was invalid.
+        errors:
+          $ref: "#/components/schemas/FieldErrors"
+
+    ApiErrorResponse:
+      type: object
+      required:
+        - success
+        - messages
+        - data
+      properties:
+        success:
+          type: boolean
+          enum:
+            - false
+          example: false
+        messages:
+          type: array
+          items:
+            type: string
+          example:
+            - サーバーでエラーが発生しました。
+        data:
+          nullable: true
+          description: |-
+            追加のエラー詳細です。手動で ValidationException を捕捉しているエンドポイントでは
+            `field => string[]` の形式で返ることがあります。
+          oneOf:
+            - $ref: "#/components/schemas/FieldErrors"
+            - type: object
+              additionalProperties: true
+          example: null
+
+    MessageOnlyResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: アカウントを削除しました。
+
+    NullableSuccessResponse:
+      type: object
+      required:
+        - success
+        - message
+        - data
+      properties:
+        success:
+          type: boolean
+          enum:
+            - true
+          example: true
+        message:
+          type: string
+          example: リクエスト成功
+        data:
+          nullable: true
+          description: このエンドポイントでは常に null
+          example: null
+
+    TransactionTypeId:
+      type: integer
+      enum:
+        - 1
+        - 2
+      description: 1 = 収入, 2 = 支出
+      example: 2
+
+    RiskLevel:
+      type: string
+      enum:
+        - safe
+        - warning
+        - danger
+      example: warning
+
+    UserResource:
+      type: object
+      required:
+        - id
+        - name
+        - email
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: takuya
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        created_at:
+          type: string
+          format: date-time
+          example: 2026-04-05T09:00:00.000000Z
+        updated_at:
+          type: string
+          format: date-time
+          example: 2026-04-05T09:00:00.000000Z
+
+    AuthenticatedUser:
+      type: object
+      required:
+        - id
+        - name
+        - email
+        - deleted
+        - ai_advice_mode
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: takuya
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        email_verified_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: null
+        budget:
+          type: integer
+          nullable: true
+          example: 120000
+        deleted:
+          type: boolean
+          example: false
+        ai_advice_mode:
+          type: boolean
+          example: true
+        created_at:
+          type: string
+          format: date-time
+          example: 2026-04-05T09:00:00.000000Z
+        updated_at:
+          type: string
+          format: date-time
+          example: 2026-04-05T09:00:00.000000Z
+
+    DashboardUser:
+      type: object
+      required:
+        - id
+        - name
+        - email
+        - ai_advice_mode
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: takuya
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        budget:
+          type: integer
+          nullable: true
+          example: 120000
+        ai_advice_mode:
+          type: boolean
+          example: true
+
+    AuthPayload:
+      type: object
+      required:
+        - user
+        - token
+      properties:
+        user:
+          $ref: "#/components/schemas/UserResource"
+        token:
+          type: string
+          example: 1|sRUG3oExamplePersonalAccessToken
+
+    AuthResponse:
+      type: object
+      required:
+        - success
+        - message
+        - data
+      properties:
+        success:
+          type: boolean
+          enum:
+            - true
+          example: true
+        message:
+          type: string
+          example: サインインしました。
+        data:
+          $ref: "#/components/schemas/AuthPayload"
+
+    UserResourceResponse:
+      type: object
+      required:
+        - success
+        - message
+        - data
+      properties:
+        success:
+          type: boolean
+          enum:
+            - true
+          example: true
+        message:
+          type: string
+          example: メールアドレスを更新しました。
+        data:
+          $ref: "#/components/schemas/UserResource"
+
+    AiAdviceModeData:
+      type: object
+      required:
+        - ai_advice_mode
+      properties:
+        ai_advice_mode:
+          type: boolean
+          example: true
+
+    AiAdviceModeResponse:
+      type: object
+      required:
+        - success
+        - message
+        - data
+      properties:
+        success:
+          type: boolean
+          enum:
+            - true
+          example: true
+        message:
+          type: string
+          example: AIアドバイスモードのフラグを更新しました。
+        data:
+          $ref: "#/components/schemas/AiAdviceModeData"
+
+    Category:
+      type: object
+      required:
+        - category_id
+        - user_id
+        - name
+        - transaction_type_id
+        - sort_no
+        - deleted
+        - created_at
+        - updated_at
+      properties:
+        category_id:
+          type: integer
+          example: 8
+        user_id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          maxLength: 30
+          example: 食費
+        transaction_type_id:
+          $ref: "#/components/schemas/TransactionTypeId"
+        sort_no:
+          type: integer
+          example: 2
+        deleted:
+          type: boolean
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          example: 2026-04-05T09:00:00.000000Z
+        updated_at:
+          type: string
+          format: date-time
+          example: 2026-04-05T09:00:00.000000Z
+
+    CategoryResponse:
+      type: object
+      required:
+        - success
+        - message
+        - data
+      properties:
+        success:
+          type: boolean
+          enum:
+            - true
+          example: true
+        message:
+          type: string
+          example: カテゴリを登録しました。
+        data:
+          $ref: "#/components/schemas/Category"
+
+    CategoryListResponse:
+      type: object
+      required:
+        - success
+        - message
+        - data
+      properties:
+        success:
+          type: boolean
+          enum:
+            - true
+          example: true
+        message:
+          type: string
+          example: カテゴリ一覧を取得しました。
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Category"
+
+    PaymentMethod:
+      type: object
+      required:
+        - payment_method_id
+        - name
+        - transaction_type_id
+        - created_at
+        - updated_at
+      properties:
+        payment_method_id:
+          type: integer
+          example: 2
+        name:
+          type: string
+          example: クレジットカード
+        transaction_type_id:
+          $ref: "#/components/schemas/TransactionTypeId"
+        created_at:
+          type: string
+          format: date-time
+          example: 2026-04-05T09:00:00.000000Z
+        updated_at:
+          type: string
+          format: date-time
+          example: 2026-04-05T09:00:00.000000Z
+
+    PaymentMethodListResponse:
+      type: object
+      required:
+        - success
+        - message
+        - data
+      properties:
+        success:
+          type: boolean
+          enum:
+            - true
+          example: true
+        message:
+          type: string
+          example: 支払方法一覧を取得しました。
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentMethod"
+
+    Transaction:
+      type: object
+      required:
+        - transaction_id
+        - user_id
+        - transaction_date
+        - transaction_type_id
+        - category
+        - payment_method
+        - amount
+        - deleted
+        - created_at
+        - updated_at
+      properties:
+        transaction_id:
+          type: integer
+          example: 24
+        user_id:
+          type: integer
+          example: 1
+        transaction_date:
+          type: string
+          format: date-time
+          example: 2026-04-05T00:00:00.000000Z
+        transaction_type_id:
+          $ref: "#/components/schemas/TransactionTypeId"
+        category:
+          allOf:
+            - $ref: "#/components/schemas/Category"
+          nullable: true
+        payment_method:
+          $ref: "#/components/schemas/PaymentMethod"
+        amount:
+          type: string
+          description: Laravel の decimal cast により文字列で返却される
+          example: "2258.00"
+        memo:
+          type: string
+          nullable: true
+          example: スーパーでまとめ買い
+        deleted:
+          type: boolean
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          example: 2026-04-05T09:00:00.000000Z
+        updated_at:
+          type: string
+          format: date-time
+          example: 2026-04-05T09:00:00.000000Z
+
+    TransactionResponse:
+      type: object
+      required:
+        - success
+        - message
+        - data
+      properties:
+        success:
+          type: boolean
+          enum:
+            - true
+          example: true
+        message:
+          type: string
+          example: 取引を登録しました。
+        data:
+          $ref: "#/components/schemas/Transaction"
+
+    TransactionListResponse:
+      type: object
+      required:
+        - success
+        - message
+        - data
+      properties:
+        success:
+          type: boolean
+          enum:
+            - true
+          example: true
+        message:
+          type: string
+          example: 取引一覧を取得しました。
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Transaction"
+
+    MonthlySummary:
+      type: object
+      required:
+        - income
+        - expense
+        - balance
+      properties:
+        income:
+          type: string
+          example: "600000.00"
+        expense:
+          type: string
+          example: "2258.00"
+        balance:
+          type: number
+          example: 597742
+
+    ExpenseTrendPoint:
+      type: object
+      required:
+        - year
+        - month
+        - total_expense
+      properties:
+        year:
+          type: integer
+          example: 2026
+        month:
+          type: integer
+          example: 4
+        total_expense:
+          type: number
+          example: 2258
+
+    RecentTransaction:
+      type: object
+      required:
+        - id
+        - user_id
+        - transaction_date
+        - transaction_type_id
+        - category_id
+        - category_name
+        - amount
+        - payment_method_id
+        - deleted
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: integer
+          example: 24
+        user_id:
+          type: integer
+          example: 1
+        transaction_date:
+          type: string
+          description: "日時文字列 (例: 2026-04-05 00:00:00)"
+          example: 2026-04-05 00:00:00
+        transaction_type_id:
+          $ref: "#/components/schemas/TransactionTypeId"
+        category_id:
+          type: integer
+          example: 8
+        category_name:
+          type: string
+          nullable: true
+          example: 食費
+        amount:
+          type: string
+          example: "2258.00"
+        payment_method_id:
+          type: integer
+          example: 2
+        memo:
+          type: string
+          nullable: true
+          example: スーパーでまとめ買い
+        deleted:
+          type: integer
+          example: 0
+        created_at:
+          type: string
+          description: "日時文字列 (例: 2026-04-05 09:00:00)"
+          example: 2026-04-05 09:00:00
+        updated_at:
+          type: string
+          description: "日時文字列 (例: 2026-04-05 09:00:00)"
+          example: 2026-04-05 09:00:00
+
+    DashboardResponse:
+      type: object
+      required:
+        - user
+        - monthly_summary
+        - expense_trend
+        - recent_transactions
+      properties:
+        user:
+          $ref: "#/components/schemas/DashboardUser"
+        monthly_summary:
+          $ref: "#/components/schemas/MonthlySummary"
+        expense_trend:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExpenseTrendPoint"
+        recent_transactions:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecentTransaction"
+
+    DashboardErrorResponse:
+      type: object
+      required:
+        - message
+        - error
+      properties:
+        message:
+          type: string
+          example: ダッシュボード情報の取得に失敗しました。
+        error:
+          type: string
+          example: "SQLSTATE[HY000]: General error"
+
+    AiAdviceAnalysis:
+      type: object
+      required:
+        - budget_gap
+        - daily_safe_limit
+        - main_issue_category
+        - analysis_reason
+      properties:
+        budget_gap:
+          type: integer
+          example: 32000
+        daily_safe_limit:
+          type: integer
+          example: 3800
+        main_issue_category:
+          type: string
+          example: 食費
+        analysis_reason:
+          type: string
+          example: 月前半で食費への支出が集中しています。
+
+    AiAdviceAction:
+      type: object
+      required:
+        - micro_action
+        - daily_budget_target
+        - focus_category
+      properties:
+        micro_action:
+          type: string
+          example: 今週はコンビニ利用を 2 回以内に抑えましょう。
+        daily_budget_target:
+          type: integer
+          example: 3500
+        focus_category:
+          type: string
+          example: 食費
+
+    AiAdviceResult:
+      type: object
+      required:
+        - risk_level
+        - analysis
+        - pattern
+        - advice
+        - motivation
+      properties:
+        risk_level:
+          $ref: "#/components/schemas/RiskLevel"
+        analysis:
+          $ref: "#/components/schemas/AiAdviceAnalysis"
+        pattern:
+          type: string
+          example: 週末に食費が増えやすい傾向です。
+        advice:
+          $ref: "#/components/schemas/AiAdviceAction"
+        motivation:
+          type: string
+          example: 小さな調整でも今月の着地は十分改善できます。
+
+    AiAdviceResponse:
+      type: object
+      required:
+        - success
+        - message
+        - data
+      properties:
+        success:
+          type: boolean
+          enum:
+            - true
+          example: true
+        message:
+          type: string
+          example: AIアドバイスを取得しました。
+        data:
+          $ref: "#/components/schemas/AiAdviceResult"
+
+    RegisterRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - password_confirmation
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          example: takuya
+        email:
+          type: string
+          format: email
+          maxLength: 255
+          example: user@example.com
+        password:
+          type: string
+          format: password
+          description: Laravel のデフォルトパスワードルール
+          example: Password123!
+        password_confirmation:
+          type: string
+          format: password
+          example: Password123!
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        password:
+          type: string
+          format: password
+          example: Password123!
+
+    ForgotPasswordRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@example.com
+
+    ResetPasswordRequest:
+      type: object
+      required:
+        - email
+        - token
+        - password
+        - password_confirmation
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        token:
+          type: string
+          example: reset-token-from-email
+        password:
+          type: string
+          format: password
+          description: Laravel のデフォルトパスワードルール
+          example: Password123!
+        password_confirmation:
+          type: string
+          format: password
+          example: Password123!
+
+    ReactivateAccountRequest:
+      $ref: "#/components/schemas/ResetPasswordRequest"
+
+    UpdateUserNameRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          maxLength: 30
+          example: takuya
+
+    RequestEmailChangeRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 255
+          example: next@example.com
+
+    EmailCodeRequest:
+      type: object
+      required:
+        - email
+        - code
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 255
+          example: next@example.com
+        code:
+          type: string
+          pattern: "^[0-9]{6}$"
+          example: "123456"
+
+    UpdateUserPasswordRequest:
+      type: object
+      required:
+        - current_password
+        - new_password
+        - new_password_confirmation
+      properties:
+        current_password:
+          type: string
+          format: password
+          example: CurrentPassword123!
+        new_password:
+          type: string
+          format: password
+          description: Laravel のデフォルトパスワードルール
+          example: NewPassword123!
+        new_password_confirmation:
+          type: string
+          format: password
+          example: NewPassword123!
+
+    UpdateBudgetRequest:
+      type: object
+      required:
+        - budget
+      properties:
+        budget:
+          type: integer
+          minimum: 1
+          maximum: 999999999
+          description: 現行バリデーションでは 1 以上の整数のみ受け付ける
+          example: 120000
+
+    UpdateAiAdviceModeRequest:
+      type: object
+      required:
+        - ai_advice_mode
+      properties:
+        ai_advice_mode:
+          type: boolean
+          example: true
+
+    CategoryUpsertRequest:
+      type: object
+      required:
+        - name
+        - transaction_type_id
+      properties:
+        name:
+          type: string
+          maxLength: 30
+          example: 食費
+        transaction_type_id:
+          $ref: "#/components/schemas/TransactionTypeId"
+        sort_no:
+          type: integer
+          nullable: true
+          description: 新規作成時はサーバー側で自動採番される
+          example: 1
+
+    CategorySortRequest:
+      type: object
+      required:
+        - sorted_category_ids
+      properties:
+        sorted_category_ids:
+          type: array
+          items:
+            type: integer
+            minimum: 1
+          example:
+            - 8
+            - 10
+            - 9
+
+    TransactionUpsertRequest:
+      type: object
+      required:
+        - transaction_date
+        - transaction_type_id
+        - category_id
+        - amount
+        - payment_method_id
+      properties:
+        transaction_date:
+          type: string
+          description: "入力は Laravel の `date` バリデーションに通る日時文字列"
+          example: 2026-04-05 00:00:00
+        transaction_type_id:
+          $ref: "#/components/schemas/TransactionTypeId"
+        category_id:
+          type: integer
+          minimum: 1
+          example: 8
+        amount:
+          type: number
+          minimum: 0
+          example: 2258
+        payment_method_id:
+          type: integer
+          minimum: 1
+          example: 2
+        memo:
+          type: string
+          nullable: true
+          maxLength: 255
+          example: スーパーでまとめ買い
+
+    DeleteUserRequest:
+      type: object
+      required:
+        - password
+      properties:
+        password:
+          type: string
+          format: password
+          example: CurrentPassword123!
+
+paths:
+  /register:
+    post:
+      tags:
+        - Auth
+      summary: ユーザー登録
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "200":
+          description: 登録成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "422":
+          description: 入力エラーまたは既存アカウントとの競合
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /login:
+    post:
+      tags:
+        - Auth
+      summary: サインイン
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: サインイン成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "422":
+          description: 認証失敗または入力エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /logout:
+    post:
+      tags:
+        - Auth
+      summary: サインアウト
+      operationId: logoutUser
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: サインアウト成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/NullableSuccessResponse"
+                  - type: object
+                    properties:
+                      message:
+                        example: サインアウトしました。
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /forgot-password:
+    post:
+      tags:
+        - Auth
+      summary: パスワード再設定メール送信
+      operationId: sendPasswordResetLink
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ForgotPasswordRequest"
+      responses:
+        "200":
+          description: 送信成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/NullableSuccessResponse"
+                  - type: object
+                    properties:
+                      message:
+                        example: 案内メールを送信しました。
+        "422":
+          description: メールアドレス不正または入力エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /reset-password:
+    post:
+      tags:
+        - Auth
+      summary: パスワード再設定
+      operationId: resetPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordRequest"
+      responses:
+        "200":
+          description: 再設定成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/NullableSuccessResponse"
+                  - type: object
+                    properties:
+                      message:
+                        example: パスワードを更新しました。
+        "400":
+          description: 無効なトークン
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+        "422":
+          description: 入力エラーまたは対象ユーザー不正
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/LaravelValidationError"
+                  - $ref: "#/components/schemas/ApiErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /reactivate-account:
+    post:
+      tags:
+        - Auth
+      summary: 退会済みアカウント再開
+      operationId: reactivateAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReactivateAccountRequest"
+      responses:
+        "200":
+          description: 再開成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/NullableSuccessResponse"
+                  - type: object
+                    properties:
+                      message:
+                        example: アカウントを再開しました。
+        "400":
+          description: 無効なトークン
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+        "422":
+          description: 入力エラーまたは対象ユーザー不正
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/LaravelValidationError"
+                  - $ref: "#/components/schemas/ApiErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /user:
+    get:
+      tags:
+        - User
+      summary: 現在のユーザー情報取得
+      operationId: getCurrentUser
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthenticatedUser"
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+
+  /user/name:
+    put:
+      tags:
+        - User
+      summary: ユーザー名更新
+      operationId: updateUserName
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserNameRequest"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/NullableSuccessResponse"
+                  - type: object
+                    properties:
+                      message:
+                        example: ユーザー名を更新しました。
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "422":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LaravelValidationError"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /user/password:
+    put:
+      tags:
+        - User
+      summary: パスワード更新
+      operationId: updateUserPassword
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserPasswordRequest"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/NullableSuccessResponse"
+                  - type: object
+                    properties:
+                      message:
+                        example: パスワードを更新しました。
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "422":
+          description: バリデーションエラーまたは現在パスワード不一致
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/LaravelValidationError"
+                  - $ref: "#/components/schemas/ApiErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /user/email/request:
+    post:
+      tags:
+        - User
+      summary: メールアドレス変更用認証コード送信
+      operationId: requestEmailChange
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestEmailChangeRequest"
+      responses:
+        "200":
+          description: 送信成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/NullableSuccessResponse"
+                  - type: object
+                    properties:
+                      message:
+                        example: 認証コードを送信しました。
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "422":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LaravelValidationError"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /user/email/verify:
+    post:
+      tags:
+        - User
+      summary: メールアドレス変更用認証コード検証
+      operationId: verifyEmailChangeCode
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailCodeRequest"
+      responses:
+        "200":
+          description: 検証成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/NullableSuccessResponse"
+                  - type: object
+                    properties:
+                      message:
+                        example: 認証コードを確認しました。
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "422":
+          description: バリデーションエラーまたは認証コード不正
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/LaravelValidationError"
+                  - $ref: "#/components/schemas/ApiErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /user/email/update:
+    put:
+      tags:
+        - User
+      summary: メールアドレス更新
+      operationId: updateUserEmail
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailCodeRequest"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResourceResponse"
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "404":
+          description: ユーザーが見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+        "422":
+          description: バリデーションエラーまたは認証コード不正
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/LaravelValidationError"
+                  - $ref: "#/components/schemas/ApiErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /user/budget:
+    put:
+      tags:
+        - User
+      summary: 月間予算更新
+      operationId: updateUserBudget
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBudgetRequest"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/NullableSuccessResponse"
+                  - type: object
+                    properties:
+                      message:
+                        example: 予算を更新しました。
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "422":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LaravelValidationError"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /user/ai-advice-mode:
+    put:
+      tags:
+        - User
+      summary: AIアドバイスモード更新
+      operationId: updateAiAdviceMode
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAiAdviceModeRequest"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiAdviceModeResponse"
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "403":
+          description: 予算未設定などで有効化不可
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+        "422":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LaravelValidationError"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /categories:
+    get:
+      tags:
+        - Categories
+      summary: カテゴリ一覧取得
+      operationId: listCategories
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryListResponse"
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+    post:
+      tags:
+        - Categories
+      summary: カテゴリ作成
+      operationId: createCategory
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryUpsertRequest"
+      responses:
+        "200":
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "409":
+          description: 同名カテゴリ競合
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+        "422":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LaravelValidationError"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /categories/{id}:
+    put:
+      tags:
+        - Categories
+      summary: カテゴリ更新
+      operationId: updateCategory
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ResourceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryUpsertRequest"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/CategoryResponse"
+                  - type: object
+                    properties:
+                      message:
+                        example: カテゴリを更新しました。
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "403":
+          description: 更新権限なし
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "404":
+          description: カテゴリが見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+        "409":
+          description: 同名カテゴリ競合
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+        "422":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LaravelValidationError"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+    delete:
+      tags:
+        - Categories
+      summary: カテゴリ削除
+      operationId: deleteCategory
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ResourceId"
+      responses:
+        "200":
+          description: 削除成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/NullableSuccessResponse"
+                  - type: object
+                    properties:
+                      message:
+                        example: カテゴリを削除しました。
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "404":
+          description: カテゴリが見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+        "409":
+          description: 取引で利用中のため削除不可
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /categories/sort:
+    post:
+      tags:
+        - Categories
+      summary: カテゴリ並び順更新
+      operationId: sortCategories
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategorySortRequest"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/NullableSuccessResponse"
+                  - type: object
+                    properties:
+                      message:
+                        example: カテゴリの並び順を更新しました。
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "422":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LaravelValidationError"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /transactions:
+    get:
+      tags:
+        - Transactions
+      summary: 取引一覧取得
+      operationId: listTransactions
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionListResponse"
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+    post:
+      tags:
+        - Transactions
+      summary: 取引作成
+      operationId: createTransaction
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionUpsertRequest"
+      responses:
+        "200":
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionResponse"
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "422":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LaravelValidationError"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /transactions/{id}:
+    put:
+      tags:
+        - Transactions
+      summary: 取引更新
+      operationId: updateTransaction
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ResourceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionUpsertRequest"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/TransactionResponse"
+                  - type: object
+                    properties:
+                      message:
+                        example: 取引を更新しました。
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "403":
+          description: 更新権限なし
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "404":
+          description: 取引が見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+        "422":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LaravelValidationError"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+    delete:
+      tags:
+        - Transactions
+      summary: 取引削除
+      operationId: deleteTransaction
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ResourceId"
+      responses:
+        "200":
+          description: 削除成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/NullableSuccessResponse"
+                  - type: object
+                    properties:
+                      message:
+                        example: 取引を削除しました。
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "404":
+          description: 取引が見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /payment-methods:
+    get:
+      tags:
+        - Payment Methods
+      summary: 支払方法一覧取得
+      operationId: listPaymentMethods
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentMethodListResponse"
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /dashboard:
+    get:
+      tags:
+        - Dashboard
+      summary: ダッシュボード表示データ取得
+      operationId: getDashboardData
+      security:
+        - bearerAuth: []
+      description: |-
+        今月の収支サマリ、過去 6 か月の支出推移、最近 5 件の取引、ユーザー設定を返します。
+        このエンドポイントは共通の `success / message / data` ラッパーを使いません。
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardResponse"
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardErrorResponse"
+
+  /ai-advice:
+    get:
+      tags:
+        - AI Advice
+      summary: AIアドバイス取得
+      operationId: getAiAdvice
+      security:
+        - bearerAuth: []
+      description: |-
+        認証済みかつ AI アドバイスモード有効時のみ利用できます。
+        レート制限は 1 分あたり 3 回です。
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiAdviceResponse"
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "403":
+          description: 予算未設定または AI アドバイスモード無効
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+        "429":
+          description: レート制限超過
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "500":
+          description: AI 応答不正またはサーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /delete-user:
+    delete:
+      tags:
+        - Account
+      summary: アカウント削除
+      operationId: deleteUserAccount
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteUserRequest"
+      responses:
+        "200":
+          description: 削除成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/MessageOnlyResponse"
+                  - type: object
+                    properties:
+                      message:
+                        example: アカウントを削除しました。
+        "401":
+          description: 未認証
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageOnlyResponse"
+        "422":
+          description: パスワード検証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LaravelValidationError"
