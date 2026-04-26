@@ -17,7 +17,7 @@
 <img src="storage/app/public/architecture_by_gemini.png" alt="アーキテクチャ構成図"/>
 
 - アーキテクチャ設計の詳細については、[docs/architecture.md](docs/architecture.md) を参照してください。
-- APIドキュメントについては、[こちら](https://okuda1506.github.io/household_accounting_app/)を参照してください。
+- APIドキュメントについては、[こちら](https://okuda1506.github.io/household_accounting_app/api_doc/)を参照してください。
 
 ## 機能
 
@@ -57,7 +57,7 @@ npm install
 <img src="storage/app/public/architecture_by_gemini.png" alt="Architecture Diagram"/>
 
 - For detailed architecture design, please refer to [docs/architecture.md](docs/architecture.md).
-- For API documentation, please refer to [here](https://okuda1506.github.io/household_accounting_app/).
+- For API documentation, please refer to [here](https://okuda1506.github.io/household_accounting_app/api_doc/).
 
 ### Features
 
@@ -97,7 +97,7 @@ npm install
 <img src="storage/app/public/architecture_by_gemini.png" alt="아키텍처 구성도"/>
 
 - 아키텍처 설계에 대한 자세한 내용은 [docs/architecture.md](docs/architecture.md)를 참고해 주세요.
-- API 문서에 대해서는 [여기](https://okuda1506.github.io/household_accounting_app/)를 참조해 주세요.
+- API 문서에 대해서는 [여기](https://okuda1506.github.io/household_accounting_app/api_doc/)를 참조해 주세요.
 
 ### 주요 기능
 
