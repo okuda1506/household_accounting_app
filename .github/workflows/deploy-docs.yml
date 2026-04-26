@@ -1,0 +1,31 @@
+name: Deploy Redoc to GitHub Pages
+
+on:
+  push:
+    branches: [ main ] # mainブランチに更新があったら実行
+
+permissions:
+  contents: write # ページ公開用の権限
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build Redoc HTML
+        # routes/openapi.yaml を読み込んで index.html を書き出す
+        run: npx @redocly/cli build-docs routes/openapi.yaml -o index.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          publish_files: index.html
