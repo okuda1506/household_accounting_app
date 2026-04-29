@@ -20,7 +20,7 @@ class SalesCoach implements Agent, Conversational, HasTools
     {
         $path = resource_path('prompts/ai_coaching_system.md');
 
-        if (!file_exists($path)) {
+        if (! file_exists($path)) {
             throw new \RuntimeException('AIプロンプトファイルが存在しません');
         }
 

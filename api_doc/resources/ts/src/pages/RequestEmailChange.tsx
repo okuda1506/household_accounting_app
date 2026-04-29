@@ -26,7 +26,7 @@ const RequestEmailChange = () => {
             try {
                 const response = await api.get("/user");
                 setCurrentEmail(response.data.email);
-            } catch (error) {
+            } catch (_error) {
                 toast.error("ユーザー情報の取得に失敗しました。");
                 navigate("/settings");
             }

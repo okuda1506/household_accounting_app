@@ -7,7 +7,9 @@ use InvalidArgumentException;
 class RiskLevel
 {
     private const SAFE = 'safe';
+
     private const WARNING = 'warning';
+
     private const DANGER = 'danger';
 
     private string $value;
@@ -25,7 +27,7 @@ class RiskLevel
             self::DANGER,
         ];
 
-        if (!in_array($value, $allowed, true)) {
+        if (! in_array($value, $allowed, true)) {
             throw new InvalidArgumentException("Invalid risk level: {$value}");
         }
 

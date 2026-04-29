@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Auth;
 
 use App\Helpers\ApiResponse;
@@ -8,7 +9,6 @@ use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -44,6 +44,7 @@ class AuthenticatedSessionController extends Controller
             );
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error($e);
+
             return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -62,6 +63,7 @@ class AuthenticatedSessionController extends Controller
             $this->authService->logoutUser($request);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error($e);
+
             return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 

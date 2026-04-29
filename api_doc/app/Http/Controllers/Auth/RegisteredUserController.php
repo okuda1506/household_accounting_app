@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Auth;
 
 use App\Helpers\ApiResponse;
@@ -19,6 +20,7 @@ class RegisteredUserController extends Controller
     {
         $this->authService = $authService;
     }
+
     /**
      * Display the registration view.
      */
@@ -44,6 +46,7 @@ class RegisteredUserController extends Controller
             );
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error($e);
+
             return ApiResponse::error(null, [__('messages.server_error')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 

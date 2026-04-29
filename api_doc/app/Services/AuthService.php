@@ -1,17 +1,18 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\User;
 use App\Notifications\ReactivateAccount;
 use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -26,15 +27,15 @@ class AuthService
     /**
      * ユーザーの新規登録
      *
-     * @param Request $request
      * @return array{user: User, token: string}
+     *
      * @throws ValidationException
      */
     public function registerUser(Request $request): array
     {
         $validated = $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'string', 'lowercase', 'email', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -55,8 +56,8 @@ class AuthService
         }
 
         $user = User::create([
-            'name'     => $validated['name'],
-            'email'    => $validated['email'],
+            'name' => $validated['name'],
+            'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
 
@@ -65,7 +66,7 @@ class AuthService
         $token = $user->createToken('access_token')->plainTextToken;
 
         return [
-            'user'  => $user,
+            'user' => $user,
             'token' => $token,
         ];
     }
@@ -73,14 +74,14 @@ class AuthService
     /**
      * ログイン
      *
-     * @param Request $request
      * @return array{user: User, token: string}
+     *
      * @throws ValidationException
      */
     public function loginUser(Request $request): array
     {
         $credentials = $request->validate([
-            'email'    => ['required', 'email'],
+            'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
@@ -105,9 +106,6 @@ class AuthService
 
     /**
      * ログアウト
-     *
-     * @param Request $request
-     * @return void
      */
     public function logoutUser(Request $request): void
     {
@@ -117,8 +115,6 @@ class AuthService
     /**
      * パスワードリセットリンクの送信
      *
-     * @param Request $request
-     * @return array
      * @throws ValidationException
      */
     public function sendPasswordResetLink(Request $request): array
@@ -141,8 +137,6 @@ class AuthService
     /**
      * アカウント再開
      *
-     * @param array $data
-     * @return array
      * @throws ValidationException
      */
     public function reactivateAccount(array $data): array
@@ -153,8 +147,6 @@ class AuthService
     /**
      * パスワードリセット
      *
-     * @param array $data
-     * @return array
      * @throws ValidationException
      */
     public function resetPassword(array $data): array
@@ -169,15 +161,13 @@ class AuthService
      * - 対象ユーザーの存在と削除状態（削除済み／有効）を確認
      * - パスワード更新および必要に応じてアカウントの再有効化を実行
      *
-     * @param array $data
-     * @return array
      * @throws ValidationException
      */
     private function performPasswordReset(array $data, bool $isReactivation): array
     {
         $user = User::where('email', $data['email'])->first();
 
-        if (!$user || ($isReactivation ? !$user->deleted : $user->deleted)) {
+        if (! $user || ($isReactivation ? ! $user->deleted : $user->deleted)) {
             return ['status' => Password::INVALID_USER];
         }
 
@@ -185,7 +175,7 @@ class AuthService
             Arr::only($data, ['email', 'password', 'password_confirmation', 'token']),
             function ($user) use ($data, $isReactivation) {
                 $fillData = [
-                    'password'       => Hash::make($data['password']),
+                    'password' => Hash::make($data['password']),
                     'remember_token' => Str::random(60),
                 ];
                 if ($isReactivation) {

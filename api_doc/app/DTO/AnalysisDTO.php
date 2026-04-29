@@ -17,7 +17,7 @@ class AnalysisDTO
         public int $dailySafeLimit,
         public string $mainIssueCategory,
         public string $analysisReason,
-    ){}
+    ) {}
 
     public static function fromArray(array $data): self
     {
@@ -37,30 +37,30 @@ class AnalysisDTO
             'budget_gap',
             'daily_safe_limit',
             'main_issue_category',
-            'analysis_reason'
+            'analysis_reason',
         ];
 
         // 必須キーの存在チェック
         foreach ($required as $key) {
-            if (!array_key_exists($key, $data)) {
+            if (! array_key_exists($key, $data)) {
                 throw new InvalidArgumentException("analysis.{$key} is missing in AI response");
             }
         }
 
         // 型チェック
-        if (!is_int($data['budget_gap'])) {
-                throw new InvalidArgumentException('analysis.budget_gap must be int in AI response');
-            }
+        if (! is_int($data['budget_gap'])) {
+            throw new InvalidArgumentException('analysis.budget_gap must be int in AI response');
+        }
 
-        if (!is_int($data['daily_safe_limit'])) {
+        if (! is_int($data['daily_safe_limit'])) {
             throw new InvalidArgumentException('analysis.daily_safe_limit must be int in AI response');
         }
 
-        if (!is_string($data['main_issue_category'])) {
+        if (! is_string($data['main_issue_category'])) {
             throw new InvalidArgumentException('analysis.main_issue_category must be string in AI response');
         }
 
-        if (!is_string($data['analysis_reason'])) {
+        if (! is_string($data['analysis_reason'])) {
             throw new InvalidArgumentException('analysis.analysis_reason must be string in AI response');
         }
     }

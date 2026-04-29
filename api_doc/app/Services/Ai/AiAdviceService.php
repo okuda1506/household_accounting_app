@@ -1,10 +1,9 @@
 <?php
+
 namespace App\Services\Ai;
 
-use App\DTO\AiAdviceResponseDTO;
 use App\Ai\Agents\SalesCoach;
-use App\Services\Ai\AiInputBuilder;
-use App\Services\Ai\AiCoachingLogService;
+use App\DTO\AiAdviceResponseDTO;
 
 /**
  * AIアドバイス関連のビジネスロジックを管理するサービスクラス
@@ -21,7 +20,7 @@ class AiAdviceService
         AiCoachingLogService $aiCoachingLogService,
         AiInputBuilder $aiInputBuilder,
         SalesCoach $salesCoach
-    ){
+    ) {
         $this->aiInputBuilder = $aiInputBuilder;
         $this->aiCoachingLogService = $aiCoachingLogService;
         $this->salesCoach = $salesCoach;
@@ -30,9 +29,7 @@ class AiAdviceService
     /**
      * AIアドバイスを取得する
      *
-     * @param int $userId ユーザーID
-     *
-     * @return
+     * @param  int  $userId  ユーザーID
      */
     public function getAdvice(int $userId): AiAdviceResponseDTO
     {
@@ -44,7 +41,7 @@ class AiAdviceService
 
         $decoded = json_decode($response->text, true);
 
-        if (!$decoded) {
+        if (! $decoded) {
             throw new \RuntimeException('AIレスポンスがJSONではありません');
         }
 

@@ -11,7 +11,6 @@ import { createPortal } from "react-dom";
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
     DialogHeader,
     DialogTitle,
     DialogTrigger,

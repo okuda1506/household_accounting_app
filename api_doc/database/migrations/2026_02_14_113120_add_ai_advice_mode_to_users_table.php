@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->boolean('ai_advice_mode')
                 ->default(false)
-                ->after('password')
-            ;
+                ->after('password');
         });
     }
 

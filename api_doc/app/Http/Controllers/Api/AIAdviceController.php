@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
-use App\Services\Ai\AiGuardService;
+use App\Http\Resources\AiAdviceResource;
 use App\Services\Ai\AiAdviceService;
+use App\Services\Ai\AiGuardService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use App\Http\Resources\AiAdviceResource;
 use Illuminate\Support\Facades\Log;
 
 class AIAdviceController extends Controller
@@ -20,15 +20,13 @@ class AIAdviceController extends Controller
     public function __construct(
         AiGuardService $aiGuardService,
         AiAdviceService $aiAdviceService
-    ){
+    ) {
         $this->aiGuardService = $aiGuardService;
         $this->aiAdviceService = $aiAdviceService;
     }
 
     /**
      * AIアドバイスを取得する
-     *
-     * @return JsonResponse
      */
     public function index(): JsonResponse
     {

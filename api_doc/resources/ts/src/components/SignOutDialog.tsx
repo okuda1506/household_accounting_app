@@ -26,7 +26,7 @@ const SignOutDialog = ({ open, onClose }: SignOutDialogProps) => {
             toast.success(response.data.message);
             onClose();
             navigate("/login", { replace: true });
-        } catch (error) {
+        } catch (_error) {
             toast.error("サインアウトに失敗しました。");
         } finally {
             setIsSubmitting(false);

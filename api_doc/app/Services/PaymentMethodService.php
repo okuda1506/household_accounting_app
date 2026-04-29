@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\PaymentMethod;
@@ -14,8 +15,6 @@ class PaymentMethodService
 {
     /**
      * 支払い方法一覧を取得する
-     *
-     * @return Collection
      */
     public function getPaymentMethods(): Collection
     {
@@ -23,8 +22,8 @@ class PaymentMethodService
             return PaymentMethod::where('deleted', false)
                 ->orderBy('id')
                 ->get();
-            } catch (\Exception $e) {
-                throw new \Exception(__('messages.payment_method_get_failed'), Response::HTTP_INTERNAL_SERVER_ERROR, $e);
-            }
+        } catch (\Exception $e) {
+            throw new \Exception(__('messages.payment_method_get_failed'), Response::HTTP_INTERNAL_SERVER_ERROR, $e);
+        }
     }
 }

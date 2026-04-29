@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services\Ai;
 
 use App\Models\User;
@@ -16,8 +17,6 @@ class AiGuardService
      * - 予算が設定されていること
      * - AIアドバイスモードが有効であること
      *
-     * @param User $user
-     * @return void
      *
      * @throws \Exception
      */
@@ -25,7 +24,7 @@ class AiGuardService
     {
         $this->assertBudgetConfigured($user);
 
-        if (!$user->ai_advice_mode) {
+        if (! $user->ai_advice_mode) {
             throw new \Exception(
                 __('messages.ai_advice_mode_disabled'),
                 Response::HTTP_FORBIDDEN
@@ -39,8 +38,6 @@ class AiGuardService
      * 利用条件:
      * - 予算が設定されていること
      *
-     * @param User $user
-     * @return void
      *
      * @throws \Exception
      */
@@ -55,8 +52,6 @@ class AiGuardService
      * 判定条件:
      * - budget が1以上であること（null・0 は未設定扱い）
      *
-     * @param User $user
-     * @return void
      *
      * @throws \Exception
      */

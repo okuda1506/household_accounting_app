@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Category;
@@ -27,10 +28,8 @@ class CategoryService
     /**
      * 取引タイプ別のカテゴリ一覧を取得する
      *
-     * @param array $data カテゴリデータ
-     * @param int $userId ユーザーID
-     *
-     * @return Collection
+     * @param  array  $data  カテゴリデータ
+     * @param  int  $userId  ユーザーID
      */
     public function getAllCategories(int $userId): Collection
     {
@@ -47,14 +46,12 @@ class CategoryService
     /**
      * カテゴリの新規登録
      *
-     * @param array $data カテゴリデータ
-     * @param int $userId ユーザーID
-     *
-     * @return Category
+     * @param  array  $data  カテゴリデータ
+     * @param  int  $userId  ユーザーID
      */
     public function createCategory(array $data, int $userId): Category
     {
-        $categoryName      = $data['name'];
+        $categoryName = $data['name'];
         $transactionTypeId = $data['transaction_type_id'];
 
         if ($this->categoryExists($categoryName, $userId, $transactionTypeId)) {
@@ -87,11 +84,9 @@ class CategoryService
     /**
      * カテゴリの更新
      *
-     * @param string $categoryId カテゴリID
-     * @param array $data カテゴリデータ
-     * @param int $userId ユーザーID
-     *
-     * @return Category
+     * @param  string  $categoryId  カテゴリID
+     * @param  array  $data  カテゴリデータ
+     * @param  int  $userId  ユーザーID
      */
     public function updateCategory(string $categoryId, array $data, int $userId): Category
     {
@@ -116,10 +111,8 @@ class CategoryService
     /**
      * カテゴリの削除
      *
-     * @param string $categoryId カテゴリID
-     * @param int $userId ユーザーID
-     *
-     * @return void
+     * @param  string  $categoryId  カテゴリID
+     * @param  int  $userId  ユーザーID
      */
     public function deleteCategory(string $categoryId, int $userId): void
     {
@@ -149,11 +142,9 @@ class CategoryService
     /**
      * ユーザーが所有しているカテゴリの存在チェック
      *
-     * @param string $categoryName カテゴリ名
-     * @param int $userId ユーザーID
-     * @param string $transactionTypeId 取引タイプID
-     *
-     * @return bool
+     * @param  string  $categoryName  カテゴリ名
+     * @param  int  $userId  ユーザーID
+     * @param  string  $transactionTypeId  取引タイプID
      */
     public function categoryExists(string $categoryName, int $userId, string $transactionTypeId): bool
     {
@@ -168,12 +159,10 @@ class CategoryService
     /**
      * ユーザーが所有している自分自身以外のカテゴリの存在チェック
      *
-     * @param string $categoryName カテゴリ名
-     * @param int $userId ユーザーID
-     * @param string $transactionTypeId 取引タイプID
-     * @param string $categoryId カテゴリID
-     *
-     * @return bool
+     * @param  string  $categoryName  カテゴリ名
+     * @param  int  $userId  ユーザーID
+     * @param  string  $transactionTypeId  取引タイプID
+     * @param  string  $categoryId  カテゴリID
      */
     public function categoryExistsForUpdate(string $categoryName, int $userId, string $transactionTypeId, string $categoryId): bool
     {
@@ -189,9 +178,9 @@ class CategoryService
     /**
      * 指定されたカテゴリIDとユーザーIDに一致するカテゴリを取得する
      *
-     * @param string $categoryId カテゴリID
-     * @param int $userId ユーザーID
-     * @return Category
+     * @param  string  $categoryId  カテゴリID
+     * @param  int  $userId  ユーザーID
+     *
      * @throws \Exception
      */
     private function findCategoryByIdAndUser(string $categoryId, int $userId): Category
@@ -209,7 +198,7 @@ class CategoryService
     /**
      * カテゴリの並び順を更新する
      *
-     * @param array $sortedCategoryIds 並び替え後のカテゴリIDリスト
+     * @param  array  $sortedCategoryIds  並び替え後のカテゴリIDリスト
      * @return void
      */
     // public function sortCategories(array $sortedCategoryIds): void

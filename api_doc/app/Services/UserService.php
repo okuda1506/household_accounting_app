@@ -2,11 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\User;
-use App\Services\MailService;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Cache;
 use App\Exceptions\Domain\InvalidCurrentPasswordException;
+use App\Models\User;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * ユーザー関連のビジネスロジックを管理するサービスクラス
@@ -20,21 +19,18 @@ use App\Exceptions\Domain\InvalidCurrentPasswordException;
  */
 class UserService
 {
-    /**
-     * @var MailService
-     */
     protected MailService $mailService;
 
     public function __construct(MailService $mailService)
     {
         $this->mailService = $mailService;
     }
+
     /**
      * ユーザー名を更新する
      *
-     * @param int $userId
-     * @param string $name
      * @return array{user: User}
+     *
      * @throws \Exception
      */
     public function updateUserName(int $userId, string $name): array
@@ -49,14 +45,11 @@ class UserService
     /**
      * メールアドレス変更の認証コードを送信する
      *
-     * @param int $userId
-     * @param string $newEmail
-     * @return void
      * @throws \Exception
      */
     public function sendEmailChangeCode(int $userId, string $newEmail): void
     {
-        $code = (string)random_int(100000, 999999); // 6桁
+        $code = (string) random_int(100000, 999999); // 6桁
 
         // 5分 TTL で Redis 保存
         Cache::put("email_change_code_{$userId}", [
@@ -70,27 +63,24 @@ class UserService
     /**
      * メールアドレス変更の認証コードを検証する
      *
-     * @param int $userId
-     * @param string $email
-     * @param string $code
-     * @return boolean
      * @throws \Exception
      */
     public function verifyEmailChangeCode(int $userId, string $email, string $code): bool
     {
         $data = Cache::get("email_change_code_{$userId}");
 
-        if (!$data) return false; // コード期限切れ
+        if (! $data) {
+            return false;
+        } // コード期限切れ
 
-        return $data['email'] === $email && hash_equals((string)$data['code'], $code);
+        return $data['email'] === $email && hash_equals((string) $data['code'], $code);
     }
 
     /**
      * メールアドレスを更新する
      *
-     * @param int $userId
-     * @param string $email
      * @return array
+     *
      * @throws \Exception
      */
     public function updateEmail(int $userId, string $email): User
@@ -108,17 +98,14 @@ class UserService
     /**
      * パスワードを更新する
      *
-     * @param int $userId
-     * @param string $currentPassword
-     * @param string $newPassword
      * @throws InvalidCurrentPasswordException | \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function updatePassword(int $userId, string $currentPassword, string $newPassword): void
     {
         $user = $this->findActiveUser($userId);
 
-        if (!Hash::check($currentPassword, $user->password)) {
-            throw new InvalidCurrentPasswordException();
+        if (! Hash::check($currentPassword, $user->password)) {
+            throw new InvalidCurrentPasswordException;
         }
 
         $user->update([
@@ -131,9 +118,8 @@ class UserService
      *
      * 予算設定を無効化した場合はAIアドバイスモードも無効化する
      *
-     * @param int $userId
-     * @param int $budget
      * @return array{user: User}
+     *
      * @throws \Exception
      */
     public function updateBudget(int $userId, int $budget): array
@@ -154,9 +140,6 @@ class UserService
     /**
      * ユーザーのAIアドバイスモードを更新する
      *
-     * @param int $userId
-     * @param bool $aiAdviceMode
-     * @return User
      * @throws \Exception
      */
     public function updateAiAdviceMode(int $userId, bool $aiAdviceMode): User
@@ -168,12 +151,9 @@ class UserService
         return $user;
     }
 
-
     /**
      * 有効なユーザーを取得する
      *
-     * @param int $userId
-     * @return User
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     private function findActiveUser(int $userId): User

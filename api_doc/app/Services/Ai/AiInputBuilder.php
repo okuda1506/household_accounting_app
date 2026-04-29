@@ -2,9 +2,9 @@
 
 namespace App\Services\Ai;
 
-use App\Models\User;
 use App\Models\Transaction;
 use App\Models\TransactionType;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -46,8 +46,7 @@ class AiInputBuilder
             ->whereDate('transaction_date', '>=', $startOfMonth)
             ->whereDate('transaction_date', '<=', $today)
             ->with('category')
-            ->get()
-        ;
+            ->get();
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
+
 namespace App\Http\Requests;
 
-use App\Models\PaymentMethod;
 use App\Models\Transaction;
 use App\Rules\CategoryBelongsToTransactionType;
 use App\Rules\PaymentMethodBelongsToTransactionType;
@@ -25,6 +25,7 @@ class TransactionRequest extends FormRequest
         // 更新・削除は自身のデータのみ許可
         if ($this->routeIs('api.transaction.update') || $this->routeIs('api.transaction.destroy')) {
             $transactionId = $this->route('id');
+
             return Transaction::where('id', $transactionId)
                 ->where('user_id', auth()->id())
                 ->exists();
@@ -43,22 +44,22 @@ class TransactionRequest extends FormRequest
         $transactionTypeId = $this->input('transaction_type_id');
 
         return [
-            'transaction_date'    => 'required|date',
+            'transaction_date' => 'required|date',
             'transaction_type_id' => 'required|integer|exists:transaction_types,id',
-            'category_id'         => [
+            'category_id' => [
                 'bail',
                 'integer',
                 'exists:categories,id',
                 new CategoryBelongsToTransactionType($transactionTypeId),
             ],
-            'amount'              => 'required|numeric|min:0',
-            'payment_method_id'   => [
+            'amount' => 'required|numeric|min:0',
+            'payment_method_id' => [
                 'bail',
                 'integer',
                 'exists:payment_methods,id',
                 new PaymentMethodBelongsToTransactionType($transactionTypeId),
             ],
-            'memo'                => 'nullable|string|max:255',
+            'memo' => 'nullable|string|max:255',
         ];
     }
 
@@ -68,8 +69,8 @@ class TransactionRequest extends FormRequest
             'transaction_date.required' => __('messages.transaction_date_required'),
             'transaction_date.date' => __('messages.transaction_date_date'),
             'transaction_type_id.required' => __('messages.transaction_type_id_required'),
-            'transaction_type_id.integer'  => __('messages.transaction_type_id_integer'),
-            'transaction_type_id.exists'   => __('messages.transaction_type_id_exists'),
+            'transaction_type_id.integer' => __('messages.transaction_type_id_integer'),
+            'transaction_type_id.exists' => __('messages.transaction_type_id_exists'),
             'category_id.required' => __('messages.category_id_required'),
             'category_id.exists' => __('messages.category_id_exists'),
             'amount.required' => __('messages.amount_required'),

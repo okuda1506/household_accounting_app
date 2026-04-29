@@ -39,7 +39,7 @@ export default function Transactions() {
                 }
             );
             setTransactions(parsedTransactions);
-        } catch (err) {
+        } catch (_err) {
             toast.error("取引データの取得に失敗しました");
         }
     };
@@ -57,7 +57,7 @@ export default function Transactions() {
                 ]);
                 setAllCategories(categoriesRes.data.data);
                 setAllPaymentMethods(paymentMethodsRes.data.data);
-            } catch (err) {
+            } catch (_err) {
                 toast.error("カテゴリ・支払方法の取得に失敗しました。");
             }
         };

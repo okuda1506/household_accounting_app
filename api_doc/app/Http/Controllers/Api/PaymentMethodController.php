@@ -1,12 +1,13 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Response;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PaymentMethodResource;
 use App\Services\PaymentMethodService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class PaymentMethodController extends Controller
@@ -20,8 +21,6 @@ class PaymentMethodController extends Controller
 
     /**
      * 支払方法一覧を取得する
-     *
-     * @return JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -31,6 +30,7 @@ class PaymentMethodController extends Controller
             );
         } catch (\Exception $e) {
             Log::error($e);
+
             return ApiResponse::error(null, [__('messages.payment_method_get_failed')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 

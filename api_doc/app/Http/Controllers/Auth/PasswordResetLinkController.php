@@ -4,15 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Notifications\ReactivateAccount;
 use App\Services\AuthService;
-use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Validation\ValidationException;
 
 class PasswordResetLinkController extends Controller
 {
@@ -51,6 +47,7 @@ class PasswordResetLinkController extends Controller
 
         if (isset($errorMap[$result['status']])) {
             [$message, $status] = $errorMap[$result['status']];
+
             return ApiResponse::error(null, [$message], $status);
         }
 
