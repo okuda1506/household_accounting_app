@@ -15,9 +15,8 @@ class MailService
     /**
      * メールアドレス変更の認証コードを送信する
      *
-     * @param string $toEmail 送信先メールアドレス
-     * @param string $code 認証コード
-     * @return void
+     * @param  string  $toEmail  送信先メールアドレス
+     * @param  string  $code  認証コード
      */
     public function sendEmailChangeCodeVerification(string $toEmail, string $code): void
     {

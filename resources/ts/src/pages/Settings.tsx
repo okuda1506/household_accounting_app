@@ -198,7 +198,7 @@ export default function Settings() {
                 setIsBudgetEnabled((userBudget ?? 0) > 0);
                 // AIアドバイスモードが有効かどうかを判定
                 setIsAiAdviceModeEnabled(userAiAdviceMode);
-            } catch (error) {
+            } catch (_error) {
                 toast.error("ユーザー情報の取得に失敗しました。");
                 navigate("/settings");
             }
@@ -213,7 +213,7 @@ export default function Settings() {
                 ai_advice_mode: value,
             });
             setIsAiAdviceModeEnabled(value);
-        } catch (error) {
+        } catch (_error) {
             toast.error("AIアドバイスモードの更新に失敗しました");
         } finally {
             setIsAiUpdating(false);

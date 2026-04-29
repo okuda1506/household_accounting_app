@@ -13,7 +13,7 @@ class AiAdviceResource extends JsonResource
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
-{
-    return $this->resource->toArray();
-}
+    {
+        return $this->resource->toArray();
+    }
 }

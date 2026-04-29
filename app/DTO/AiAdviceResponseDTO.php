@@ -20,13 +20,13 @@ class AiAdviceResponseDTO
         public string $pattern,
         public AdviceDTO $advice,
         public string $motivation,
-    ){}
+    ) {}
 
     public static function fromArray(array $data): self
     {
         self::validate($data);
 
-        return new self (
+        return new self(
             riskLevel: RiskLevel::from($data['risk_level']),
             analysis: AnalysisDTO::fromArray($data['analysis']),
             pattern: $data['pattern'],
@@ -42,28 +42,28 @@ class AiAdviceResponseDTO
             'analysis',
             'pattern',
             'advice',
-            'motivation'
+            'motivation',
         ];
 
         foreach ($required as $key) {
-            if (!array_key_exists($key, $data)) {
+            if (! array_key_exists($key, $data)) {
                 throw new InvalidArgumentException("{$key} is missing in AI response");
             }
         }
 
-        if (!is_array($data['analysis'])) {
+        if (! is_array($data['analysis'])) {
             throw new InvalidArgumentException('analysis must be array in AI response');
         }
 
-        if (!is_string($data['pattern'])) {
+        if (! is_string($data['pattern'])) {
             throw new InvalidArgumentException('pattern must be string in AI response');
         }
 
-        if (!is_array($data['advice'])) {
+        if (! is_array($data['advice'])) {
             throw new InvalidArgumentException('advice must be array in AI response');
         }
 
-        if (!is_string($data['motivation'])) {
+        if (! is_string($data['motivation'])) {
             throw new InvalidArgumentException('motivation must be string in AI response');
         }
     }
@@ -75,7 +75,7 @@ class AiAdviceResponseDTO
             'analysis' => $this->analysis->toArray(),
             'pattern' => $this->pattern,
             'advice' => $this->advice->toArray(),
-            'motivation' => $this->motivation
+            'motivation' => $this->motivation,
         ];
     }
 }

@@ -16,7 +16,7 @@ class AdviceDTO
         public string $microAction,
         public int $dailyBudgetTarget,
         public string $focusCategory,
-    ){}
+    ) {}
 
     public static function fromArray(array $data): self
     {
@@ -34,24 +34,24 @@ class AdviceDTO
         $required = [
             'micro_action',
             'daily_budget_target',
-            'focus_category'
+            'focus_category',
         ];
 
         foreach ($required as $key) {
-            if (!array_key_exists($key, $data)) {
+            if (! array_key_exists($key, $data)) {
                 throw new InvalidArgumentException("advice.{$key} is missing in AI response");
             }
         }
 
-        if (!is_string($data['micro_action'])) {
+        if (! is_string($data['micro_action'])) {
             throw new InvalidArgumentException('advice.micro_action must be string in AI response');
         }
 
-        if (!is_int($data['daily_budget_target'])) {
+        if (! is_int($data['daily_budget_target'])) {
             throw new InvalidArgumentException('advice.daily_budget_target must be int in AI response');
         }
 
-        if (!is_string($data['focus_category'])) {
+        if (! is_string($data['focus_category'])) {
             throw new InvalidArgumentException('advice.focus_category must be string in AI response');
         }
     }

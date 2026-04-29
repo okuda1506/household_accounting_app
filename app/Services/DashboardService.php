@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use Carbon\Carbon;
@@ -22,20 +23,18 @@ class DashboardService
     private const PAST_MONTHS_COUNT = 6;
 
     private string $startOfMonth;
+
     private string $endOfMonth;
 
     public function __construct()
     {
-        $now                = Carbon::now();
+        $now = Carbon::now();
         $this->startOfMonth = $now->startOfMonth()->toDateString();
-        $this->endOfMonth   = $now->endOfMonth()->toDateString();
+        $this->endOfMonth = $now->endOfMonth()->toDateString();
     }
 
     /**
      * 収支情報を取得
-     *
-     * @param int $userId
-     * @return array
      */
     public function getSummary(int $userId): array
     {
@@ -56,7 +55,7 @@ class DashboardService
             ->sum('amount');
 
         return [
-            'income'  => $income,
+            'income' => $income,
             'expense' => $expense,
             'balance' => $income - $expense,
         ];
@@ -64,20 +63,17 @@ class DashboardService
 
     /**
      * 過去の月別支出推移を取得
-     *
-     * @param int $userId
-     * @return array
      */
     public function getMonthlyExpenseTrend(int $userId): array
     {
-        $now    = Carbon::now()->startOfMonth();
-        $start  = $now->copy()->subMonths(self::PAST_MONTHS_COUNT - 1);
+        $now = Carbon::now()->startOfMonth();
+        $start = $now->copy()->subMonths(self::PAST_MONTHS_COUNT - 1);
         $months = collect();
 
         // 月一覧（Carbon）で生成
         for ($date = $start->copy(); $date->lte($now); $date->addMonth()) {
             $months->push([
-                'year'  => $date->year,
+                'year' => $date->year,
                 'month' => $date->month,
             ]);
         }
@@ -92,15 +88,16 @@ class DashboardService
             ->groupByRaw('EXTRACT(YEAR FROM transaction_date), EXTRACT(MONTH FROM transaction_date)')
             ->get()
             ->keyBy(function ($item) {
-                return (int)$item->year . '-' . str_pad((int)$item->month, 2, '0', STR_PAD_LEFT);
+                return (int) $item->year.'-'.str_pad((int) $item->month, 2, '0', STR_PAD_LEFT);
             });
 
         // 月一覧に DB 結果をマージ（なければ total_expense = 0）
         $result = $months->map(function ($month) use ($expenses) {
-            $key = $month['year'] . '-' . str_pad($month['month'], 2, '0', STR_PAD_LEFT);
+            $key = $month['year'].'-'.str_pad($month['month'], 2, '0', STR_PAD_LEFT);
+
             return [
-                'year'          => $month['year'],
-                'month'         => $month['month'],
+                'year' => $month['year'],
+                'month' => $month['month'],
                 'total_expense' => isset($expenses[$key]) ? (float) $expenses[$key]->total_expense : 0,
             ];
         });
@@ -110,9 +107,6 @@ class DashboardService
 
     /**
      * 最近の取引を取得
-     *
-     * @param int $userId
-     * @return array
      */
     public function getRecentTransactions(int $userId): array
     {

@@ -66,7 +66,7 @@ const UpdateBudget = () => {
                 if (enabled) {
                     setBudget(String(userBudget));
                 }
-            } catch (error) {
+            } catch (_error) {
                 toast.error("ユーザー情報の取得に失敗しました。");
                 navigate("/settings");
             }

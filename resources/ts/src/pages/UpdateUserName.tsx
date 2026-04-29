@@ -27,7 +27,7 @@ const UpdateUserName = () => {
                 const response = await api.get("/user");
                 setCurrentName(response.data.name);
                 setName(response.data.name);
-            } catch (error) {
+            } catch (_error) {
                 toast.error("ユーザー情報の取得に失敗しました。");
                 navigate("/settings");
             }

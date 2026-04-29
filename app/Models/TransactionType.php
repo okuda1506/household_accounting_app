@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +14,7 @@ class TransactionType extends Model
      * 取引種別
      */
     public const INCOME = 1; // 収入
+
     public const EXPENSE = 2; // 支出
 
     /**

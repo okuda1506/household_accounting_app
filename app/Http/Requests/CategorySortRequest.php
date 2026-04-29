@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -21,7 +22,7 @@ class CategorySortRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'sorted_category_ids'   => 'required|array',
+            'sorted_category_ids' => 'required|array',
             'sorted_category_ids.*' => 'integer|exists:categories,id',
         ];
     }
@@ -29,10 +30,10 @@ class CategorySortRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'sorted_category_ids.required'  => __('messages.sorted_category_ids_required'),
-            'sorted_category_ids.array'     => __('messages.sorted_category_ids_array'),
+            'sorted_category_ids.required' => __('messages.sorted_category_ids_required'),
+            'sorted_category_ids.array' => __('messages.sorted_category_ids_array'),
             'sorted_category_ids.*.integer' => __('messages.sorted_category_ids_integer'),
-            'sorted_category_ids.*.exists'  => __('messages.sorted_category_ids_exists'),
+            'sorted_category_ids.*.exists' => __('messages.sorted_category_ids_exists'),
         ];
     }
 }

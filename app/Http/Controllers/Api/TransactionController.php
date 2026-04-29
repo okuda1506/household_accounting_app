@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Helpers\ApiResponse;
@@ -21,8 +22,6 @@ class TransactionController extends Controller
 
     /**
      * 取引一覧を取得する
-     *
-     * @return JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -32,6 +31,7 @@ class TransactionController extends Controller
             );
         } catch (\Exception $e) {
             Log::error($e);
+
             return ApiResponse::error(null, [__('messages.transaction_get_failed')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -40,10 +40,6 @@ class TransactionController extends Controller
 
     /**
      * 取引の新規登録
-     *
-     * @param TransactionRequest $request
-     *
-     * @return JsonResponse
      */
     public function store(TransactionRequest $request): JsonResponse
     {
@@ -51,6 +47,7 @@ class TransactionController extends Controller
             $transaction = $this->transactionService->createTransaction($request->validated(), auth()->id());
         } catch (\Exception $e) {
             Log::error($e);
+
             return ApiResponse::error(null, [$e->getMessage()], (int) $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -60,11 +57,8 @@ class TransactionController extends Controller
     /**
      * 取引の更新
      *
-     * @param TransactionRequest $request
      *
-     * @param string $id
-     *
-     * @return JsonResponse
+     * @param  string  $id
      */
     public function update(TransactionRequest $request, string $transactionId): JsonResponse
     {
@@ -72,6 +66,7 @@ class TransactionController extends Controller
             $transaction = $this->transactionService->updateTransaction($transactionId, $request->validated(), auth()->id());
         } catch (\Exception $e) {
             Log::error($e);
+
             return ApiResponse::error(null, [$e->getMessage()], (int) $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -81,10 +76,7 @@ class TransactionController extends Controller
     /**
      * 取引の削除
      *
-     * @param TransactionRequest $request
-     * @param string $transactionId
-     *
-     * @return JsonResponse
+     * @param  TransactionRequest  $request
      */
     public function destroy(string $transactionId): JsonResponse
     {
@@ -92,6 +84,7 @@ class TransactionController extends Controller
             $this->transactionService->deleteTransaction($transactionId, auth()->id());
         } catch (\Exception $e) {
             Log::error($e);
+
             return ApiResponse::error(null, [$e->getMessage()], (int) $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 

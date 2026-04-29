@@ -2,9 +2,9 @@
 
 namespace App\Rules;
 
+use App\Models\PaymentMethod;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use App\Models\PaymentMethod;
 
 class PaymentMethodBelongsToTransactionType implements ValidationRule
 {
@@ -12,8 +12,6 @@ class PaymentMethodBelongsToTransactionType implements ValidationRule
 
     /**
      * Create a new rule instance.
-     *
-     * @param int $transactionTypeId
      */
     public function __construct(int $transactionTypeId)
     {
@@ -31,7 +29,7 @@ class PaymentMethodBelongsToTransactionType implements ValidationRule
             ->where('transaction_type_id', $this->transactionTypeId)
             ->exists();
 
-        if (!$isValid) {
+        if (! $isValid) {
             $fail(__('messages.invalid_payment_method_for_transaction_type'));
         }
     }

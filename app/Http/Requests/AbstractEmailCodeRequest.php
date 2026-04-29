@@ -31,10 +31,10 @@ abstract class AbstractEmailCodeRequest extends FormRequest
     {
         return [
             'email.required' => '入力してください。',
-            'email.email'    => '形式が正しくありません。',
-            'email.max'      => '255文字以内で入力してください。',
-            'code.required'  => '入力してください。',
-            'code.digits'    => '6桁で入力してください。',
+            'email.email' => '形式が正しくありません。',
+            'email.max' => '255文字以内で入力してください。',
+            'code.required' => '入力してください。',
+            'code.digits' => '6桁で入力してください。',
         ];
     }
 }

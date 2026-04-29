@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -21,7 +22,7 @@ class UpdateAiAdviceModeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ai_advice_mode'  => ['required', 'boolean'],
+            'ai_advice_mode' => ['required', 'boolean'],
         ];
     }
 

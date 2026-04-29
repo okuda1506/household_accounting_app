@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ResetPasswordRequest;
-use Illuminate\Auth\Events\PasswordReset;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -21,6 +20,7 @@ class NewPasswordController extends Controller
     {
         $this->authService = $authService;
     }
+
     /**
      * Display the password reset view.
      */
@@ -54,7 +54,7 @@ class NewPasswordController extends Controller
         }
 
         $errorMap = [
-            Password::INVALID_USER  => [__('messages.user_email_invalid'), Response::HTTP_UNPROCESSABLE_ENTITY],
+            Password::INVALID_USER => [__('messages.user_email_invalid'), Response::HTTP_UNPROCESSABLE_ENTITY],
             Password::INVALID_TOKEN => [__('messages.user_token_invalid'), Response::HTTP_BAD_REQUEST],
         ];
 

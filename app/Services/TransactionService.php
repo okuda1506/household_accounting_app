@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Transaction;
@@ -23,21 +24,19 @@ class TransactionService
     /**
      * 取引一覧を取得する
      *
-     * @param array $data カテゴリデータ
-     * @param int $userId ユーザーID
-     *
-     * @return Collection
+     * @param  array  $data  カテゴリデータ
+     * @param  int  $userId  ユーザーID
      */
     public function getTransactions(int $userId): Collection
     {
         try {
             return Transaction::with([
-                'category'      => function ($query) use ($userId): void {
+                'category' => function ($query) use ($userId): void {
                     $query
                         ->where('user_id', $userId)
                         ->where('deleted', false)
                         ->orderBy('sort_no');
-                    ;
+
                 },
                 'paymentMethod' => function ($query): void {
                     $query->where('deleted', false);
@@ -57,10 +56,8 @@ class TransactionService
     /**
      * 取引データの新規登録
      *
-     * @param array $data 取引データ
-     * @param int $userId ユーザーID
-     *
-     * @return Transaction
+     * @param  array  $data  取引データ
+     * @param  int  $userId  ユーザーID
      */
     public function createTransaction(array $data, int $userId): Transaction
     {
@@ -81,11 +78,9 @@ class TransactionService
     /**
      * 取引データの更新
      *
-     * @param string $transactionId 取引ID
-     * @param array $data 取引データ
-     * @param int $userId ユーザーID
-     *
-     * @return Transaction
+     * @param  string  $transactionId  取引ID
+     * @param  array  $data  取引データ
+     * @param  int  $userId  ユーザーID
      */
     public function updateTransaction(string $transactionId, array $data, int $userId): Transaction
     {
@@ -106,10 +101,8 @@ class TransactionService
     /**
      * 取引データの削除
      *
-     * @param string $transactionId 取引ID
-     * @param int $userId ユーザーID
-     *
-     * @return void
+     * @param  string  $transactionId  取引ID
+     * @param  int  $userId  ユーザーID
      */
     public function deleteTransaction(string $transactionId, int $userId): void
     {
@@ -128,9 +121,9 @@ class TransactionService
     /**
      * 指定された取引IDとユーザーIDに一致する取引を取得する
      *
-     * @param string $transactionId 取引ID
-     * @param int $userId ユーザーID
-     * @return Transaction
+     * @param  string  $transactionId  取引ID
+     * @param  int  $userId  ユーザーID
+     *
      * @throws \Exception
      */
     private function findTransactionByIdAndUser(string $transactionId, int $userId): Transaction

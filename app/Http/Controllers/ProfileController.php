@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
@@ -60,9 +61,6 @@ class ProfileController extends Controller
 
     /**
      * Delete the user's account for API.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function destroyApi(Request $request): JsonResponse
     {

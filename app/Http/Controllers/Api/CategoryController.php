@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Helpers\ApiResponse;
@@ -6,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
 use App\Http\Requests\CategorySortRequest;
 use App\Http\Resources\CategoryResource;
-use App\Models\Category;
 use App\Services\CategoryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -23,8 +23,6 @@ class CategoryController extends Controller
 
     /**
      * 有効なカテゴリ一覧を取得する
-     *
-     * @return JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -34,6 +32,7 @@ class CategoryController extends Controller
             );
         } catch (\Exception $e) {
             Log::error($e);
+
             return ApiResponse::error(null, [__('messages.category_get_failed')], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -42,10 +41,6 @@ class CategoryController extends Controller
 
     /**
      * カテゴリの新規登録
-     *
-     * @param CategoryRequest $request
-     *
-     * @return JsonResponse
      */
     public function store(CategoryRequest $request): JsonResponse
     {
@@ -53,6 +48,7 @@ class CategoryController extends Controller
             $category = $this->categoryService->createCategory($request->validated(), auth()->id());
         } catch (\Exception $e) {
             Log::error($e);
+
             return ApiResponse::error(null, [$e->getMessage()], (int) $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -61,11 +57,6 @@ class CategoryController extends Controller
 
     /**
      * カテゴリの更新
-     *
-     * @param CategoryRequest $request
-     * @param string $categoryId
-     *
-     * @return JsonResponse
      */
     public function update(CategoryRequest $request, string $categoryId): JsonResponse
     {
@@ -73,6 +64,7 @@ class CategoryController extends Controller
             $category = $this->categoryService->updateCategory($categoryId, $request->validated(), auth()->id());
         } catch (\Exception $e) {
             Log::error($e);
+
             return ApiResponse::error(null, [$e->getMessage()], (int) $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -82,10 +74,7 @@ class CategoryController extends Controller
     /**
      * カテゴリの削除
      *
-     * @param CategoryRequest $request
-     * @param string $categoryId
-     *
-     * @return JsonResponse
+     * @param  CategoryRequest  $request
      */
     public function destroy(string $categoryId): JsonResponse
     {
@@ -93,6 +82,7 @@ class CategoryController extends Controller
             $this->categoryService->deleteCategory($categoryId, auth()->id());
         } catch (\Exception $e) {
             Log::error($e);
+
             return ApiResponse::error(null, [$e->getMessage()], (int) $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -102,8 +92,7 @@ class CategoryController extends Controller
     /**
      * カテゴリのソート
      *
-     * @param CategorySortRequest $request
-     *
+     * @param  CategorySortRequest  $request
      * @return JsonResponse
      */
     // public function sort(CategorySortRequest $request): JsonResponse

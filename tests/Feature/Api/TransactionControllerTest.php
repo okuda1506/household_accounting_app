@@ -17,6 +17,7 @@ class TransactionControllerTest extends TestCase
     use RefreshDatabase;
 
     private User $user;
+
     private MockInterface $transactionServiceMock;
 
     protected function setUp(): void
@@ -33,17 +34,17 @@ class TransactionControllerTest extends TestCase
 
     /**
      * @test
+     *
      * @group TransactionController
      */
     public function index_認証済みユーザーは取引一覧を正しく取得できる(): void
     {
-         // 準備: サービスが返すダミーの取引データを作成します。
+        // 準備: サービスが返すダミーの取引データを作成します。
         // .make()ではDBに保存されずidが採番されないため、
         // TransactionResourceがidを必要とすることを考慮し、.create()でDBに保存します。
         $category = Category::factory()->create(['user_id' => $this->user->id]);
         // ダミーの取引データを作成
         $transactions = Transaction::factory()->count(3)->create(['user_id' => $this->user->id, 'category_id' => $category->id]);
-
 
         // 期待: サービスが正しい引数で呼び出され、ダミーデータを返すように設定
         $this->transactionServiceMock
@@ -68,6 +69,7 @@ class TransactionControllerTest extends TestCase
 
     /**
      * @test
+     *
      * @group TransactionController
      */
     public function store_認証済みユーザーは新しい取引を登録できる(): void
@@ -110,6 +112,7 @@ class TransactionControllerTest extends TestCase
 
     /**
      * @test
+     *
      * @group TransactionController
      */
     public function store_バリデーションエラーの場合は422エラーが返る(): void
@@ -130,6 +133,7 @@ class TransactionControllerTest extends TestCase
 
     /**
      * @test
+     *
      * @group TransactionController
      */
     public function update_認証済みユーザーは自身の取引を更新できる(): void
@@ -160,6 +164,7 @@ class TransactionControllerTest extends TestCase
 
     /**
      * @test
+     *
      * @group TransactionController
      */
     public function destroy_認証済みユーザーは自身の取引を削除できる(): void

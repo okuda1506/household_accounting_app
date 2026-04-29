@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -21,7 +22,7 @@ class UpdateBudgetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'budget'  => ['bail', 'required', 'integer', 'min:0', 'max:999999999'],
+            'budget' => ['bail', 'required', 'integer', 'min:0', 'max:999999999'],
         ];
     }
 

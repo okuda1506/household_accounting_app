@@ -143,7 +143,7 @@ export function EditTransactionModal({
             toast.success("取引を削除しました。");
             onSuccess();
             setOpen(false);
-        } catch (err) {
+        } catch (_err) {
             toast.error("取引の削除に失敗しました。");
         }
     };
